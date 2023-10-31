@@ -1,0 +1,139 @@
+{
+    "value": {
+        "pipeline": 1,
+        "grayver": "9.101.0.0-prd",
+        "dbVersion": 1,
+        "threadId": "78114",
+        "version": 5,
+        "active": true,
+        "createTime": 1698716691403,
+        "updateTime": 1698716694272,
+        "corporationId": "ID01owxnVpp2h1",
+        "sourceCorporationId": null,
+        "dataCorporationId": null,
+        "form": {
+            "code": "S23000071",
+            "title": "团建费申请流程-李双玖-2023-10-31",
+            "details": [
+                {
+                    "feeTypeId": "ID01rbUnfrnydp",
+                    "feeTypeForm": {
+                        "amount": {
+                            "standard": "1",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
+                        },
+                        "detailId": "ID01u9Nfb6Qfcr",
+                        "detailNo": 1,
+                        "u_人数": "2",
+                        "u_是否": "ID01rHtlCmCYd9",
+                        "u_团建人员": [
+                            "ID01owxnVpp2h1:ID01qD9zkapWwv",
+                            "ID01owxnVpp2h1:ID01oycg2jFvs3"
+                        ],
+                        "u_活动类型": "ID01rHte0QPWV1",
+                        "consumptionReasons": "",
+                        "u_活动起止日期": {
+                            "end": 1698681600000,
+                            "start": 1698076800000
+                        }
+                    },
+                    "specificationId": "ID01rbUnfrnydp:requisition:343f806df9608d8329176ef3c078b5ae44c68560",
+                    "feeType": {
+                        "id": "ID01rbUnfrnydp",
+                        "name": "团建费",
+                        "parentId": "ID01rbUgU2ZF71",
+                        "active": true,
+                        "code": "982"
+                    }
+                }
+            ],
+            "voucherNo": "",
+            "printCount": "0",
+            "printState": "noPrint",
+            "submitDate": 1698716692783,
+            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+            "rejectionNum": "0",
+            "u_OA流程ID": "",
+            "u_申请人ID": "601",
+            "voucherStatus": "未生成",
+            "onlyOwnerPrint": false,
+            "u_劳动关系": "ID01rqxf3qqa4L",
+            "u_流程编号": "",
+            "u_部门编码": "BM000163",
+            "requisitionDate": 1698681600000,
+            "specificationId": "ID01rHtRVkrJvh:ab507f038142b0adc2a24caa972956199d8154b3",
+            "requisitionMoney": {
+                "standard": "1.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "u_OA流程编号": "",
+            "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
+            "u_劳动关系txt": "宁波数联软件有限公司",
+            "voucherCreateTime": 0,
+            "preApprovedNodeName": "提交人",
+            "preNodeApprovedTime": 1698716694231,
+            "ownerAndApproverPrintNodeFlag": false
+        },
+        "ownerId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
+        "state": "approving",
+        "flowType": "freeflow",
+        "formType": "requisition",
+        "logs": [
+            {
+                "action": "freeflow.submit",
+                "state": "approving",
+                "operatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+                "byDelegateId": null,
+                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
+                "nextOperatorId": "ebot",
+                "nextOperatorIds": [],
+                "time": 1698716693941,
+                "attributes": {
+                    "nextId": "FLOW:868966084:1558852525",
+                    "nodeId": "SUBMIT",
+                    "comment": "",
+                    "isUrgent": false,
+                    "nextName": "费用标准检查",
+                    "urgentReason": null,
+                    "resubmitMethod": "FROM_START",
+                    "nextCounterSign": false,
+                    "sensitiveContent": null,
+                    "resubmitOperatorIds": [],
+                    "sensitiveAttachment": null
+                },
+                "modifyFlowLog": null,
+                "attachments": []
+            }
+        ],
+        "actions": {
+            "ebot": [
+                "freeflow.ebot",
+                "freeflow.agree",
+                "freeflow.reject",
+                "freeflow.addnode",
+                "freeflow.editApproving",
+                "freeflow.select.approver",
+                "freeflow.remind",
+                "freeflow.printed",
+                "freeflow.print"
+            ],
+            "ID01owxnVpp2h1:ID01qD9zkapWwv": [
+                "freeflow.urge",
+                "freeflow.copy",
+                "freeflow.print"
+            ]
+        },
+        "invoiceRemind": false,
+        "appId": null,
+        "id": "ID01u9Nfb6Qe8n"
+    }
+}

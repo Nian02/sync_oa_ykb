@@ -152,8 +152,9 @@ def main():
 
     # get_flow_details("ID01u0aADbUUXR")
     # get_flow_details_by_code("S23000049")
-    get_dimension_by_id("ID01rFUZ0bsqjZ")
-    # get_staff_by_id("ID01owxnVpp2h1:ID01qD9zkapWwv")
+    # get_flow_details("ID01u9S7fwwZcj")
+
+    get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
 
 
 if __name__ == "__main__":
