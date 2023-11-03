@@ -1,92 +1,147 @@
 {
     "value": {
         "pipeline": 1,
-        "grayver": "9.101.0.0-prd",
+        "grayver": "9.102.0.0-prd",
         "dbVersion": 1,
-        "threadId": "78114",
+        "threadId": "114392",
         "version": 5,
         "active": true,
-        "createTime": 1698716691403,
-        "updateTime": 1698716694272,
+        "createTime": 1698807623463,
+        "updateTime": 1698807627005,
         "corporationId": "ID01owxnVpp2h1",
         "sourceCorporationId": null,
         "dataCorporationId": null,
         "form": {
-            "code": "S23000071",
-            "title": "团建费申请流程-李双玖-2023-10-31",
+            "code": "B23000017",
+            "title": "日常费用报销流程-李双玖-2023-11-01",
             "details": [
                 {
-                    "feeTypeId": "ID01rbUnfrnydp",
+                    "feeTypeId": "ID01rbTuFyCpXx",
                     "feeTypeForm": {
                         "amount": {
-                            "standard": "1",
+                            "standard": "10",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "detailId": "ID01u9Nfb6Qfcr",
+                        "feeDate": 1698768000000,
+                        "detailId": "ID01ubxyFSu3GD",
                         "detailNo": 1,
-                        "u_人数": "2",
-                        "u_是否": "ID01rHtlCmCYd9",
-                        "u_团建人员": [
-                            "ID01owxnVpp2h1:ID01qD9zkapWwv",
-                            "ID01owxnVpp2h1:ID01oycg2jFvs3"
-                        ],
-                        "u_活动类型": "ID01rHte0QPWV1",
-                        "consumptionReasons": "",
-                        "u_活动起止日期": {
-                            "end": 1698681600000,
-                            "start": 1698076800000
-                        }
+                        "taxAmount": {
+                            "standard": "2",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
+                        },
+                        "attachments": [],
+                        "invoiceForm": {
+                            "type": "exist",
+                            "invoices": [
+                                {
+                                    "itemIds": [],
+                                    "taxRate": 0,
+                                    "invoiceId": "ID01ubxutT4Yd9",
+                                    "taxAmount": {
+                                        "standard": 0,
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    },
+                                    "approveAmount": {
+                                        "standard": "10.00",
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    }
+                                }
+                            ]
+                        },
+                        "invoiceType": "OtherInvoice",
+                        "u_客户类型": "ID01qMOHBur1Bt",
+                        "u_发票类型txt": "其他发票",
+                        "consumptionReasons": "费用说明"
                     },
-                    "specificationId": "ID01rbUnfrnydp:requisition:343f806df9608d8329176ef3c078b5ae44c68560",
+                    "specificationId": "ID01rbTuFyCpXx:expense:2575906a06121f5492963de0f21a8411b61e0200",
                     "feeType": {
-                        "id": "ID01rbUnfrnydp",
-                        "name": "团建费",
-                        "parentId": "ID01rbUgU2ZF71",
+                        "id": "ID01rbTuFyCpXx",
+                        "name": "市场推广费",
+                        "parentId": "ID01owxnVpp2h1:office",
                         "active": true,
-                        "code": "982"
+                        "code": "788"
                     }
                 }
             ],
-            "voucherNo": "",
-            "printCount": "0",
-            "printState": "noPrint",
-            "submitDate": 1698716692783,
-            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-            "rejectionNum": "0",
-            "u_OA流程ID": "",
-            "u_申请人ID": "601",
-            "voucherStatus": "未生成",
-            "onlyOwnerPrint": false,
-            "u_劳动关系": "ID01rqxf3qqa4L",
-            "u_流程编号": "",
-            "u_部门编码": "BM000163",
-            "requisitionDate": 1698681600000,
-            "specificationId": "ID01rHtRVkrJvh:ab507f038142b0adc2a24caa972956199d8154b3",
-            "requisitionMoney": {
-                "standard": "1.00",
+            "payeeId": "ID01syImG6G2mj",
+            "payMoney": {
+                "standard": "10.00",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
                 "standardNumCode": "156",
                 "standardStrCode": "CNY"
             },
-            "u_OA流程编号": "",
+            "printCount": "0",
+            "printState": "noPrint",
+            "submitDate": 1698807625252,
+            "attachments": [],
+            "description": "",
+            "expenseDate": 1698768000000,
+            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+            "expenseMoney": {
+                "standard": "10.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "rejectionNum": "0",
+            "reviewStatus": "NONE",
+            "法人实体": "ID01rqxf3qqa4L",
+            "u_申请人ID": "601",
+            "companyRealPay": {
+                "standard": "0.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "onlyOwnerPrint": false,
+            "u_劳动关系": "ID01rqxf3qqa4L",
+            "u_报销类型": "ID01qMPnxot2Dd",
+            "u_流程编号": "",
+            "u_部门编码": "BM000163",
+            "specificationId": "ID01reHpRts32D:d8b4648f07c114c750a1c8bdf1ccf51518c086e5",
+            "writtenOffMoney": {
+                "standard": "0.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
             "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
             "u_劳动关系txt": "宁波数联软件有限公司",
-            "voucherCreateTime": 0,
+            "u_开票主体txt": "宁波数联软件有限公司",
             "preApprovedNodeName": "提交人",
-            "preNodeApprovedTime": 1698716694231,
-            "ownerAndApproverPrintNodeFlag": false
+            "preNodeApprovedTime": 1698807626953,
+            "ownerAndApproverPrintNodeFlag": false,
+            "writtenOffRecords": []
         },
         "ownerId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
         "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
         "state": "approving",
         "flowType": "freeflow",
-        "formType": "requisition",
+        "formType": "expense",
         "logs": [
             {
                 "action": "freeflow.submit",
@@ -96,9 +151,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1698716693941,
+                "time": 1698807626542,
                 "attributes": {
-                    "nextId": "FLOW:868966084:1558852525",
+                    "nextId": "FLOW:1953774279:154743276",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -134,6 +189,6 @@
         },
         "invoiceRemind": false,
         "appId": null,
-        "id": "ID01u9Nfb6Qe8n"
+        "id": "ID01ubxyFSu2m3"
     }
 }

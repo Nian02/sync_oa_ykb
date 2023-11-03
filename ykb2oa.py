@@ -8,6 +8,13 @@ import requests
 import oa
 import ykb
 
+# 报销类型映射
+expense_map = {
+    "一般": "0",
+    "团建": '1',
+    "行政": "2",
+}
+
 # 团建活动类型映射
 teamactivity_map = {
     "团建": "0",
@@ -24,6 +31,13 @@ yes_or_not_map = {
 extrawork_map = {
     "出差": "0",
     "日常": "1",
+}
+
+# 客户类型映射
+client_map = {
+    "客户": "0",
+    "供应商": "1",
+    "合作伙伴": "2",
 }
 
 # 行程规划映射：ykb_code->name
@@ -98,6 +112,7 @@ def ykb_date_2_oa_time(timestamp: int) -> str:
 ],
 """
 
+
 # 返回","拼接的字符串
 def handle_multi_dimension(dimensions: list) -> str:
     l = []
@@ -138,8 +153,9 @@ def handle_attachments(attachments: list):
 
 
 # 获取name
-def get_dimension_name(id:str):
+def get_dimension_name(id: str):
     return ykb.get_dimension_by_id(id)["name"]
+
 
 # 处理发票同步
 def handle_invoices(invoices: list):
@@ -153,7 +169,7 @@ def handle_invoices(invoices: list):
     for item in ykb_rsp["items"]:
         r = requests.get(item["url"])
         oa_files.append({
-            "filePath": f"base64: {base64.b64encode(r.content).decode()}",
+            "filePath": f"base64:{base64.b64encode(r.content).decode()}",
             "fileName": item["fileName"],
         })
     return oa_files
@@ -353,7 +369,7 @@ workflow_field_map_conf = {
                     # 事由说明
                     "sqsy": lambda item: item["feeTypeForm"]["consumptionReasons"],
                     # 活动费用
-                    "hdfy": lambda item: item["feeTypeForm"]["amount"]["standardScale"],
+                    "hdfy": lambda item: item["feeTypeForm"]["amount"]["standardNumCode"],
                     # 参与人数
                     "cyrs": lambda item: item["feeTypeForm"]["u_人数"],
                 },
@@ -417,7 +433,63 @@ workflow_field_map_conf = {
             },
         },
     },
-    
+    "日常费用报销单": {
+        "workflowId": oa.WORKFLOW_ID_MAP["日常费用报销流程"],
+        "requestName": "title",
+        "mainData": {
+            # 申请人
+            "sqr": lambda form: form["u_申请人ID"],
+            # 申请日期
+            "sqrq": lambda form: ykb_date_2_oa_date(form["expenseDate"]),
+            # 申请部门
+            "sqbm": lambda form: form["u_部门编码"],
+            # 劳动关系
+            "ldgx": lambda form: form["u_劳动关系txt"],
+            # 开票主体
+            "kpzt": lambda form: form["u_开票主体txt"],
+            # 报销类型
+            "bxlx": lambda form: expense_map[get_dimension_name(form["u_报销类型"])],
+            # 备注说明
+            "bzsm": lambda form: form["description"],
+            # 附件上传
+            "fjsc": lambda form: handle_attachments(form["attachments"]),
+            # 银行卡号
+            "yhkh": lambda form: ykb.get_payee_by_id(form["payeeId"])["cardNo"],
+        },
+        "detailData": {
+            "formtable_main_35_dt1": {  # OA中明细表的tableDBName
+                "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
+                "checker": lambda item: True,
+                "field_map": {
+                    # 费用发生日期
+                    "fyfsje": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]),
+                    # 费用发生时间
+                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]),
+                    # 费用科目
+                    "fykm": lambda item: item["feeType"]["code"],
+                    # 费用说明
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"],
+                    # 附件数
+                    "fjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 发票类型
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"],
+                    # 不含税金额
+                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
+                    # 税额
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    # 费用小计
+                    "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) + float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    # 费用所属客户类型
+                    "fysskhlx": lambda item: client_map[get_dimension_name(item["feeTypeForm"]["u_客户类型"])],
+                    # 发票附件
+                    "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
+                },
+            },
+        },
+    },
+    "日常项目报销单": {
+
+    },
 }
 
 
@@ -451,7 +523,7 @@ def sync_flow(flow_id: str, spec_name: str):
             "fieldName": name,
             "fieldValue": mapper(ykb_form),
         })
-    
+
     # 遍历OA的明细表（可能有多个比如formtable_main_57_dt2+formtable_main_57_dt3）
     for detail_table_name, detail_table_field_map in field_map["detailData"].items():
         oa_detail_table = {
@@ -461,7 +533,8 @@ def sync_flow(flow_id: str, spec_name: str):
 
         # 遍历易快报数据中与该OA明细表对应的明细数据项
         if detail_table_field_map["ykb_field_name"] not in ykb_form:
-            print(f'ykb中没有对应{detail_table_field_map["ykb_field_name"]}的明细表字段名称')
+            print(
+                f'ykb中没有对应{detail_table_field_map["ykb_field_name"]}的明细表字段名称')
             continue
         for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:
             # 若与当前OA明细表不对应，则跳过
@@ -491,4 +564,6 @@ if __name__ == "__main__":
     # sync_flow("ID01txI5PMNVi7", "出差申请单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
-    sync_flow("ID01ua4jQTi0I7", "团建费申请单")
+    # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
+    sync_flow("ID01udAi4bysQT", "日常费用报销单")
+    # print(ykb_date_2_oa_date(1699804800000))

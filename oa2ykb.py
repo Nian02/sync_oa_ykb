@@ -111,7 +111,7 @@ update_ykb_flow_state_oa_workflowId = {
 }
 
 
-def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str):
+def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
     ykb_flowid = oa_data[oa.MAIN_TABLE]["ykbflowld"]["fieldValue"]
     if ykb_flowid == None or ykb_flowid == "":
@@ -119,12 +119,22 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str):
     form = {"u_流程编号": oa_data[oa.MAIN_TABLE]["lcbh"]["fieldValue"]}
     if oa_workflowId == oa.WORKFLOW_ID_MAP["出差申请流程"]:
         form["u_OA出差流程ID"] = oa_data["requestId"]
+    action = {}
+    if oa_status == "archived":
+        action = {
+            "name": "freeflow.agree",
+            "resubmitMethod": "TO_REJECTOR"
+        }
+    elif oa_status == "withdrawed":
+        action = {
+            "name": "freeflow.reject",
+            "resubmitMethod": "TO_REJECTOR"
+        }
     ykb.update_flow_data(ykb_flowid, ykb.ZDJ_ID, {"form": form})
+    print(ykb_flowid)
     ykb.update_flow_state(ykb_flowid, {
         "approveId": ykb.ZDJ_ID,
-        "action": {
-            "name": "freeflow.agree",
-        }
+        "action": action
     })
 
 

@@ -27,6 +27,8 @@ WORKFLOW_ID_MAP = {
     "招待费申请流程": "200",
     "加班申请流程": "201",
     "部门活动申请流程": "202",
+
+    "日常费用报销流程": "70",
     "差旅费用报销流程": "81",
     "日常项目报销流程": "165",
     "团队共享激励报销申请流程": "121",
@@ -141,7 +143,7 @@ def main():
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
-    get_workflow(WORKFLOW_ID_MAP["加班申请流程"], "87794", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["招待费申请流程"], "87920", ZDJ_USERID)
     
 
 
