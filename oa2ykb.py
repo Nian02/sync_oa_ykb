@@ -104,6 +104,7 @@ update_ykb_flow_state_oa_workflowId = {
     oa.WORKFLOW_ID_MAP["招待费申请流程"],
     oa.WORKFLOW_ID_MAP["加班申请流程"],
     oa.WORKFLOW_ID_MAP["差旅费用报销流程"],
+    oa.WORKFLOW_ID_MAP["部门活动申请流程"],
     oa.WORKFLOW_ID_MAP["日常项目报销流程"],
     oa.WORKFLOW_ID_MAP["团队共享激励报销申请流程"],
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"],
@@ -119,6 +120,16 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
     form = {"u_流程编号": oa_data[oa.MAIN_TABLE]["lcbh"]["fieldValue"]}
     if oa_workflowId == oa.WORKFLOW_ID_MAP["出差申请流程"]:
         form["u_OA出差流程ID"] = oa_data["requestId"]
+    if oa_workflowId == oa.WORKFLOW_ID_MAP["招待费申请流程"]:
+        form["u_OA招待流程ID"] = oa_data["requestId"]
+    # if oa_workflowId == oa.WORKFLOW_ID_MAP["加班申请流程"]:
+    #     form["u_OA流程ID"] = oa_data["requestId"]
+    if oa_workflowId == oa.WORKFLOW_ID_MAP["部门活动申请流程"]:
+        form["u_OA流程ID"] = oa_data["requestId"]
+    # 差旅费用报销没有看到ID字段
+    # if oa_workflowId == oa.WORKFLOW_ID_MAP["日常费用报销流程"]:
+    #     form["u_OA流程ID"] = oa_data[oa.MAIN_TABLE]["xglc"]["fieldValue"]
+    
     action = {}
     if oa_status == "archived":
         action = {
@@ -131,7 +142,6 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
             "resubmitMethod": "TO_REJECTOR"
         }
     ykb.update_flow_data(ykb_flowid, ykb.ZDJ_ID, {"form": form})
-    print(ykb_flowid)
     ykb.update_flow_state(ykb_flowid, {
         "approveId": ykb.ZDJ_ID,
         "action": action

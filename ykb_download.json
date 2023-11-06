@@ -3,34 +3,34 @@
         "pipeline": 1,
         "grayver": "9.102.0.0-prd",
         "dbVersion": 1,
-        "threadId": "114392",
+        "threadId": "569897",
         "version": 5,
         "active": true,
-        "createTime": 1698807623463,
-        "updateTime": 1698807627005,
+        "createTime": 1699262268622,
+        "updateTime": 1699262278494,
         "corporationId": "ID01owxnVpp2h1",
         "sourceCorporationId": null,
         "dataCorporationId": null,
         "form": {
-            "code": "B23000017",
-            "title": "日常费用报销流程-李双玖-2023-11-01",
+            "code": "B23000035",
+            "title": "日常项目报销流程-李双玖-2023-11-06",
             "details": [
                 {
-                    "feeTypeId": "ID01rbTuFyCpXx",
+                    "feeTypeId": "ID01rbTuFyCnyT",
                     "feeTypeForm": {
                         "amount": {
-                            "standard": "10",
+                            "standard": "100",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "feeDate": 1698768000000,
-                        "detailId": "ID01ubxyFSu3GD",
+                        "feeDate": 1699200000000,
+                        "detailId": "w5neRbtlGU1eYb",
                         "detailNo": 1,
                         "taxAmount": {
-                            "standard": "2",
+                            "standard": "10",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
@@ -44,7 +44,7 @@
                                 {
                                     "itemIds": [],
                                     "taxRate": 0,
-                                    "invoiceId": "ID01ubxutT4Yd9",
+                                    "invoiceId": "ID01ukgT97hVYr",
                                     "taxAmount": {
                                         "standard": 0,
                                         "standardUnit": "元",
@@ -54,7 +54,7 @@
                                         "standardStrCode": "CNY"
                                     },
                                     "approveAmount": {
-                                        "standard": "10.00",
+                                        "standard": "100.00",
                                         "standardUnit": "元",
                                         "standardScale": 2,
                                         "standardSymbol": "¥",
@@ -69,19 +69,19 @@
                         "u_发票类型txt": "其他发票",
                         "consumptionReasons": "费用说明"
                     },
-                    "specificationId": "ID01rbTuFyCpXx:expense:2575906a06121f5492963de0f21a8411b61e0200",
+                    "specificationId": "ID01rbTuFyCnyT:expense:2575906a06121f5492963de0f21a8411b61e0200",
                     "feeType": {
-                        "id": "ID01rbTuFyCpXx",
-                        "name": "市场推广费",
+                        "id": "ID01rbTuFyCnyT",
+                        "name": "广告费和业务宣传费",
                         "parentId": "ID01owxnVpp2h1:office",
                         "active": true,
-                        "code": "788"
+                        "code": "759"
                     }
                 }
             ],
             "payeeId": "ID01syImG6G2mj",
             "payMoney": {
-                "standard": "10.00",
+                "standard": "100.00",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -90,13 +90,13 @@
             },
             "printCount": "0",
             "printState": "noPrint",
-            "submitDate": 1698807625252,
+            "submitDate": 1699262271299,
             "attachments": [],
-            "description": "",
-            "expenseDate": 1698768000000,
+            "description": "bz",
+            "expenseDate": 1699200000000,
             "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
             "expenseMoney": {
-                "standard": "10.00",
+                "standard": "100.00",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -117,10 +117,12 @@
             },
             "onlyOwnerPrint": false,
             "u_劳动关系": "ID01rqxf3qqa4L",
-            "u_报销类型": "ID01qMPnxot2Dd",
             "u_流程编号": "",
             "u_部门编码": "BM000163",
-            "specificationId": "ID01reHpRts32D:d8b4648f07c114c750a1c8bdf1ccf51518c086e5",
+            "u_项目类型": "ID01reFvTesmVV",
+            "u_项目编号": "滨江IRS分包服务",
+            "specificationId": "ID01reGiEmh2hN:f8c1b98706f69c4472a1683b16326848d044e8e4",
+            "u_model数据ID": "CODE1",
             "writtenOffMoney": {
                 "standard": "0.00",
                 "standardUnit": "元",
@@ -132,8 +134,12 @@
             "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
             "u_劳动关系txt": "宁波数联软件有限公司",
             "u_开票主体txt": "宁波数联软件有限公司",
+            "u_OA⽴项流程ID": "ZY20230914543",
             "preApprovedNodeName": "提交人",
-            "preNodeApprovedTime": 1698807626953,
+            "preNodeApprovedTime": 1699262278439,
+            "u_所属收入合同": "ID01sDvl5JX1F5",
+            "u_收⼊合同编号": "收入合同名称1",
+            "u_相关立项申请": "ID01swV5SMitRB",
             "ownerAndApproverPrintNodeFlag": false,
             "writtenOffRecords": []
         },
@@ -151,9 +157,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1698807626542,
+                "time": 1699262278224,
                 "attributes": {
-                    "nextId": "FLOW:1953774279:154743276",
+                    "nextId": "FLOW:353304756:1605002720",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -189,6 +195,6 @@
         },
         "invoiceRemind": false,
         "appId": null,
-        "id": "ID01ubxyFSu2m3"
+        "id": "ID01ukh1nEJ6J9"
     }
 }

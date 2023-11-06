@@ -183,9 +183,10 @@ def main():
     # get_flow_details("ID01u0aADbUUXR")
     # get_flow_details_by_code("S23000049")
     # get_payee_by_id("ID01syImG6G2mj")
-    update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
+    # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
-    # get_flow_details("ID01udai5Ud9Rt")
+    # get_flow_details("ID01uk9wTzgr9l")
+    get_dimension_by_id("ZY20230914543")
 
 
 if __name__ == "__main__":
