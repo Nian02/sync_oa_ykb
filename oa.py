@@ -143,7 +143,7 @@ def main():
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
-    get_workflow(WORKFLOW_ID_MAP["日常项目报销流程"], "87977", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["日常项目报销流程"], "88026", ZDJ_USERID)
 
 
 if __name__ == "__main__":

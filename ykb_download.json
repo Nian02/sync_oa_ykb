@@ -3,17 +3,17 @@
         "pipeline": 1,
         "grayver": "9.102.0.0-prd",
         "dbVersion": 1,
-        "threadId": "569897",
+        "threadId": "776528",
         "version": 5,
         "active": true,
-        "createTime": 1699262268622,
-        "updateTime": 1699262278494,
+        "createTime": 1699336286716,
+        "updateTime": 1699336290087,
         "corporationId": "ID01owxnVpp2h1",
         "sourceCorporationId": null,
         "dataCorporationId": null,
         "form": {
-            "code": "B23000035",
-            "title": "日常项目报销流程-李双玖-2023-11-06",
+            "code": "B23000039",
+            "title": "日常项目报销流程-李双玖-2023-11-07",
             "details": [
                 {
                     "feeTypeId": "ID01rbTuFyCnyT",
@@ -26,25 +26,31 @@
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "feeDate": 1699200000000,
-                        "detailId": "w5neRbtlGU1eYb",
+                        "feeDate": 1699286400000,
+                        "detailId": "3kvOyswlIGK7fx",
                         "detailNo": 1,
                         "taxAmount": {
-                            "standard": "10",
+                            "standard": "1",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "attachments": [],
+                        "attachments": [
+                            {
+                                "key": "book-1699335368716-744.pdf",
+                                "fileId": "ID01ulG2JEOtQP",
+                                "fileName": "book.pdf"
+                            }
+                        ],
                         "invoiceForm": {
                             "type": "exist",
                             "invoices": [
                                 {
                                     "itemIds": [],
                                     "taxRate": 0,
-                                    "invoiceId": "ID01ukgT97hVYr",
+                                    "invoiceId": "ID01ulH8qd2Gab",
                                     "taxAmount": {
                                         "standard": 0,
                                         "standardUnit": "元",
@@ -90,10 +96,16 @@
             },
             "printCount": "0",
             "printState": "noPrint",
-            "submitDate": 1699262271299,
-            "attachments": [],
+            "submitDate": 1699336288413,
+            "attachments": [
+                {
+                    "key": "【T3出行-43.38元-1个行程】高德打车电子发票-1699335406217-668.pdf",
+                    "fileId": "ID01ulG9YyXTxd",
+                    "fileName": "【T3出行-43.38元-1个行程】高德打车电子发票.pdf"
+                }
+            ],
             "description": "bz",
-            "expenseDate": 1699200000000,
+            "expenseDate": 1699286400000,
             "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
             "expenseMoney": {
                 "standard": "100.00",
@@ -119,10 +131,10 @@
             "u_劳动关系": "ID01rqxf3qqa4L",
             "u_流程编号": "",
             "u_部门编码": "BM000163",
-            "u_项目类型": "ID01reFvTesmVV",
-            "u_项目编号": "滨江IRS分包服务",
+            "u_项目类型": "ID01reFkHx6dYj",
+            "u_项目编号": "ZY20230914543",
             "specificationId": "ID01reGiEmh2hN:f8c1b98706f69c4472a1683b16326848d044e8e4",
-            "u_model数据ID": "CODE1",
+            "u_model数据ID": "4047",
             "writtenOffMoney": {
                 "standard": "0.00",
                 "standardUnit": "元",
@@ -134,12 +146,12 @@
             "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
             "u_劳动关系txt": "宁波数联软件有限公司",
             "u_开票主体txt": "宁波数联软件有限公司",
-            "u_OA⽴项流程ID": "ZY20230914543",
+            "u_OA⽴项流程ID": "86930",
             "preApprovedNodeName": "提交人",
-            "preNodeApprovedTime": 1699262278439,
-            "u_所属收入合同": "ID01sDvl5JX1F5",
-            "u_收⼊合同编号": "收入合同名称1",
-            "u_相关立项申请": "ID01swV5SMitRB",
+            "preNodeApprovedTime": 1699336290027,
+            "u_所属收入合同": "ID01sQzMkR3gir",
+            "u_收⼊合同编号": "DBHT-20230827-0348",
+            "u_相关立项申请": "ID01swV5SMjJEj",
             "ownerAndApproverPrintNodeFlag": false,
             "writtenOffRecords": []
         },
@@ -157,9 +169,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1699262278224,
+                "time": 1699336289786,
                 "attributes": {
-                    "nextId": "FLOW:353304756:1605002720",
+                    "nextId": "FLOW:1001194112:361215814",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -195,6 +207,6 @@
         },
         "invoiceRemind": false,
         "appId": null,
-        "id": "ID01ukh1nEJ6J9"
+        "id": "ID01ulH8qd6Pef"
     }
 }

@@ -185,8 +185,8 @@ def main():
     # get_payee_by_id("ID01syImG6G2mj")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
-    # get_flow_details("ID01uk9wTzgr9l")
-    get_dimension_by_id("ZY20230914543")
+    get_flow_details("ID01ulqVzKHBWn")
+    # get_dimension_by_id("ID01ulrvJ0nILl")
 
 
 if __name__ == "__main__":

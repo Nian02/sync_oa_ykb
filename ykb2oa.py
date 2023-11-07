@@ -513,9 +513,9 @@ workflow_field_map_conf = {
             # 项目类型
             "xmlx": lambda form: project_map[get_dimension_name(form["u_项目类型"])],
             # 项目编号
-            "xmbh": lambda form: form["u_项目编号"],
+            "xmbh": lambda form: form["u_项目编号"] if "u_项目编号" in form else "",
             # 相关立项流程
-            "xglxlc": lambda form: form["u_OA⽴项流程ID"],
+            "xglxsqlc": lambda form: form["u_OA⽴项流程ID"] if "u_OA⽴项流程ID" in form else "",
             # 相关收入合同
             "xgsrht": lambda form: form["u_model数据ID"] if "u_model数据ID" in form else "",
             # 备注说明
@@ -537,7 +537,7 @@ workflow_field_map_conf = {
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"],
                     # 相关流程
-                    "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item["feeTypeForm"] else "",
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else "",
                     # 费用说明
                     "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"],
                     # 附件数
@@ -545,11 +545,11 @@ workflow_field_map_conf = {
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"],
                     # 不含税金额
-                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 税额
                     "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 费用小计
-                    "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) + float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                 },
@@ -631,6 +631,6 @@ if __name__ == "__main__":
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    # sync_flow("ID01udAi4bysQT", "日常费用报销单")
-    get_dimension_name("ID01reFkHx6dYj")
+    sync_flow("ID01ulrvJ0nILl", "项目报销单")
+    # get_dimension_name("ID01reFkHx6dYj")
     # print(ykb_date_2_oa_date(1699804800000))
