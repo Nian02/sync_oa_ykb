@@ -8,10 +8,16 @@ import requests
 import oa
 import ykb
 
+# 油卡报销类型映射
+fuelcard_map = {
+    "油卡": "0",
+    "现金": "1",
+}
+
 # 项目类型映射
 project_map = {
-    "售前":"0",
-    "交付":"1",
+    "售前": "0",
+    "交付": "1",
 }
 
 # 报销类型映射
@@ -499,7 +505,7 @@ workflow_field_map_conf = {
     "项目报销单": {
         "workflowId": oa.WORKFLOW_ID_MAP["日常项目报销流程"],
         "requestName": "title",
-        "mainData":{
+        "mainData": {
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -556,6 +562,59 @@ workflow_field_map_conf = {
             },
         },
     },
+    "私车公用报销单": {
+        "workflowId": oa.WORKFLOW_ID_MAP["油卡充值申请流程"],
+        "requestName": "title",
+        "mainData": {
+            # 申请人
+            "sqr": lambda form: form["u_申请人ID"],
+            # 申请日期
+            "sqrq": lambda form: ykb_date_2_oa_date(form["expenseDate"]),
+            # 申请部门
+            "sqbm": lambda form: form["u_部门编码"],
+            # 报销类型
+            "bxlx": lambda form: fuelcard_map[get_dimension_name(form["u_私车公用报销类型"])],
+            # 劳动关系
+            "ldgx": lambda form: form["u_劳动关系txt"],
+            # 开票主体
+            "kpzt": lambda form: form["u_开票主体txt"],
+            # 附件上传
+            "fjsc": lambda form: handle_attachments(form["attachments"]),
+            # 备注
+            "bz": lambda form: form["description"],
+            # 合计金额
+            "hjje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
+            # 最终补贴金额
+            "zzbtje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
+
+        },
+        "detailData": {
+            "formtable_main_31_dt1": {  # OA中明细表的tableDBName
+                "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
+                "checker": lambda item: True,
+                "field_map": {
+                    # 用车日期
+                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]),
+                    # 用车时间
+                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]),
+                    # 返回日期
+                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]),
+                    # 返回时间
+                    "jssj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]),
+                    # 始发地
+                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"],
+                    # 返回地点
+                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"],
+                    # 客户名称
+                    # "sskh": 
+                    # 公里数
+                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
+                    # 汽油费
+                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
+                },
+            },
+        },
+    },
 }
 
 
@@ -602,12 +661,13 @@ def sync_flow(flow_id: str, spec_name: str):
             print(
                 f'ykb中没有对应{detail_table_field_map["ykb_field_name"]}的明细表字段名称')
             continue
-        for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:
+        # detail_table_field_map["ykb_field_name"]是"detail"
+        for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:# ykb_form["detail"]
             # 若与当前OA明细表不对应，则跳过
             if not detail_table_field_map["checker"](ykb_detail):
                 continue
             oa_detail_table_fields = []
-            # 遍历当前OA明细表的字段，找到易快报明细数据项中的对应字段
+            # 遍历当前OA明细表的字段，找到易快报明细数据项中的对应字段，detail_table_field_map["field_map"]是写的"detailData"表单数据
             for name, mapper in detail_table_field_map["field_map"].items():
                 oa_detail_table_fields.append({
                     "fieldName": name,
@@ -631,6 +691,6 @@ if __name__ == "__main__":
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01ulrvJ0nILl", "项目报销单")
+    sync_flow("ID01ulKoafjMTl", "私车公用报销单")
     # get_dimension_name("ID01reFkHx6dYj")
-    # print(ykb_date_2_oa_date(1699804800000))
+    # print(ykb_date_2_oa_date(1699286400000))

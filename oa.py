@@ -23,11 +23,12 @@ SPK = b"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnwc+BmBlWNd06P78W+R1qgK+PJER
 
 # OA各流程ID
 WORKFLOW_ID_MAP = {
+    "油卡充值申请流程": "68",
     "出差申请流程": "199",
     "招待费申请流程": "200",
     "加班申请流程": "201",
     "部门活动申请流程": "202",
-
+    
     "日常费用报销流程": "70",
     "差旅费用报销流程": "81",
     "日常项目报销流程": "165",
@@ -143,7 +144,7 @@ def main():
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
-    get_workflow(WORKFLOW_ID_MAP["日常项目报销流程"], "88026", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["油卡充值申请流程"], "88031", ZDJ_USERID)
 
 
 if __name__ == "__main__":

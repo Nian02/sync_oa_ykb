@@ -3,56 +3,54 @@
         "pipeline": 1,
         "grayver": "9.102.0.0-prd",
         "dbVersion": 1,
-        "threadId": "776528",
+        "threadId": "798721",
         "version": 5,
         "active": true,
-        "createTime": 1699336286716,
-        "updateTime": 1699336290087,
+        "createTime": 1699338997561,
+        "updateTime": 1699339001861,
         "corporationId": "ID01owxnVpp2h1",
         "sourceCorporationId": null,
         "dataCorporationId": null,
         "form": {
-            "code": "B23000039",
-            "title": "日常项目报销流程-李双玖-2023-11-07",
+            "code": "B23000040",
+            "title": "私车公用报销流程-张董君-2023-11-07",
+            "项目": "ID01sQAR2orft5",
             "details": [
                 {
-                    "feeTypeId": "ID01rbTuFyCnyT",
+                    "feeTypeId": "ID01si8aGqrEjt",
                     "feeTypeForm": {
                         "amount": {
-                            "standard": "100",
+                            "standard": "62.24",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "feeDate": 1699286400000,
-                        "detailId": "3kvOyswlIGK7fx",
+                        "feeDate": 1695657600000,
+                        "detailId": "ID01ulKoafjOdV",
                         "detailNo": 1,
                         "taxAmount": {
-                            "standard": "1",
+                            "standard": "1.81",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "attachments": [
-                            {
-                                "key": "book-1699335368716-744.pdf",
-                                "fileId": "ID01ulG2JEOtQP",
-                                "fileName": "book.pdf"
-                            }
-                        ],
+                        "attachments": [],
                         "invoiceForm": {
                             "type": "exist",
                             "invoices": [
                                 {
-                                    "itemIds": [],
+                                    "itemIds": [
+                                        "ID01ulKgMLG619",
+                                        "ID01ulKgMLG6hF"
+                                    ],
                                     "taxRate": 0,
-                                    "invoiceId": "ID01ulH8qd2Gab",
+                                    "invoiceId": "ID01owxnVpp2h1:044032200411:88593875",
                                     "taxAmount": {
-                                        "standard": 0,
+                                        "standard": 1.81,
                                         "standardUnit": "元",
                                         "standardScale": 2,
                                         "standardSymbol": "¥",
@@ -60,7 +58,7 @@
                                         "standardStrCode": "CNY"
                                     },
                                     "approveAmount": {
-                                        "standard": "100.00",
+                                        "standard": "62.24",
                                         "standardUnit": "元",
                                         "standardScale": 2,
                                         "standardSymbol": "¥",
@@ -70,24 +68,25 @@
                                 }
                             ]
                         },
-                        "invoiceType": "OtherInvoice",
-                        "u_客户类型": "ID01qMOHBur1Bt",
-                        "u_发票类型txt": "其他发票",
-                        "consumptionReasons": "费用说明"
+                        "invoiceType": "VATElectronicInvoice",
+                        "u_行车记录": "ID01ubOHugFdsr",
+                        "u_行车记录s": "ID01slh7yf6iLR",
+                        "u_发票类型txt": "增值税电子普通发票",
+                        "consumptionReasons": "111"
                     },
-                    "specificationId": "ID01rbTuFyCnyT:expense:2575906a06121f5492963de0f21a8411b61e0200",
+                    "specificationId": "ID01si8aGqrEjt:expense:9ca0cf738e1b77174ccce13965997f3a05e112b0",
                     "feeType": {
-                        "id": "ID01rbTuFyCnyT",
-                        "name": "广告费和业务宣传费",
-                        "parentId": "ID01owxnVpp2h1:office",
+                        "id": "ID01si8aGqrEjt",
+                        "name": "私车公用补贴",
+                        "parentId": "",
                         "active": true,
-                        "code": "759"
+                        "code": "COST199"
                     }
                 }
             ],
-            "payeeId": "ID01syImG6G2mj",
+            "payeeId": "ID01ss91webF7h",
             "payMoney": {
-                "standard": "100.00",
+                "standard": "62.24",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -96,19 +95,14 @@
             },
             "printCount": "0",
             "printState": "noPrint",
-            "submitDate": 1699336288413,
-            "attachments": [
-                {
-                    "key": "【T3出行-43.38元-1个行程】高德打车电子发票-1699335406217-668.pdf",
-                    "fileId": "ID01ulG9YyXTxd",
-                    "fileName": "【T3出行-43.38元-1个行程】高德打车电子发票.pdf"
-                }
-            ],
-            "description": "bz",
+            "submitDate": 1699338999629,
+            "attachments": [],
+            "description": "",
             "expenseDate": 1699286400000,
-            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+            "expenseLink": "ID01uk8Wg70isv",
+            "submitterId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
             "expenseMoney": {
-                "standard": "100.00",
+                "standard": "62.24",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -116,8 +110,8 @@
                 "standardStrCode": "CNY"
             },
             "rejectionNum": "0",
-            "reviewStatus": "NONE",
-            "法人实体": "ID01rqxf3qqa4L",
+            "reviewStatus": "ALL",
+            "法人实体": "ID01oAWoNOTfWf",
             "u_申请人ID": "601",
             "companyRealPay": {
                 "standard": "0.00",
@@ -128,13 +122,11 @@
                 "standardStrCode": "CNY"
             },
             "onlyOwnerPrint": false,
-            "u_劳动关系": "ID01rqxf3qqa4L",
+            "u_使用类型": "ID01sDzKQJjGI7",
+            "u_劳动关系": "ID01oAWoNOTfWf",
             "u_流程编号": "",
-            "u_部门编码": "BM000163",
-            "u_项目类型": "ID01reFkHx6dYj",
-            "u_项目编号": "ZY20230914543",
-            "specificationId": "ID01reGiEmh2hN:f8c1b98706f69c4472a1683b16326848d044e8e4",
-            "u_model数据ID": "4047",
+            "u_部门编码": "28",
+            "specificationId": "ID01rHCy3hhIcf:f00fb481d8a0b27de85e1ec57a8a40de30fffe39",
             "writtenOffMoney": {
                 "standard": "0.00",
                 "standardUnit": "元",
@@ -143,20 +135,18 @@
                 "standardNumCode": "156",
                 "standardStrCode": "CNY"
             },
-            "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-            "u_劳动关系txt": "宁波数联软件有限公司",
-            "u_开票主体txt": "宁波数联软件有限公司",
-            "u_OA⽴项流程ID": "86930",
+            "expenseDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+            "u_劳动关系txt": "上海观测未来信息技术有限公司",
+            "u_开票主体txt": "上海观测未来信息技术有限公司",
+            "optionalPayeeByZero": true,
             "preApprovedNodeName": "提交人",
-            "preNodeApprovedTime": 1699336290027,
-            "u_所属收入合同": "ID01sQzMkR3gir",
-            "u_收⼊合同编号": "DBHT-20230827-0348",
-            "u_相关立项申请": "ID01swV5SMjJEj",
+            "preNodeApprovedTime": 1699339001780,
+            "u_私车公用报销类型": "ID01rHCD4xqlen",
             "ownerAndApproverPrintNodeFlag": false,
             "writtenOffRecords": []
         },
-        "ownerId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
+        "ownerId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
         "state": "approving",
         "flowType": "freeflow",
         "formType": "expense",
@@ -164,14 +154,14 @@
             {
                 "action": "freeflow.submit",
                 "state": "approving",
-                "operatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
+                "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
                 "byDelegateId": null,
-                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
+                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1699336289786,
+                "time": 1699339001438,
                 "attributes": {
-                    "nextId": "FLOW:1001194112:361215814",
+                    "nextId": "FLOW:1422861419:975314353",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -199,7 +189,7 @@
                 "freeflow.printed",
                 "freeflow.print"
             ],
-            "ID01owxnVpp2h1:ID01qD9zkapWwv": [
+            "ID01owxnVpp2h1:ID01oycg2jFrIP": [
                 "freeflow.urge",
                 "freeflow.copy",
                 "freeflow.print"
@@ -207,6 +197,6 @@
         },
         "invoiceRemind": false,
         "appId": null,
-        "id": "ID01ulH8qd6Pef"
+        "id": "ID01ulKoafjMTl"
     }
 }

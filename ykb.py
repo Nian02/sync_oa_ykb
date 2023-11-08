@@ -74,6 +74,26 @@ def get_payee_by_id(id: str) -> Dict:
     return r.json()["items"][0]
 
 
+def get_travelmanagement_by_id(id: str) -> Dict:
+    r = requests.get(URL+f"/api/openapi/v2/datalink/TRAVEL_MANAGEMENT/byDataLinkIds?accessToken={get_access_token(
+    )}", headers={"content-type": "application/json", "Accept": "application/json"}, data=json.dumps({"ids": [id]}))
+    print(f"ykb.get_travelmanagement_by_id url: {r.request.url}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.travelmanagement: {r.status_code}-{r.text}")
+    print(f"ykb.get_travelmanagement_by_id: {r.text}")
+    return r.json()
+
+
+def get_privatecar_by_id(id: str) -> Dict:
+    r = requests.post(URL+f"/api/openapi/v2/extension/PRIVATE_CAR/object/drivingRecord/search?accessToken={get_access_token(
+    )}", headers={"content-type": "application/json", "Accept": "application/json"}, data=json.dumps({"ids": [id]}))
+    print(f"ykb.get_privatecar_by_id url: {r.request.url}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.privatecar: {r.status_code}-{r.text}")
+    print(f"ykb.get_privatecar_by_id: {r.text}")
+    return r.json()["items"][0]
+
+
 def get_flow_details(flowId: str) -> Dict:
     r = requests.get(URL+f"/api/openapi/v1.1/flowDetails?accessToken={get_access_token()}&flowId={flowId}",
                      headers={"content-type": "application/json", "Accept": "application/json"})
@@ -182,11 +202,13 @@ def main():
 
     # get_flow_details("ID01u0aADbUUXR")
     # get_flow_details_by_code("S23000049")
-    # get_payee_by_id("ID01syImG6G2mj")
+    # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
-    get_flow_details("ID01ulqVzKHBWn")
-    # get_dimension_by_id("ID01ulrvJ0nILl")
+    # get_flow_details("ID01ubOHugFdsr")
+    # get_flow_details("ID01ubOHugFdsr")
+    # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
+    print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
 
 
 if __name__ == "__main__":
