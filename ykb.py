@@ -206,9 +206,9 @@ def main():
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
     # get_flow_details("ID01ubOHugFdsr")
-    # get_flow_details("ID01ubOHugFdsr")
+    get_flow_details("ID01un6qs1pDtB")
     # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
-    print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
+    # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
 
 
 if __name__ == "__main__":

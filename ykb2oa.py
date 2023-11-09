@@ -308,7 +308,7 @@ workflow_field_map_conf = {
         },
     },
     "加班申请单": {
-        "workflowId": oa.WORKFLOW_ID_MAP["加班申请流程"],
+        "workflowId": oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"],
         "requestName": "title",
         "mainData": {
             # 申请人
@@ -348,6 +348,8 @@ workflow_field_map_conf = {
                     "btje": lambda item: item["feeTypeForm"]["amount"]["standard"],
                     # 具体加班人员
                     "jtjbry": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_具体加班人员"]) if "u_具体加班人员" in item["feeTypeForm"] else None,
+                    # 相关流程
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else None,
                 },
             }
         },
@@ -592,6 +594,10 @@ workflow_field_map_conf = {
             "hjje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
             # 最终补贴金额
             "zzbtje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
+            # 相关出差申请
+            "xgccsq": lambda form: form["u_OA出差流程ID"] if "u_OA出差流程ID" in form else None,
+            # 相关立项申请
+            "xglxsq": lambda form: form["u_项目ID"] if "u_项目ID" in form else None,
 
         },
         "detailData": {

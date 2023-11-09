@@ -102,7 +102,7 @@ def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId:str):
 update_ykb_flow_state_oa_workflowId = {
     oa.WORKFLOW_ID_MAP["出差申请流程"],
     oa.WORKFLOW_ID_MAP["招待费申请流程"],
-    oa.WORKFLOW_ID_MAP["加班申请流程"],
+    oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"],
     oa.WORKFLOW_ID_MAP["差旅费用报销流程"],
     oa.WORKFLOW_ID_MAP["部门活动申请流程"],
     oa.WORKFLOW_ID_MAP["日常项目报销流程"],
@@ -111,6 +111,15 @@ update_ykb_flow_state_oa_workflowId = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"],
 }
 
+		
+workflow_mapping = {
+    oa.WORKFLOW_ID_MAP["出差申请流程"]: "u_OA出差流程ID",
+    oa.WORKFLOW_ID_MAP["招待费申请流程"]: "u_OA招待流程ID",
+    oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"]: "u_OA流程ID",
+    oa.WORKFLOW_ID_MAP["部门活动申请流程"]: "u_OA流程ID",
+    oa.WORKFLOW_ID_MAP["差旅费用报销流程"]: "u_OA流程ID",
+    oa.WORKFLOW_ID_MAP["油卡充值申请流程"]: "u_OA流程ID"
+}
 
 def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
@@ -118,14 +127,10 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
     if ykb_flowid == None or ykb_flowid == "":
         raise Exception("ykbflowld字段值为空")
     form = {"u_流程编号": oa_data[oa.MAIN_TABLE]["lcbh"]["fieldValue"]}
-    if oa_workflowId == oa.WORKFLOW_ID_MAP["出差申请流程"]:
-        form["u_OA出差流程ID"] = oa_data["requestId"]
-    if oa_workflowId == oa.WORKFLOW_ID_MAP["招待费申请流程"]:
-        form["u_OA招待流程ID"] = oa_data["requestId"]
-    # if oa_workflowId == oa.WORKFLOW_ID_MAP["加班申请流程"]:
-    #     form["u_OA流程ID"] = oa_data["requestId"]
-    if oa_workflowId == oa.WORKFLOW_ID_MAP["部门活动申请流程"]:
-        form["u_OA流程ID"] = oa_data["requestId"]
+    # if oa_workflowId == oa.WORKFLOW_ID_MAP["出差申请流程"]:
+    #     form["u_OA出差流程ID"] = oa_data["requestId"]
+    if(workflow_mapping.get(oa_workflowId) != None):
+        form[workflow_mapping.get(oa_workflowId)] = oa_data["requestId"]
     # 差旅费用报销没有看到ID字段
     # if oa_workflowId == oa.WORKFLOW_ID_MAP["日常费用报销流程"]:
     #     form["u_OA流程ID"] = oa_data[oa.MAIN_TABLE]["xglc"]["fieldValue"]
