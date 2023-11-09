@@ -52,6 +52,12 @@ client_map = {
     "合作伙伴": "2",
 }
 
+# 招待类型映射
+serve_map = {
+    "出差招待": "0",
+    "⽇常招待": "1",
+}
+
 # 行程规划映射：ykb_code->name
 route_map = {
     "ID01oASd5OZ30b": "飞机",
@@ -428,11 +434,11 @@ workflow_field_map_conf = {
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"],
                     # 不含税金额
-                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 税额
                     "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 费用小计
-                    "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) + float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
                     "fjsc": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 火车席别/航空舱位/轮船舱型
@@ -487,11 +493,11 @@ workflow_field_map_conf = {
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"],
                     # 不含税金额
-                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
+                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 税额
                     "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]),
                     # 费用小计
-                    "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) + float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 费用所属客户类型
                     "fysskhlx": lambda item: client_map[get_dimension_name(item["feeTypeForm"]["u_客户类型"])],
                     # 发票附件
@@ -606,11 +612,75 @@ workflow_field_map_conf = {
                     # 返回地点
                     "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"],
                     # 客户名称
-                    # "sskh": 
+                    # "sskh":
                     # 公里数
                     "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
                     # 汽油费
                     "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
+                },
+            },
+        },
+    },
+    "招待报销单": {
+        "workflowId": oa.WORKFLOW_ID_MAP["招待费报销申请流程"],
+        "requestName": "title",
+        "mainData": {
+            # 申请人
+            "sqr": lambda form: form["u_申请人ID"],
+            # 申请日期
+            "sqrq": lambda form: ykb_date_2_oa_date(form["expenseDate"]),
+            # 申请部门
+            "sqbm": lambda form: form["u_部门编码"],
+            # 招待类型
+            "zdlx": lambda form: serve_map[get_dimension_name(form["u_招待类型"])],
+            # 劳动关系
+            "ldgx": lambda form: form["u_劳动关系txt"],
+            # 开票主体
+            "kpzt": lambda form: form["u_开票主体txt"] if "u_开票主体txt" in form else None,
+            # 备注
+            "bzsm": lambda form: form["u_备注"],
+            # 明细金额合计
+            "mxjehj": lambda form: float(form["payMoney"]["standard"]),
+            # 本次应付金额
+            "bcyfje": lambda form: float(form["payMoney"]["standard"]),
+            # 银行卡号
+            "yhkh": lambda form: ykb.get_payee_by_id(form["payeeId"])["cardNo"],
+        },
+        "detailData": {
+            "formtable_main_218_dt1": {  # OA中明细表的tableDBName
+                "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
+                "checker": lambda item: True,
+                "field_map": {
+                    # 费用发生日期
+                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]),
+                    # 费用发生时间
+                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]),
+                    # 费用科目
+                    "fykm": lambda item: item["feeType"]["code"],
+                    # 费用说明
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"],
+                    # 附件数
+                    "zzfjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 发票类型
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"],
+                    # 不含税金额
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    # 税额
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]),
+                    # 费用小计
+                    "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
+                    # 发票附件
+                    "fpfj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
+                    # 客户名称
+                    "khmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else None,
+                    # 供应商名称
+                    "gysmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else None,
+                    # 合作伙伴名称
+                    "hzhbmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else None,
+                    # 相关出差流程
+                    "xgcclc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else None,
+                    # 相关招待申请
+                    "xgzdsq": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else None,
                 },
             },
         },
@@ -662,7 +732,8 @@ def sync_flow(flow_id: str, spec_name: str):
                 f'ykb中没有对应{detail_table_field_map["ykb_field_name"]}的明细表字段名称')
             continue
         # detail_table_field_map["ykb_field_name"]是"detail"
-        for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:# ykb_form["detail"]
+        # ykb_form["detail"]
+        for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:
             # 若与当前OA明细表不对应，则跳过
             if not detail_table_field_map["checker"](ykb_detail):
                 continue
@@ -691,6 +762,7 @@ if __name__ == "__main__":
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01ulKoafjMTl", "私车公用报销单")
-    # get_dimension_name("ID01reFkHx6dYj")
+    sync_flow("ID01un7GWHU7mf", "招待报销单")
+    # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
+    # print(serve_map['日常招待'])
