@@ -137,15 +137,23 @@ def create_workflow(data: Dict):
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
         raise Exception(f"oa创建失败! oa.create_workflow rsp: {rsp}")
     # print(rsp["data"])
-    return rsp["data"]
+    return rsp["data"]# 接口状态为SUCCESS,则data中包含生成的requestid
 
+def update_workflow(data: Dict):
+    r = requests.post(URL+f"/api/workflow/paService/submitRequest",
+                      headers=gen_headers(ZDJ_USERID), data=json.dumps(data))
+    print(f"oa.update_workflow data: {r.request.body}")
+    rsp = r.json()
+    if rsp["code"] is None or rsp["code"] != "SUCCESS":
+        raise Exception(f"oa更新失败! oa.update_workflow rsp: {rsp}")
+    return rsp["code"]
 
 def main():
     print(get_token())
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
-    get_workflow(WORKFLOW_ID_MAP["油卡充值申请流程"], "88031", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)
 
 
 if __name__ == "__main__":

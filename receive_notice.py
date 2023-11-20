@@ -9,7 +9,7 @@ def receive_oa_notice(workflowId:str, requestId:str, userId:str, status:str = ""
     print(f'workflowId:{workflowId}, requestId:{requestId}, userId:{userId}, status:{status}')
     if workflowId in oa2ykb.dimension_item_field_map_conf:
         oa2ykb.sync_dimension_item(workflowId, requestId, userId)
-    elif workflowId in oa2ykb.update_ykb_flow_state_oa_workflowId:
+    elif workflowId in oa2ykb.workflow_mapping:
         oa2ykb.update_flow(workflowId, requestId, userId)
     else:
         raise Exception(f"未处理的OA流程ID:{workflowId}")

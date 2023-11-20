@@ -42,6 +42,7 @@ def add_dimension_item(data: Dict) -> str:
     return rsp["id"]
 
 
+# 通过id（比如）请求表单数据
 def get_dimension_by_id(id: str) -> Dict:
     r = requests.get(URL+f"/api/openapi/v1/dimensions/getDimensionById?accessToken={get_access_token()}&id={id}",
                      headers={"content-type": "application/json", "Accept": "application/json"})
@@ -52,6 +53,7 @@ def get_dimension_by_id(id: str) -> Dict:
     return r.json()["value"]
 
 
+# 通过id（比如ID01owxnVpp2h1:ID01oycg2jFrIP）请求员工数据
 def get_staff_by_id(id: str) -> Dict:
     r = requests.post(URL+f"/api/openapi/v1/staffs/getStaffIds?accessToken={get_access_token()}",
                       headers={"content-type": "application/json",
@@ -133,6 +135,7 @@ def get_flow_details_by_code(code: str) -> Dict:
 #     return rsp["items"]
 
 
+# 更新ykb表单状态
 def update_flow_state(flow_id: str, data: Dict):
     r = requests.post(URL+f"/api/openapi/v1/backlog/data/[{flow_id}]?" +
                       f"accessToken={
@@ -147,6 +150,7 @@ def update_flow_state(flow_id: str, data: Dict):
     print(f"ykb.update_flow_state rsp: {r.text}")
 
 
+# 更新ykb表单数据
 def update_flow_data(flow_id: str, editor_id: str, data: Dict):
     r = requests.put(URL+f"/api/openapi/v2.2/flow/data/${flow_id}?" +
                      f"accessToken={get_access_token()}&editorId={
@@ -204,9 +208,9 @@ def main():
     # get_flow_details_by_code("S23000049")
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
-    # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFvs3")
-    # get_flow_details("ID01ubOHugFdsr")
-    get_flow_details("ID01un6qs1pDtB")
+    # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")
+    get_flow_details("ID01ux1OFH5HuD")
+    # get_flow_details("ID01up6XfJiwaz")
     # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
 

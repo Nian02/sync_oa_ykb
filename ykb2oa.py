@@ -411,11 +411,13 @@ workflow_field_map_conf = {
             # 开票主体
             "kpzt": lambda form: form["u_开票主体txt"],
             # 相关出差流程
-            "xgcclc": lambda form: form["u_OA出差流程ID"],
+            "xgcclc": lambda form: form["u_OA出差流程ID"] if "u_OA出差流程ID" in form else None,
             # 备注
             "bz": lambda form: form["description"],
             # 附件上传
             "fjsc": lambda form: handle_attachments(form["attachments"]),
+            # 银行卡号
+            "yhkh": lambda form: ykb.get_payee_by_id(form["payeeId"])["cardNo"],
         },
         "detailData": {
             # 明细表2
@@ -502,6 +504,12 @@ workflow_field_map_conf = {
                     "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 费用所属客户类型
                     "fysskhlx": lambda item: client_map[get_dimension_name(item["feeTypeForm"]["u_客户类型"])],
+                    # 客户名称
+                    "szkhdx": lambda form: handle_multi_dimension(form["u_客户可多选"]) if "u_客户可多选" in form else None,
+                    # 供应商名称
+                    "szgysdx": lambda form: handle_multi_dimension(form["u_供应商可多选"]) if "u_供应商可多选" in form else None,
+                    # 合作伙伴名称
+                    "szhzhbdx": lambda form: handle_multi_dimension(form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else None,
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 相关流程
@@ -566,6 +574,8 @@ workflow_field_map_conf = {
                     "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
+                    # 相关出差流程
+                    "xgccsq": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else None,
                 },
             },
         },
@@ -757,7 +767,15 @@ def sync_flow(flow_id: str, spec_name: str):
             })
         # 将OA明细表追加到OA明细数据中
         oa_data["detailData"].append(oa_detail_table)
-
+    if("u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != ''):
+        oa_update_data = {
+            "mainData": oa_data["mainData"],
+            "detailData": oa_data["detailData"],
+            "requestId":  ykb_form["u_OA流程ID"],
+        }
+        oa_update_data["detailData"][0]["deleteAll"] = "1"# 删除该流程原有明细
+        return oa.update_workflow(oa_update_data)
+        
     # 调用OA新建流程接口
     # print(json.dumps(oa_data))
     return oa.create_workflow(oa_data)
@@ -768,7 +786,7 @@ if __name__ == "__main__":
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01un7GWHU7mf", "招待报销单")
+    sync_flow("ID01uHfXGX7A2H", "加班申请单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])
