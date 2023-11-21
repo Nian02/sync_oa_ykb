@@ -76,6 +76,7 @@ def get_payee_by_id(id: str) -> Dict:
     return r.json()["items"][0]
 
 
+# 根据实例ID获取行程管理/订单管理业务对象实例
 def get_travelmanagement_by_id(id: str) -> Dict:
     r = requests.get(URL+f"/api/openapi/v2/datalink/TRAVEL_MANAGEMENT/byDataLinkIds?accessToken={get_access_token(
     )}", headers={"content-type": "application/json", "Accept": "application/json"}, data=json.dumps({"ids": [id]}))
@@ -84,6 +85,26 @@ def get_travelmanagement_by_id(id: str) -> Dict:
         raise Exception(f"ykb.travelmanagement: {r.status_code}-{r.text}")
     print(f"ykb.get_travelmanagement_by_id: {r.text}")
     return r.json()
+
+
+# 根据实例编号获取行程管理/订单管理业务对象实例
+def get_travelmanagement_by_code(entityId: str, codes: str) -> Dict:
+    r = requests.get(URL+f"/api/openapi/v2.1/datalink/TRAVEL_MANAGEMENT/byDataLinkCodes?accessToken={get_access_token(
+    )}&entityId={entityId}&codes={codes}", headers={"content-type": "application/json", "Accept": "application/json"})
+    print(f"ykb.get_travelmanagement_by_id url: {r.request.url}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.travelmanagement: {r.status_code}-{r.text}")
+    print(f"ykb.get_travelmanagement_by_id: {r.text}")
+    return r.json()
+# 获取行程管理/订单管理业务对象列表
+# def get_travelmanagement_by_entityid(id: str) -> Dict:
+#     r = requests.post(URL+f"/api/openapi/v2.1/datalink/TRAVEL_MANAGEMENT/searchOrders?accessToken={get_access_token(
+#     )}&start=0&count=100&entityId={id}")
+#     print(f"ykb.get_travelmanagement_by_entityid url: {r.request.url}")
+#     if r.status_code != 200:
+#         raise Exception(f"ykb.travelmanagement: {r.status_code}-{r.text}")
+#     print(f"ykb.get_travelmanagement_by_entityid: {r.text}")
+#     return r.json()
 
 
 def get_privatecar_by_id(id: str) -> Dict:
@@ -209,8 +230,9 @@ def main():
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")
-    get_flow_details("ID01ux1OFH5HuD")
-    # get_flow_details("ID01up6XfJiwaz")
+    get_travelmanagement_by_code("f01044a29ce188043bc0","TRIP202311200000000016")
+    # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
+    # get_flow_details("ID01uH4nG2hspF")
     # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
 

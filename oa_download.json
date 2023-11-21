@@ -1,86 +1,636 @@
 {
-    "mainData": [
+    "count": 1,
+    "items": [
         {
-            "fieldName": "ykbflowld",
-            "fieldValue": "ID01uHfXGX7A2H"
-        },
-        {
-            "fieldName": "sqr",
-            "fieldValue": "601"
-        },
-        {
-            "fieldName": "sqrq",
-            "fieldValue": "2023-11-20"
-        },
-        {
-            "fieldName": "ldgx",
-            "fieldValue": "上海观测未来信息技术有限公司"
-        },
-        {
-            "fieldName": "sqbm",
-            "fieldValue": "28"
-        },
-        {
-            "fieldName": "xgccsq",
-            "fieldValue": "88332"
-        },
-        {
-            "fieldName": "lb",
-            "fieldValue": "1"
-        },
-        {
-            "fieldName": "fjsc",
-            "fieldValue": null
-        },
-        {
-            "fieldName": "bz",
-            "fieldValue": ""
-        },
-        {
-            "fieldName": "kpzt",
-            "fieldValue": "上海观测未来信息技术有限公司"
-        }
-    ],
-    "detailData": [
-        {
-            "tableDBName": "formtable_main_37_dt1",
-            "workflowRequestTableRecords": [
+            "id": "ID01un6EYCQEq3",
+            "masterId": "",
+            "topDate": 0,
+            "useCount": 1,
+            "totalCount": 1,
+            "ownerId": null,
+            "visibility": {
+                "fullVisible": false,
+                "departmentsIncludeChildren": false,
+                "staff": [
+                    {
+                        "pipeline": 1,
+                        "grayver": "9.101.0.0-prd",
+                        "dbVersion": 5,
+                        "threadId": "14729",
+                        "version": 12,
+                        "active": true,
+                        "createTime": 1680763620549,
+                        "updateTime": 1695265146624,
+                        "nameSpell": "ZHANGDONGJUN",
+                        "code": "00000602",
+                        "corporationId": "ID01owxnVpp2h1",
+                        "sourceCorporationId": null,
+                        "dataCorporationId": null,
+                        "userId": "ID01oycg2jFrIP",
+                        "id": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+                        "name": "张董君",
+                        "avatar": null,
+                        "nickName": null,
+                        "email": "",
+                        "showEmail": "",
+                        "cellphone": "13916851621",
+                        "globalRoaming": "+86",
+                        "note": null,
+                        "fromWay": "createByApiAndEdit",
+                        "departments": [
+                            "ID01owxnVpp2h1:ID01oAPng40Luv"
+                        ],
+                        "defaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+                        "external": false,
+                        "useNewAccount": false,
+                        "authState": true,
+                        "ignoreAutoAuth": false,
+                        "order": null,
+                        "staffCustomForm": {
+                            "u_OAid": "601",
+                            "certificate": [],
+                            "defaultDepartment.form.costCenter": "",
+                            "defaultDepartment.form.legalEntity": ""
+                        },
+                        "nameInitial": "zdj",
+                        "externalDepartments": null,
+                        "externalDefaultDepartment": null,
+                        "edited": true,
+                        "admin": false,
+                        "manualSync": 0
+                    }
+                ],
+                "department": [],
+                "role": []
+            },
+            "E_fa10f678286c6d8c8bc0_code": "ID01un6GImFlYX",
+            "E_fa10f678286c6d8c8bc0_name": "张董君",
+            "E_fa10f678286c6d8c8bc0_事由": "",
+            "E_fa10f678286c6d8c8bc0_备注": "",
+            "E_fa10f678286c6d8c8bc0_附件": [],
+            "E_fa10f678286c6d8c8bc0_出发地": {
+                "name": "",
+                "time": 1699409763136,
+                "remark": null,
+                "address": "上海市浦东新区张江镇科苑路399号张江· 创新园",
+                "location": {
+                    "lat": 31.205084,
+                    "lng": 121.589855
+                },
+                "replenish": null,
+                "attachments": null,
+                "orignalLocation": {
+                    "lat": 31.205084,
+                    "lng": 121.589855
+                }
+            },
+            "E_fa10f678286c6d8c8bc0_目的地": {
+                "name": "",
+                "time": 1699409769672,
+                "remark": null,
+                "address": "上海市浦东新区张江 镇科苑路399号张江·创新园",
+                "location": {
+                    "lat": 31.205121,
+                    "lng": 121.589821
+                },
+                "replenish": null,
+                "attachments": null,
+                "orignalLocation": {
+                    "lat": 31.205121,
+                    "lng": 121.589821
+                }
+            },
+            "E_fa10f678286c6d8c8bc0_途经地": [
                 {
-                    "recordOrder": 0,
-                    "workflowRequestTableFields": [
-                        {
-                            "fieldName": "ksrq",
-                            "fieldValue": "2023-11-20"
-                        },
-                        {
-                            "fieldName": "kssj",
-                            "fieldValue": "13:38"
-                        },
-                        {
-                            "fieldName": "jsrq",
-                            "fieldValue": "2023-11-20"
-                        },
-                        {
-                            "fieldName": "jssj",
-                            "fieldValue": "13:38"
-                        },
-                        {
-                            "fieldName": "btje",
-                            "fieldValue": "112"
-                        },
-                        {
-                            "fieldName": "jtjbry",
-                            "fieldValue": "601"
-                        },
-                        {
-                            "fieldName": "xglc",
-                            "fieldValue": ""
-                        }
-                    ]
+                    "name": "",
+                    "time": 1699409764709,
+                    "remark": null,
+                    "address": "上海市浦东新区张江镇科苑路399号张江·创新园",
+                    "location": {
+                        "lat": 31.205116,
+                        "lng": 121.589871
+                    },
+                    "replenish": null,
+                    "attachments": null,
+                    "orignalLocation": {
+                        "lat": 31.205116,
+                        "lng": 121.589871
+                    }
+                },
+                {
+                    "name": "",
+                    "time": 1699409768599,
+                    "remark": null,
+                    "address": "上海市浦东新区 张江镇科苑路399号张江·创新园",
+                    "location": {
+                        "lat": 31.205111,
+                        "lng": 121.589847
+                    },
+                    "replenish": null,
+                    "attachments": null,
+                    "orignalLocation": {
+                        "lat": 31.205111,
+                        "lng": 121.589847
+                    }
                 }
             ],
-            "deleteAll": "1"
+            "E_fa10f678286c6d8c8bc0_修改原因": "",
+            "E_fa10f678286c6d8c8bc0_实际里程": "0.01",
+            "E_fa10f678286c6d8c8bc0_结束时间": 1699409769672,
+            "E_fa10f678286c6d8c8bc0_行驶日期": 1699409763136,
+            "E_fa10f678286c6d8c8bc0_补助标准": {
+                "standard": "1.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "E_fa10f678286c6d8c8bc0_补助金额": {
+                "standard": "0.01",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "E_fa10f678286c6d8c8bc0_起始时间": 1699409763136,
+            "E_fa10f678286c6d8c8bc0_行驶总时间": "6536",
+            "E_fa10f678286c6d8c8bc0_行驶总里程": "0.01",
+            "E_fa10f678286c6d8c8bc0_是否管理员修改": "",
+            "active": false,
+            "updateTime": 1700476209763,
+            "createTime": 1699409773131,
+            "entityId": "fa10f678286c6d8c8bc0",
+            "entity": {
+                "operateSource": "WRITE",
+                "operatorId": "ID01owxnVpp2h1:ID_3sCEmUPdKfM",
+                "pipeline": 1,
+                "grayver": "9.99.0.0-prd",
+                "dbVersion": 2,
+                "threadId": "113129",
+                "version": 3,
+                "active": true,
+                "createTime": 1692695791635,
+                "updateTime": 1692695791635,
+                "name": "行车记录",
+                "nameSpell": "XINGCHEJILU",
+                "corporationId": "ID01owxnVpp2h1",
+                "sourceCorporationId": null,
+                "dataCorporationId": null,
+                "ledgerIds": null,
+                "plannedIds": null,
+                "parentId": "",
+                "code": "",
+                "scoped": true,
+                "source": "OTHER",
+                "multiCurrencyFlag": false,
+                "actions": [
+                    {
+                        "id": "",
+                        "name": "修改次数上限",
+                        "desc": "业务对象被引用到上限制，超过后自动停用",
+                        "allowedLayout": [],
+                        "type": "DEFAULT",
+                        "context": null,
+                        "createTime": 0,
+                        "active": true,
+                        "order": 0,
+                        "dataFilter": false,
+                        "conditions": []
+                    },
+                    {
+                        "id": "",
+                        "name": "详情",
+                        "desc": "点击可查看业务对象字段、台账等信息",
+                        "allowedLayout": [],
+                        "type": "DEFAULT",
+                        "context": null,
+                        "createTime": 0,
+                        "active": true,
+                        "order": 0,
+                        "dataFilter": false,
+                        "conditions": []
+                    },
+                    {
+                        "id": "",
+                        "name": "编辑",
+                        "desc": "点击可编辑业务对象实例数据字段 信息",
+                        "allowedLayout": [],
+                        "type": "DEFAULT",
+                        "context": null,
+                        "createTime": 0,
+                        "active": true,
+                        "order": 0,
+                        "dataFilter": false,
+                        "conditions": []
+                    },
+                    {
+                        "id": "",
+                        "name": "更新",
+                        "desc": "重算业务对象数据实现下的台账信息",
+                        "allowedLayout": [],
+                        "type": "DEFAULT",
+                        "context": null,
+                        "createTime": 0,
+                        "active": true,
+                        "order": 0,
+                        "dataFilter": false,
+                        "conditions": []
+                    }
+                ],
+                "importOverrideStrategy": null,
+                "visibility": {
+                    "fullVisible": false,
+                    "staffs": [],
+                    "roles": [],
+                    "departments": [],
+                    "departmentsIncludeChildren": true
+                },
+                "type": "DIMENSION",
+                "disableStrategy": "LIMIT_COUNT",
+                "maxUsageCount": 1,
+                "writtenOffField": null,
+                "fields": [
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_name",
+                        "label": "用车人",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": false,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": true,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 17
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_code",
+                        "label": "编号",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": false,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": true,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 16
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_行驶日期",
+                        "label": "行驶日期",
+                        "type": "date",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 15
+                        },
+                        "withTime": false
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_起始时间",
+                        "label": "起始时间",
+                        "type": "date",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 14
+                        },
+                        "withTime": true
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_出发地",
+                        "label": "出发地",
+                        "type": "location",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 13
+                        }
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_途经地",
+                        "label": "途经地",
+                        "type": "list",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 12
+                        },
+                        "elemType": {
+                            "type": "location"
+                        }
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_目的地",
+                        "label": "目的地",
+                        "type": "location",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 11
+                        }
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_结束时间",
+                        "label": "结束时间",
+                        "type": "date",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 10
+                        },
+                        "withTime": true
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_补助标准",
+                        "label": "补助标准（每公里）",
+                        "type": "money",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 9
+                        }
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_行驶总里程",
+                        "label": "参考里程",
+                        "type": "number",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 8
+                        },
+                        "scale": 2,
+                        "unit": "公里"
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_补助金额",
+                        "label": "补助金额",
+                        "type": "money",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 7
+                        }
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_行驶总时间",
+                        "label": "行驶总时间",
+                        "type": "duration",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 6
+                        },
+                        "scale": "MINUTES"
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_备注",
+                        "label": "备注",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 5
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_修改原因",
+                        "label": "修改原因",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 4
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_是否管理员修改",
+                        "label": "是否管理员修改",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 3
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_事由",
+                        "label": "事由",
+                        "type": "text",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 2
+                        },
+                        "regex": ""
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_实际里程",
+                        "label": "实际里程",
+                        "type": "number",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 1
+                        },
+                        "scale": 2,
+                        "unit": "公里"
+                    },
+                    {
+                        "name": "E_fa10f678286c6d8c8bc0_附件",
+                        "label": "附件",
+                        "type": "list",
+                        "source": "dataLink",
+                        "optional": true,
+                        "defaultValue": null,
+                        "formula": false,
+                        "index": false,
+                        "systemField": false,
+                        "childrenOptional": {},
+                        "calculation": {
+                            "dependencies": [],
+                            "dependenciesBy": [],
+                            "order": 0
+                        },
+                        "elemType": {
+                            "type": "text"
+                        }
+                    }
+                ],
+                "defaultMappingRuleId": null,
+                "filterId": null,
+                "id": "fa10f678286c6d8c8bc0",
+                "platformId": "SCGY:ID01owxnVpp2h1",
+                "details": null,
+                "homePageVisibleIds": null,
+                "homeVisibility": {
+                    "fullVisible": false,
+                    "staffs": [],
+                    "roles": [],
+                    "departments": [],
+                    "departmentsIncludeChildren": true
+                },
+                "exportVisibility": {
+                    "fullVisible": false,
+                    "staffs": [],
+                    "roles": [],
+                    "departments": [],
+                    "departmentsIncludeChildren": true
+                },
+                "ownerDepts": false,
+                "showOnPage": true,
+                "importMethod": [
+                    "api"
+                ],
+                "allowRecordLog": true,
+                "logFields": [
+                    "E_fa10f678286c6d8c8bc0_实际里程",
+                    "E_fa10f678286c6d8c8bc0_name",
+                    "E_fa10f678286c6d8c8bc0_出发地",
+                    "E_fa10f678286c6d8c8bc0_结束时间",
+                    "E_fa10f678286c6d8c8bc0_途经地",
+                    "E_fa10f678286c6d8c8bc0_备注",
+                    "E_fa10f678286c6d8c8bc0_行驶日期",
+                    "E_fa10f678286c6d8c8bc0_补助标准",
+                    "E_fa10f678286c6d8c8bc0_修改原因",
+                    "E_fa10f678286c6d8c8bc0_事由",
+                    "E_fa10f678286c6d8c8bc0_附件",
+                    "E_fa10f678286c6d8c8bc0_起始时间",
+                    "E_fa10f678286c6d8c8bc0_目的地",
+                    "E_fa10f678286c6d8c8bc0_行驶总时间",
+                    "E_fa10f678286c6d8c8bc0_code",
+                    "E_fa10f678286c6d8c8bc0_是否管理员修改",
+                    "E_fa10f678286c6d8c8bc0_补助金额",
+                    "E_fa10f678286c6d8c8bc0_行驶总里程"
+                ],
+                "showBook": false,
+                "allowAddSubType": true,
+                "dataFilter": false
+            },
+            "ledgers": [],
+            "plans": []
         }
-    ],
-    "requestId": "88332"
+    ]
 }

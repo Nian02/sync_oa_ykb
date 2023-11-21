@@ -451,6 +451,22 @@ workflow_field_map_conf = {
                     else flight_map[item["feeTypeForm"]["u_航班舱型"]] if "u_航班舱型" in item["feeTypeForm"]\
                     else ship_map[item["feeTypeForm"]["u_轮船舱型"]] if "u_轮船舱型" in item["feeTypeForm"]\
                     else "",
+                    # 用车日期
+                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 用车时间
+                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回日期
+                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回时间
+                    "fhsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 出发地点
+                    "cfdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回地点
+                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 公里数
+                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 汽油费
+                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
                 },
             },
         },
@@ -505,15 +521,39 @@ workflow_field_map_conf = {
                     # 费用所属客户类型
                     "fysskhlx": lambda item: client_map[get_dimension_name(item["feeTypeForm"]["u_客户类型"])],
                     # 客户名称
-                    "szkhdx": lambda form: handle_multi_dimension(form["u_客户可多选"]) if "u_客户可多选" in form else None,
+                    "szkhdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 供应商名称
-                    "szgysdx": lambda form: handle_multi_dimension(form["u_供应商可多选"]) if "u_供应商可多选" in form else None,
+                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 合作伙伴名称
-                    "szhzhbdx": lambda form: handle_multi_dimension(form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else None,
+                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 相关流程
                     "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item["feeTypeForm"] else "",
+                    # 用车日期
+                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 用车时间
+                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回日期
+                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回时间
+                    "fhsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 出发地点
+                    "cfdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 返回地点
+                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 公里数
+                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 汽油费
+                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 所属客户
+                    "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    # 所属供应商
+                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    # 所属合作伙伴
+                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    # 同行人
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
                 },
             },
         },
@@ -616,23 +656,31 @@ workflow_field_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 用车日期
-                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]),
+                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 用车时间
-                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]),
+                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回日期
-                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]),
+                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回时间
-                    "jssj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]),
+                    "jssj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 始发地
-                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"],
+                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
-                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"],
+                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 客户名称
                     # "sskh":
                     # 公里数
-                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
+                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 汽油费
-                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]),
+                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 所属客户
+                    "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    # 所属供应商
+                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    # 所属合作伙伴
+                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    # 同行人
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
                 },
             },
         },
