@@ -194,7 +194,7 @@ def handle_invoices(invoices: list):
 
 
 # OA流程字段: 易快报单据字段 映射关系
-workflow_field_map_conf = {
+workflow_map_conf = {
     "出差申请单": {
         "workflowId": oa.WORKFLOW_ID_MAP["出差申请流程"],
         "requestName": "title",
@@ -451,6 +451,12 @@ workflow_field_map_conf = {
                     else flight_map[item["feeTypeForm"]["u_航班舱型"]] if "u_航班舱型" in item["feeTypeForm"]\
                     else ship_map[item["feeTypeForm"]["u_轮船舱型"]] if "u_轮船舱型" in item["feeTypeForm"]\
                     else "",
+                },
+            },
+            "formtable_main_57_dt4": {
+                "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
+                "checker": lambda item: True,
+                "field_map": {
                     # 用车日期
                     "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 用车时间
@@ -467,8 +473,8 @@ workflow_field_map_conf = {
                     "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 汽油费
                     "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
-                },
-            },
+                }
+            }
         },
     },
     "日常费用报销单": {
@@ -507,7 +513,7 @@ workflow_field_map_conf = {
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"],
                     # 费用说明
-                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"],
+                    "fysm": lambda item: item["feeTypeForm"]["description"],
                     # 附件数
                     "fjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
@@ -530,6 +536,13 @@ workflow_field_map_conf = {
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 相关流程
                     "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item["feeTypeForm"] else "",
+
+                },
+            },
+            "formtable_main_35_dt3": {
+                "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
+                "checker": lambda item: True,
+                "field_map": {
                     # 用车日期
                     "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 用车时间
@@ -549,13 +562,13 @@ workflow_field_map_conf = {
                     # 所属客户
                     "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 所属供应商
-                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "szgys": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 所属合作伙伴
-                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "szhzhb": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 同行人
                     "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
-                },
-            },
+                }
+            }
         },
     },
     "项目报销单": {
@@ -654,6 +667,7 @@ workflow_field_map_conf = {
             "formtable_main_31_dt1": {  # OA中明细表的tableDBName
                 "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
                 "checker": lambda item: True,
+                
                 "field_map": {
                     # 用车日期
                     "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
@@ -676,9 +690,9 @@ workflow_field_map_conf = {
                     # 所属客户
                     "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 所属供应商
-                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "szgys": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 所属合作伙伴
-                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "szhzhb": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 同行人
                     "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
                 },
@@ -752,89 +766,109 @@ workflow_field_map_conf = {
 }
 
 
-def sync_flow(flow_id: str, spec_name: str):
-    ykb_data = ykb.get_flow_details(flow_id)
-
-    # ykb表单中的form字段数据
-    ykb_form = ykb_data["form"]
-    # 如果不在字段映射的配置中，报错
-    if spec_name not in workflow_field_map_conf:
-        raise Exception(f"未定义的表单: {spec_name}")
-    # 对应spec_name的字段映射表
-    field_map = workflow_field_map_conf[spec_name]
+def prepare_oa_data(ykb_form, workflow_map, flow_id: str):
     oa_data = {
-        "workflowId": field_map["workflowId"],
-        # field_map["requestName"]字段是"title"
-        "requestName": ykb_form[field_map["requestName"]],
-        "mainData": [],
-        "detailData": [],
+        "workflowId": workflow_map["workflowId"],
+        "requestName": ykb_form[workflow_map["requestName"]],
+        "mainData": prepare_main_data(ykb_form, workflow_map, flow_id),
+        "detailData": prepare_detail_data(ykb_form, workflow_map),
     }
+    return oa_data
 
-    # 把易快报 flowID 填到 OA 主表的 ykbflowld 字段中
-    oa_data["mainData"].append({
+
+def prepare_main_data(ykb_form, workflow_map, flow_id):
+    main_data = [{
         "fieldName": "ykbflowld",
         "fieldValue": flow_id,
-    })
+    }]
 
-    # 遍历OA主表的字段，找到易快报对应字段
-    for name, mapper in field_map["mainData"].items():
-        oa_data["mainData"].append({
+    for name, mapper in workflow_map["mainData"].items():
+        main_data.append({
             "fieldName": name,
             "fieldValue": mapper(ykb_form),
         })
 
-    # 遍历OA的明细表（可能有多个比如formtable_main_57_dt2+formtable_main_57_dt3）
-    for detail_table_name, detail_table_field_map in field_map["detailData"].items():
-        oa_detail_table = {
-            "tableDBName": detail_table_name,
-            "workflowRequestTableRecords": [],
-        }
+    return main_data
 
-        # 遍历易快报数据中与该OA明细表对应的明细数据项
-        if detail_table_field_map["ykb_field_name"] not in ykb_form:
-            print(
-                f'ykb中没有对应{detail_table_field_map["ykb_field_name"]}的明细表字段名称')
-            continue
-        # detail_table_field_map["ykb_field_name"]是"detail"
-        # ykb_form["detail"]
-        for ykb_detail in ykb_form[detail_table_field_map["ykb_field_name"]]:
-            # 若与当前OA明细表不对应，则跳过
-            if not detail_table_field_map["checker"](ykb_detail):
-                continue
-            oa_detail_table_fields = []
-            # 遍历当前OA明细表的字段，找到易快报明细数据项中的对应字段，detail_table_field_map["field_map"]是写的"detailData"表单数据
-            for name, mapper in detail_table_field_map["field_map"].items():
-                oa_detail_table_fields.append({
-                    "fieldName": name,
-                    "fieldValue": mapper(ykb_detail),
-                })
-            # 将明细表记录追加到当前OA明细表中
-            oa_detail_table["workflowRequestTableRecords"].append({
-                "recordOrder": 0,
-                "workflowRequestTableFields": oa_detail_table_fields
-            })
-        # 将OA明细表追加到OA明细数据中
-        oa_data["detailData"].append(oa_detail_table)
-    if("u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != ''):
-        oa_update_data = {
-            "mainData": oa_data["mainData"],
-            "detailData": oa_data["detailData"],
-            "requestId":  ykb_form["u_OA流程ID"],
+
+def prepare_detail_data(ykb_form, workflow_map):
+    detail_data = []
+
+    for formtable_main_name, formtable_main_table in workflow_map["detailData"].items():
+        oa_detail_table = {
+            "tableDBName": formtable_main_name,
+            "workflowRequestTableRecords": prepare_detail_records(ykb_form, formtable_main_table),
         }
-        oa_update_data["detailData"][0]["deleteAll"] = "1"# 删除该流程原有明细
-        return oa.update_workflow(oa_update_data)
-        
-    # 调用OA新建流程接口
-    # print(json.dumps(oa_data))
+        detail_data.append(oa_detail_table)
+
+    return detail_data
+
+
+def prepare_detail_records(ykb_form, formtable_main_table):
+    records = []
+
+    # ykb_form[formtable_main_table["ykb_field_name"]: ykb_form["detail"]
+    if formtable_main_table["ykb_field_name"] not in ykb_form:
+        print(f'ykb中没有对应{formtable_main_table["ykb_field_name"]}的明细表字段名称')
+        return records
+
+    for ykb_detail in ykb_form[formtable_main_table["ykb_field_name"]]:
+        if formtable_main_table["checker"](ykb_detail):
+            record_fields = prepare_record_fields(
+                ykb_detail, formtable_main_table["field_map"])
+            records.append({
+                "recordOrder": 0,
+                "workflowRequestTableFields": record_fields,
+            })
+
+    return records
+
+
+def prepare_record_fields(ykb_detail, field_map):
+    record_fields = []
+
+    for name, mapper in field_map.items():
+        record_fields.append({
+            "fieldName": name,
+            "fieldValue": mapper(ykb_detail),
+        })
+
+    return record_fields
+
+
+def update_oa_workflow(oa_data, oa_workflow_id):
+    oa_update_data = {
+        "mainData": oa_data["mainData"],
+        "detailData": oa_data["detailData"],
+        "requestId": oa_workflow_id,
+    }
+    oa_update_data["detailData"][0]["deleteAll"] = "1"
+    return oa.update_workflow(oa_update_data)
+
+
+def sync_flow(flow_id: str, spec_name: str):
+
+    ykb_data = ykb.get_flow_details(flow_id)
+    ykb_form = ykb_data["form"]
+
+    if spec_name not in workflow_map_conf:
+        raise Exception(f"未定义的表单: {spec_name}")
+
+    workflow_map = workflow_map_conf[spec_name]
+    oa_data = prepare_oa_data(ykb_form, workflow_map, flow_id)
+
+    if "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':
+        return update_oa_workflow(oa_data, ykb_form["u_OA流程ID"])
+
     return oa.create_workflow(oa_data)
 
 
 if __name__ == "__main__":
-    # sync_flow("ID01txI5PMNVi7", "出差申请单")
+    sync_flow("ID01txI5PMNVi7", "出差申请单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01uHfXGX7A2H", "加班申请单")
+    # sync_flow("ID01uKDLD2rs2X", "差旅报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])

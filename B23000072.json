@@ -448,7 +448,7 @@
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
-                    "nextName": " 费用标准检查",
+                    "nextName": "费用标准检查",
                     "urgentReason": null,
                     "resubmitMethod": "FROM_START",
                     "nextCounterSign": false,
