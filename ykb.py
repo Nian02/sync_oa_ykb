@@ -235,8 +235,8 @@ def main():
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
     # get_flow_details_by_code("B23000055")
-    # get_flow_details("ID01uH4nG2hspF")
-    get_travelmanagement_by_id("ID01uLYCvjhVjF")
+    get_flow_details("ID01uNHrHnJ5gP")
+    # get_travelmanagement_by_id("ID01uLYCvjhVjF")
     # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
 
