@@ -270,19 +270,19 @@ workflow_map_conf = {
                 "checker": lambda item: True,  # 检测易快报明细数据项是否满足要求
                 "field_map": {
                     # 出行方式
-                    "cxfsx": lambda item: route_map[item["dataLinkTemplateId"]],
+                    "cxfsx": lambda item: route_map[item["dataLinkTemplateId"]] if "dataLinkTemplateId" in item else "",
                     # 行程类型
-                    "xclxx": lambda item: None,
+                    "xclxx": lambda item: "",
                     # 出差城市
-                    "cccs": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_住宿地"])[0]["label"],
+                    "cccs": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_住宿地"])[0]["label"] if "E_fa1044a29ce187343bc0_住宿地" in item["dataLinkForm"] else "",
                     # 出发城市
-                    "cfcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_出发地"])[0]["label"] if "E_fa1044a29ce187343bc0_出发地" in item["dataLinkForm"] else None,
+                    "cfcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_出发地"])[0]["label"] if "E_fa1044a29ce187343bc0_出发地" in item["dataLinkForm"] else "",
                     # 目的城市
-                    "mdcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_目的地"])[0]["label"] if "E_fa1044a29ce187343bc0_目的地" in item["dataLinkForm"] else None,
+                    "mdcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_目的地"])[0]["label"] if "E_fa1044a29ce187343bc0_目的地" in item["dataLinkForm"] else "",
                     # 开始日期
-                    "ccksrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_入住日期"]),
+                    "ccksrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_入住日期"]) if "E_fa1044a29ce187343bc0_入住日期" in item["dataLinkForm"] else "",
                     # 结束日期
-                    "ccjsrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_离店日期"]),
+                    "ccjsrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_离店日期"]) if "E_fa1044a29ce187343bc0_离店日期" in item["dataLinkForm"] else "",
                 },
             }
         }
@@ -483,13 +483,15 @@ workflow_map_conf = {
                     # 返回时间
                     "fhsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 出发地点
-                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
                     "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 公里数
                     "gls": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 汽油费
                     "qyf": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    # 同行人
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
                 }
             }
         },
@@ -569,7 +571,7 @@ workflow_map_conf = {
                     # 返回时间
                     "fhsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 出发地点
-                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
                     "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 公里数
