@@ -149,11 +149,12 @@ def update_workflow(data: Dict):
     return rsp["code"]
 
 def main():
-    print(get_token())
+    # print(get_token())
+    print(gen_headers("601"))
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
-    get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)
+    # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)
 
 
 if __name__ == "__main__":

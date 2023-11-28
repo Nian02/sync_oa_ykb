@@ -3,34 +3,34 @@
         "pipeline": 1,
         "grayver": "9.102.0.0-prd",
         "dbVersion": 1,
-        "threadId": "129265",
+        "threadId": "644409",
         "version": 2,
         "active": true,
-        "createTime": 1700794092603,
-        "updateTime": 1700794898639,
+        "createTime": 1701080093376,
+        "updateTime": 1701083541638,
         "corporationId": "ID01owxnVpp2h1",
         "sourceCorporationId": null,
         "dataCorporationId": null,
         "form": {
-            "code": "B23000085",
-            "title": "日常费用报销流程-张董君-2023-11-24",
+            "code": "B23000118",
+            "title": "日常项目报销流程-张董君-2023-11-27",
             "details": [
                 {
-                    "feeTypeId": "ID01rbTKOsKf9B",
+                    "feeTypeId": "ID01rbTUIoSB55",
                     "feeTypeForm": {
                         "amount": {
-                            "standard": "61.04",
+                            "standard": "227",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
                             "standardNumCode": "156",
                             "standardStrCode": "CNY"
                         },
-                        "feeDate": 1696694400000,
-                        "detailId": "ID01uNHrHnJ64n",
+                        "feeDate": 1695571200000,
+                        "detailId": "ID01uTc6UzZ0yr",
                         "detailNo": 1,
                         "taxAmount": {
-                            "standard": "1.78",
+                            "standard": "1",
                             "standardUnit": "元",
                             "standardScale": 2,
                             "standardSymbol": "¥",
@@ -38,18 +38,17 @@
                             "standardStrCode": "CNY"
                         },
                         "attachments": [],
-                        "description": "7654",
                         "invoiceForm": {
                             "type": "exist",
                             "invoices": [
                                 {
                                     "itemIds": [
-                                        "ID01uNHs9mgvuf"
+                                        "ID01uTc0MAJt3p"
                                     ],
                                     "taxRate": 0,
-                                    "invoiceId": "ID01owxnVpp2h1:031002200111:74442310",
+                                    "invoiceId": "ID01owxnVpp2h1::23332000000019387933",
                                     "taxAmount": {
-                                        "standard": 1.78,
+                                        "standard": 0,
                                         "standardUnit": "元",
                                         "standardScale": 2,
                                         "standardSymbol": "¥",
@@ -57,7 +56,87 @@
                                         "standardStrCode": "CNY"
                                     },
                                     "approveAmount": {
-                                        "standard": "61.04",
+                                        "standard": "227.00",
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    }
+                                }
+                            ]
+                        },
+                        "invoiceType": "FullDigitalNormal",
+                        "u_招待类型": "ID01te5I6jALZt",
+                        "u_预算占用": "ID01rzoHOVAWWX",
+                        "u_发票类型txt": "电子发票普通发票",
+                        "u_客户可多选": [
+                            "ID01sQVo5X0hv9",
+                            "ID01tzGDfpJJzp"
+                        ],
+                        "consumptionReasons": "777666",
+                        "u_OA出差流程ID": "88635",
+                        "u_OA招待流程ID": "88078",
+                        "u_供应商可多选": [
+                            "ID01tGfFRwBbgX"
+                        ],
+                        "u_相关出差流程": "ID01uT055iroVF",
+                        "u_合作伙伴可多选": [
+                            "ID01tGfNwHWrP9"
+                        ],
+                        "u_相关招待申请流程": "ID01uoJUNJZqaz"
+                    },
+                    "specificationId": "ID01rbTUIoSB55:expense:4fd81429f6c9bfa98503a223c00da255818891ff",
+                    "feeType": {
+                        "id": "ID01rbTUIoSB55",
+                        "name": "用餐费",
+                        "parentId": "ID01rbTToEEEaj",
+                        "active": true,
+                        "code": "757"
+                    }
+                },
+                {
+                    "feeTypeId": "ID01rbTKOsKem3",
+                    "feeTypeForm": {
+                        "amount": {
+                            "standard": "56.69",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
+                        },
+                        "feeDate": 1696694400000,
+                        "detailId": "ID01uTdkp5fvX1",
+                        "detailNo": 2,
+                        "taxAmount": {
+                            "standard": "1.65",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
+                        },
+                        "attachments": [],
+                        "invoiceForm": {
+                            "type": "exist",
+                            "invoices": [
+                                {
+                                    "itemIds": [
+                                        "ID01uTdesKsCoD"
+                                    ],
+                                    "taxRate": 0,
+                                    "invoiceId": "ID01owxnVpp2h1:011002300911:53800252",
+                                    "taxAmount": {
+                                        "standard": 1.65,
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    },
+                                    "approveAmount": {
+                                        "standard": "56.69",
                                         "standardUnit": "元",
                                         "standardScale": 2,
                                         "standardSymbol": "¥",
@@ -68,27 +147,24 @@
                             ]
                         },
                         "invoiceType": "VATElectronicInvoice",
-                        "u_同行人": [
-                            "ID01owxnVpp2h1:ID01rdwIlgRSnJ",
-                            "ID01owxnVpp2h1:ID01oycg2jFrIP"
-                        ],
-                        "u_行车记 录": "ID01uNHkGoiaIf",
+                        "u_客户类型": "ID01qMOHBur1Bt",
                         "u_预算占用": "ID01rzoHOVAWWX",
-                        "u_发票类型txt": "增值税电子普通发票"
+                        "u_发票类型txt": "增值税电子 普通发票",
+                        "consumptionReasons": "333.3"
                     },
-                    "specificationId": "ID01rbTKOsKf9B:expense:6f0e22b87e43c3f3e764ff15da8ea3c5f62a5e3b",
+                    "specificationId": "ID01rbTKOsKem3:expense:a57edfa9c5d9be7182329489f38cf569a3448f41",
                     "feeType": {
-                        "id": "ID01rbTKOsKf9B",
-                        "name": "汽油费",
+                        "id": "ID01rbTKOsKem3",
+                        "name": "出租车费",
                         "parentId": "ID01rbTAxhMZrN",
                         "active": true,
-                        "code": "772"
+                        "code": "770"
                     }
                 }
             ],
             "payeeId": "ID01ss91webF7h",
             "payMoney": {
-                "standard": "61.04",
+                "standard": "283.69",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -98,13 +174,19 @@
             "voucherNo": "",
             "printCount": "0",
             "printState": "noPrint",
-            "submitDate": 1700794895438,
-            "attachments": [],
-            "description": "",
-            "expenseDate": 1700755200000,
+            "submitDate": 1701083535985,
+            "attachments": [
+                {
+                    "key": "预算(5)-1701081238797-91.png",
+                    "fileId": "ID01uTdlyxR0FV",
+                    "fileName": "预算 (5).png"
+                }
+            ],
+            "description": "00000",
+            "expenseDate": 1701014400000,
             "submitterId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
             "expenseMoney": {
-                "standard": "61.04",
+                "standard": "283.69",
                 "standardUnit": "元",
                 "standardScale": 2,
                 "standardSymbol": "¥",
@@ -113,6 +195,7 @@
             },
             "rejectionNum": "3",
             "reviewStatus": "ALL",
+            "u_OA流程ID": "88651",
             "法人实体": "ID01oAWoNOTfWf",
             "u_申请人ID": "601",
             "voucherStatus": "未生成",
@@ -126,10 +209,11 @@
             },
             "onlyOwnerPrint": false,
             "u_劳动关系": "ID01oAWoNOTfWf",
-            "u_报销类型": "ID01qMPnxot2Dd",
-            "u_流程编号": "",
+            "u_流程编号": "XMFYBX-20231127-0001",
             "u_部门编码": "28",
-            "specificationId": "ID01reHpRts32D:d8b4648f07c114c750a1c8bdf1ccf51518c086e5",
+            "u_项目类型": "ID01reFvTesmVV",
+            "specificationId": "ID01reGiEmh2hN:01b1fb60962b7c1439be037ba3df9f61eaf0ccac",
+            "u_model数据ID": "4047",
             "writtenOffMoney": {
                 "standard": "0.00",
                 "standardUnit": "元",
@@ -143,7 +227,9 @@
             "u_开票主体txt": "上海观测未来信息技术有限公司",
             "voucherCreateTime": 0,
             "preApprovedNodeName": "出站消息",
-            "preNodeApprovedTime": 1700794898596,
+            "preNodeApprovedTime": 1701083541571,
+            "u_所属收入合同": "ID01sQzMkR3gir",
+            "u_收⼊合同编号": "DBHT-20230827-0348",
             "ownerAndApproverPrintNodeFlag": false,
             "writtenOffRecords": []
         },
@@ -161,9 +247,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1700794095533,
+                "time": 1701080096866,
                 "attributes": {
-                    "nextId": "FLOW:1809430149:1396369648",
+                    "nextId": "FLOW:1607503850:1011205599",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -178,9 +264,9 @@
                 "modifyFlowLog": [
                     {
                         "version": 1,
-                        "flowVersionedId": "ID01uNHsR6eurJ",
+                        "flowVersionedId": "ID01uTd6shOZd5",
                         "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
-                        "operatorTime": 1700794095533,
+                        "operatorTime": 1701080096866,
                         "operatorState": "CREATE",
                         "editeReason": "",
                         "byDelegateId": null
@@ -189,21 +275,58 @@
                 "attachments": []
             },
             {
-                "action": "freeflow.reject",
-                "state": "rejected",
+                "action": "freeflow.agree",
+                "state": "approving",
                 "operatorId": "ebot",
                 "byDelegateId": null,
                 "operatorDefaultDepartment": null,
                 "nextOperatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
                 "nextOperatorIds": [],
-                "time": 1700794096745,
+                "time": 1701080100397,
+                "attributes": {
+                    "nextId": "FLOW:400557831:1456345027",
+                    "nodeId": "FLOW:881521581:550407759",
+                    "comment": "",
+                    "complete": true,
+                    "nextName": "返回确认",
+                    "nodeName": "出站消息",
+                    "expressNum": null,
+                    "isEbotNode": true,
+                    "counterSign": false,
+                    "isRecalNode": false,
+                    "oldFlowPlanId": null,
+                    "nextCounterSign": false,
+                    "autographImageId": null
+                },
+                "modifyFlowLog": [
+                    {
+                        "version": 2,
+                        "flowVersionedId": "ID01uTd6shOZtB",
+                        "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+                        "operatorTime": 1701080958376,
+                        "operatorState": "UPDATE",
+                        "editeReason": null,
+                        "byDelegateId": ""
+                    }
+                ],
+                "attachments": []
+            },
+            {
+                "action": "freeflow.reject",
+                "state": "rejected",
+                "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+                "byDelegateId": null,
+                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+                "nextOperatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+                "nextOperatorIds": [],
+                "time": 1701080958980,
                 "attributes": {
                     "isAuto": false,
                     "nextId": null,
-                    "nodeId": "FLOW:585604915:624862889",
-                    "comment": "出站消息调用失败，请联系 系统管理员。",
+                    "nodeId": "FLOW:400557831:1456345027",
+                    "comment": null,
                     "nodeName": "提交人",
-                    "isEbotNode": true,
+                    "isEbotNode": false,
                     "isStaffExit": false,
                     "resubmitMethod": "FROM_START",
                     "isCostControlCheck": false
@@ -219,9 +342,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1700794834073,
+                "time": 1701081249963,
                 "attributes": {
-                    "nextId": "FLOW:1065050487:1847224123",
+                    "nextId": "FLOW:940180512:1977809257",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -235,10 +358,10 @@
                 },
                 "modifyFlowLog": [
                     {
-                        "version": 2,
-                        "flowVersionedId": "ID01uNFEVvpdkr",
+                        "version": 3,
+                        "flowVersionedId": "ID01uTan1coWCP",
                         "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
-                        "operatorTime": 1700794834073,
+                        "operatorTime": 1701081249963,
                         "operatorState": "CREATE",
                         "editeReason": "",
                         "byDelegateId": null
@@ -254,11 +377,11 @@
                 "operatorDefaultDepartment": null,
                 "nextOperatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
                 "nextOperatorIds": [],
-                "time": 1700794835851,
+                "time": 1701081253647,
                 "attributes": {
                     "isAuto": false,
                     "nextId": null,
-                    "nodeId": "FLOW:258730427:223244760",
+                    "nodeId": "FLOW:1463862324:315334496",
                     "comment": "出站消息调用失败，请联系系统管理员。",
                     "nodeName": "提交人",
                     "isEbotNode": true,
@@ -277,9 +400,9 @@
                 "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
                 "nextOperatorId": "ebot",
                 "nextOperatorIds": [],
-                "time": 1700794896808,
+                "time": 1701083537543,
                 "attributes": {
-                    "nextId": "FLOW:617070571:2052718403",
+                    "nextId": "FLOW:665843622:442949148",
                     "nodeId": "SUBMIT",
                     "comment": "",
                     "isUrgent": false,
@@ -293,10 +416,10 @@
                 },
                 "modifyFlowLog": [
                     {
-                        "version": 3,
-                        "flowVersionedId": "ID01uNFEVvpns3",
+                        "version": 4,
+                        "flowVersionedId": "ID01uTan1cvCAT",
                         "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
-                        "operatorTime": 1700794896808,
+                        "operatorTime": 1701083537543,
                         "operatorState": "CREATE",
                         "editeReason": "",
                         "byDelegateId": null
@@ -312,11 +435,11 @@
                 "operatorDefaultDepartment": null,
                 "nextOperatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
                 "nextOperatorIds": [],
-                "time": 1700794898596,
+                "time": 1701083541571,
                 "attributes": {
                     "isAuto": false,
                     "nextId": null,
-                    "nodeId": "FLOW:311064216:2023159583",
+                    "nodeId": "FLOW:113807221:1213623209",
                     "comment": "出站消息调用失败，请联系系统管理员。",
                     "nodeName": "提交人",
                     "isEbotNode": true,
@@ -337,6 +460,6 @@
         },
         "invoiceRemind": false,
         "appId": null,
-        "id": "ID01uNHrHnJ5gP"
+        "id": "ID01uTc6UzYZdR"
     }
 }

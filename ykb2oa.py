@@ -164,7 +164,7 @@ def handle_attachments(attachments: list):
     for f in ykb_files:
         r = requests.get(f["url"])
         oa_files.append({
-            "filePath": f"base64: {base64.b64encode(r.content).decode()}",
+            "filePath": f"base64:{base64.b64encode(r.content).decode()}",
             "fileName": f["key"],
         })
     return oa_files
@@ -187,22 +187,23 @@ def handle_invoices(invoices: list):
     for item in ykb_rsp["items"]:
         r = requests.get(item["url"])
         oa_files.append({
-            "filePath": f"base64: {base64.b64encode(r.content).decode()}",
+            "filePath": f"base64:{base64.b64encode(r.content).decode()}",
             "fileName": item["fileName"],
         })
     return oa_files
 
 
-		
 # 定义一个缓存字典用于存储已经获取过的privatecar信息
 privatecar_cache = {}
+
 
 def process_privatecar_info(item):
     if "u_行车记录" in item["feeTypeForm"]:
         if item["feeTypeForm"]["u_行车记录"] in privatecar_cache:
             return privatecar_cache[item["feeTypeForm"]["u_行车记录"]]
         else:
-            privatecar_info = ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])
+            privatecar_info = ykb.get_privatecar_by_id(
+                item["feeTypeForm"]["u_行车记录"])
             # 进行额外处理
             # ...
             privatecar_cache[item["feeTypeForm"]["u_行车记录"]] = privatecar_info
@@ -263,6 +264,8 @@ workflow_map_conf = {
             "fpttx": lambda form: form["u_发票抬头txt"],
             # 申请金额
             "sqje": lambda form: form["requisitionMoney"]["standard"],
+            # 总金额
+            "zje": lambda form: form["requisitionMoney"]["standard"],
         },
         "detailData": {
             "formtable_main_53_dt1": {
@@ -443,7 +446,7 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 费用发生日期
-                    "fyrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]),
+                    "fyrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
                     # 费用发生时间
                     "fysj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]),
                     # 费用类型
@@ -532,7 +535,7 @@ workflow_map_conf = {
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"],
                     # 费用说明
-                    "fysm": lambda item: item["feeTypeForm"]["description"],
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
                     # 附件数
                     "fjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
@@ -618,6 +621,10 @@ workflow_map_conf = {
             "fjsc": lambda form: handle_attachments(form["attachments"]),
             # 银行卡号
             "yhkh": lambda form: ykb.get_payee_by_id(form["payeeId"])["cardNo"],
+            # 明细金额合计
+            "mxjehj": lambda form: float(form["payMoney"]["standard"]),
+            # 本次应付金额
+            "bcyfje": lambda form: float(form["payMoney"]["standard"]),
         },
         "detailData": {
             "formtable_main_183_dt1": {  # OA中明细表的tableDBName
@@ -860,7 +867,9 @@ def update_oa_workflow(oa_data, oa_workflow_id):
         "detailData": oa_data["detailData"],
         "requestId": oa_workflow_id,
     }
-    oa_update_data["detailData"][0]["deleteAll"] = "1"
+    # 招待费申请没有detailData,设置会报错list index out of range
+    if oa_update_data["detailData"] != []:
+        oa_update_data["detailData"][0]["deleteAll"] = "1"
     return oa.update_workflow(oa_update_data)
 
 
@@ -875,14 +884,22 @@ def sync_flow(flow_id: str, spec_name: str):
     workflow_map = workflow_map_conf[spec_name]
     oa_data = prepare_oa_data(ykb_form, workflow_map, flow_id)
 
-    if "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':
+    """
+    特殊处理差旅报销单和私车公用报销单的逻辑：
+    这两个单子在单据中都有一个关联出差申请的字段, 会带出出差申请的"OA流程ID"。而易快报里出差申请单中的"OA流程ID"想要同步带出到差旅报销单/私车公用报销单中, 对应的字段在这两个单据中必须也叫"OA流程ID"。
+    因此这两个单子不能拿"OA流程ID"当作判断create_workflow/update_workflow的依据, 而是要拿"OA报销流程ID"当作判断create_workflow/update_workflow的依据。
+    """
+    if spec_name == "差旅报销单" or spec_name == "私车公用报销单":
+        if "u_OA报销流程ID" in ykb_form and ykb_form["u_OA报销流程ID"] != '':
+            return update_oa_workflow(oa_data, ykb_form["u_OA报销流程ID"])
+    elif "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':
         return update_oa_workflow(oa_data, ykb_form["u_OA流程ID"])
 
     return oa.create_workflow(oa_data)
 
 
 if __name__ == "__main__":
-    sync_flow("ID01uNHrHnJ5gP", "日常费用报销单")
+    sync_flow("ID01uTc6UzYZdR", "项目报销单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
