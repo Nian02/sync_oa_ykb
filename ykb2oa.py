@@ -430,8 +430,8 @@ workflow_map_conf = {
             "ldgx": lambda form: form["u_劳动关系txt"],
             # 开票主体
             "kpzt": lambda form: form["u_开票主体txt"],
-            # 相关出差流程
-            "xgcclc": lambda form: form["u_OA出差流程ID"] if "u_OA出差流程ID" in form else None,
+            # 相关出差流程（特殊处理）
+            "xgcclc": lambda form: form["u_OA流程ID"] if "u_OA流程ID" in form else None,
             # 备注
             "bz": lambda form: form["description"],
             # 附件上传
@@ -683,8 +683,8 @@ workflow_map_conf = {
             "hjje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
             # 最终补贴金额
             "zzbtje": lambda form: float(form["details"][0]["feeTypeForm"]["amount"]["standard"]),
-            # 相关出差申请
-            "xgccsq": lambda form: form["u_OA出差流程ID"] if "u_OA出差流程ID" in form else None,
+            # 相关出差申请（特殊处理）
+            "xgccsq": lambda form: form["u_OA流程ID"] if "u_OA流程ID" in form else None,
             # 相关立项申请
             "xglxsq": lambda form: form["u_项目ID"] if "u_项目ID" in form else None,
 
@@ -703,7 +703,7 @@ workflow_map_conf = {
                     # 返回时间
                     "jssj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 始发地
-                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
                     "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 客户名称
@@ -899,7 +899,7 @@ def sync_flow(flow_id: str, spec_name: str):
 
 
 if __name__ == "__main__":
-    sync_flow("ID01uTc6UzYZdR", "项目报销单")
+    sync_flow("ID01uUzR70jToH", "项目报销单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")

@@ -113,16 +113,18 @@ def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId:str):
 #     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"],
 # }
 
-		
+"""
+差旅报销单和私车公用报销单存储对应OA的流程ID的字段是u_OA报销流程ID
+"""
 workflow_mapping = {
     oa.WORKFLOW_ID_MAP["出差申请流程"]: "u_OA流程ID",
     oa.WORKFLOW_ID_MAP["招待费申请流程"]: "u_OA流程ID",
     oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"]: "u_OA流程ID",
     oa.WORKFLOW_ID_MAP["部门活动申请流程"]: "u_OA流程ID",
-    oa.WORKFLOW_ID_MAP["差旅费用报销流程"]: "u_OA流程ID",
+    oa.WORKFLOW_ID_MAP["差旅费用报销流程"]: "u_OA报销流程ID",
     oa.WORKFLOW_ID_MAP["日常费用报销流程"]: "u_OA流程ID",
     oa.WORKFLOW_ID_MAP["日常项目报销流程"]: "u_OA流程ID",
-    oa.WORKFLOW_ID_MAP["油卡充值申请流程"]: "u_OA流程ID",
+    oa.WORKFLOW_ID_MAP["油卡充值申请流程"]: "u_OA报销流程ID",
     oa.WORKFLOW_ID_MAP["招待费报销申请流程"]: "u_OA流程ID",
 }
 
@@ -159,4 +161,4 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
 if __name__ == "__main__":
     # update_flow("199","84023","601")
     # print("201" in workflow_mapping)
-    update_flow("201","87923","601","withdrawed")
+    update_flow("165","88683","601","withdrawed")
