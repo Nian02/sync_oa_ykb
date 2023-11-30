@@ -228,13 +228,13 @@ def main():
 
     # print(get_access_token())
 
-    # get_flow_details("ID01uWeBaeFzxt")
+    get_flow_details("ID01uXD7u6zGrB")
     # get_flow_details_by_code("S23000049")
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
-    update_flow_data("ID01uWeBaeFzxt","ID01owxnVpp2h1:ID_3sCEmUPdKfM", {"form": {"u_\u6d41\u7a0b\u7f16\u53f7": "", "u_OA\u6d41\u7a0bID": "88721"}})
+    # update_flow_data("ID01uWeBaeFzxt","ID01owxnVpp2h1:ID_3sCEmUPdKfM", {"form": {"u_\u6d41\u7a0b\u7f16\u53f7": "", "u_OA\u6d41\u7a0bID": "88721"}})
     # update_flow_state("ID01uUDRzEALaD","")
     # get_flow_details("ID01uW3aQDxSLd")
     # get_flow_details("ID01uTfb0DSTxB")

@@ -140,12 +140,13 @@ def create_workflow(data: Dict):
     return rsp["data"]# 接口状态为SUCCESS,则data中包含生成的requestid
 
 def update_workflow(data: Dict):
+    data=json.dumps(data)
     r = requests.post(URL+f"/api/workflow/paService/submitRequest",
                       headers=gen_headers(ZDJ_USERID), data=json.dumps(data))
     print(f"oa.update_workflow data: {r.request.body}")
     
     # 将r.request.body存储进文件oa_download.json里
-    filename='oaupdateworkflow.json'
+    filename='byid.json'
     with open(filename,'w') as file_obj:
         json.dump(data,file_obj)
 

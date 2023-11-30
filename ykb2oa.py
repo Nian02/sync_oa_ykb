@@ -473,6 +473,27 @@ workflow_map_conf = {
                     else "",
                 },
             },
+            "formtable_main_57_dt3": {
+                "ykb_field_name": "details",
+                "checker": lambda item: True,
+                "field_map": {
+                    # 出差开始日期
+                    "ksrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"][ "u_出差起止日期"]["start"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    # 出差开始时间
+                    "kssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"][ "u_出差起止日期"]["start"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    # 出差结束日期
+                    "jsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"][ "u_出差起止日期"]["end"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    # 出差结束时间
+                    "jssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"][ "u_出差起止日期"]["end"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    # 补贴金额
+                    "btje": lambda item: item["feeTypeForm"]["amount"]["standard"] if "amount" in item["feeTypeForm"] else "",
+                    # 最终补贴金额
+                    "zzbtje": lambda item: item["feeTypeForm"]["amount"]["standard"] if "amount" in item["feeTypeForm"] else "",
+                    # 相关流程
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA加班流程ID"] if "u_OA加班流程ID" in item["feeTypeForm"] else "",
+
+                },
+            },
             "formtable_main_57_dt4": {
                 "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
                 "checker": lambda item: True,
@@ -558,6 +579,8 @@ workflow_map_conf = {
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 相关流程
                     "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item["feeTypeForm"] else "",
+                    # 客户档案URL
+                    "khdabh": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item["feeTypeForm"] else "",
 
                 },
             },
@@ -775,15 +798,17 @@ workflow_map_conf = {
                     # 发票附件
                     "fpfj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]),
                     # 客户名称
-                    "khmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else None,
+                    "khmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 供应商名称
-                    "gysmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else None,
+                    "gysmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 合作伙伴名称
-                    "hzhbmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else None,
+                    "hzhbmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 相关出差流程
-                    "xgcclc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else None,
+                    "xgcclc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else "",
                     # 相关招待申请
-                    "xgzdsq": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else None,
+                    "xgzdsq": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else "",
+                    # 客户档案URL
+                    "khdaurl": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item["feeTypeForm"] else "",
                 },
             },
         },
@@ -899,7 +924,7 @@ def sync_flow(flow_id: str, spec_name: str):
 
 
 if __name__ == "__main__":
-    sync_flow("ID01uWxnRe40UL", "项目报销单")
+    sync_flow("ID01uXFHFjnTwr", "项目报销单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
