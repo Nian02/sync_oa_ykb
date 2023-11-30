@@ -138,22 +138,22 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
     #     form["u_OA出差流程ID"] = oa_data["requestId"]
     if(workflow_mapping.get(oa_workflowId) != None):
         form[workflow_mapping.get(oa_workflowId)] = oa_data["requestId"]
-    
-    
+    ykb_data = ykb.get_flow_details(ykb_flowid)
+    ykb_form = ykb_data["form"]
+    id = ykb_form["submitterId"]
     action = {}
     if oa_status == "archived":
         action = {
             "name": "freeflow.agree",
-            "resubmitMethod": "FROM_START"
         }
     elif oa_status == "withdrawed":
         action = {
             "name": "freeflow.reject",
             "resubmitMethod": "FROM_START"
         }
-    ykb.update_flow_data(ykb_flowid, ykb.ZDJ_ID, {"form": form})
+    ykb.update_flow_data(ykb_flowid, id, {"form": form})
     ykb.update_flow_state(ykb_flowid, {
-        "approveId": ykb.ZDJ_ID,
+        "approveId": id,
         "action": action
     })
 

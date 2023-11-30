@@ -899,7 +899,7 @@ def sync_flow(flow_id: str, spec_name: str):
 
 
 if __name__ == "__main__":
-    sync_flow("ID01uUzR70jToH", "项目报销单")
+    sync_flow("ID01uWxnRe40UL", "项目报销单")
     # sync_flow("ID01u0aADbUUXR", "招待费申请")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")

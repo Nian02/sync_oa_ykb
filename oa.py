@@ -143,6 +143,12 @@ def update_workflow(data: Dict):
     r = requests.post(URL+f"/api/workflow/paService/submitRequest",
                       headers=gen_headers(ZDJ_USERID), data=json.dumps(data))
     print(f"oa.update_workflow data: {r.request.body}")
+    
+    # 将r.request.body存储进文件oa_download.json里
+    filename='oaupdateworkflow.json'
+    with open(filename,'w') as file_obj:
+        json.dump(data,file_obj)
+
     rsp = r.json()
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
         raise Exception(f"oa更新失败! oa.update_workflow rsp: {rsp}")
@@ -151,6 +157,7 @@ def update_workflow(data: Dict):
 def main():
     # print(get_token())
     print(gen_headers("601"))
+    # update_workflow()
     # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
