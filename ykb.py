@@ -229,7 +229,7 @@ def main():
     # print(get_access_token())
 
     # get_flow_details("ID01uXD7u6zGrB")
-    get_flow_details_by_code("B23000157")
+    get_flow_details_by_code("B23000084")
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")

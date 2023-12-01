@@ -1,186 +1,197 @@
 {
-    "workflowId": "81",
-    "requestName": "差旅费用报销流程-周雪晴2023-12-01",
-    "mainData": [
-        {
-            "fieldName": "ykbflowld",
-            "fieldValue": "ID01uZkol8xzRR"
-        },
-        {
-            "fieldName": "sqr",
-            "fieldValue": "601"
-        },
-        {
-            "fieldName": "sqrq",
-            "fieldValue": "2023-12-01"
-        },
-        {
-            "fieldName": "sqbm",
-            "fieldValue": "28"
-        },
-        {
-            "fieldName": "ldgx",
-            "fieldValue": "宁波数联软件有限公司"
-        },
-        {
-            "fieldName": "kpzt",
-            "fieldValue": "宁波数联软件有限公司"
-        },
-        {
-            "fieldName": "xgcclc",
-            "fieldValue": ""
-        },
-        {
-            "fieldName": "bz",
-            "fieldValue": ""
-        },
-        {
-            "fieldName": "fjsc",
-            "fieldValue": null
-        },
-        {
-            "fieldName": "yhkh",
-            "fieldValue": "8899"
-        }
-    ],
-    "detailData": [
-        {
-            "tableDBName": "formtable_main_57_dt2",
-            "workflowRequestTableRecords": [
+    "value": {
+        "pipeline": 1,
+        "grayver": "9.102.0.0-prd",
+        "dbVersion": 1,
+        "threadId": "259932",
+        "version": 5,
+        "active": true,
+        "createTime": 1701245564022,
+        "updateTime": 1701245568818,
+        "corporationId": "ID01owxnVpp2h1",
+        "sourceCorporationId": null,
+        "dataCorporationId": null,
+        "form": {
+            "code": "B23000136",
+            "title": "差旅费用报销流程-张董君2023-11-29",
+            "details": [
                 {
-                    "recordOrder": 0,
-                    "workflowRequestTableFields": [
-                        {
-                            "fieldName": "fyrq",
-                            "fieldValue": "2023-11-22"
+                    "feeTypeId": "ID01rbSlgY6L0j",
+                    "feeTypeForm": {
+                        "amount": {
+                            "standard": "7.7",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
                         },
-                        {
-                            "fieldName": "fysj",
-                            "fieldValue": "15:10"
+                        "feeDate": 1695830400000,
+                        "detailId": "ID01uWnbHqeIdF",
+                        "detailNo": 1,
+                        "taxAmount": {
+                            "standard": "0.22",
+                            "standardUnit": "元",
+                            "standardScale": 2,
+                            "standardSymbol": "¥",
+                            "standardNumCode": "156",
+                            "standardStrCode": "CNY"
                         },
-                        {
-                            "fieldName": "fylxx",
-                            "fieldValue": "COST210"
+                        "attachments": [],
+                        "invoiceForm": {
+                            "type": "exist",
+                            "invoices": [
+                                {
+                                    "itemIds": [
+                                        "ID01uWn6t4kSOr"
+                                    ],
+                                    "taxRate": 0,
+                                    "invoiceId": "ID01owxnVpp2h1:014002300111:82339870",
+                                    "taxAmount": {
+                                        "standard": 0.22,
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    },
+                                    "approveAmount": {
+                                        "standard": "7.70",
+                                        "standardUnit": "元",
+                                        "standardScale": 2,
+                                        "standardSymbol": "¥",
+                                        "standardNumCode": "156",
+                                        "standardStrCode": "CNY"
+                                    }
+                                }
+                            ]
                         },
-                        {
-                            "fieldName": "zysm",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "fpzs",
-                            "fieldValue": 0
-                        },
-                        {
-                            "fieldName": "fplx",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "jebhs",
-                            "fieldValue": 8.26
-                        },
-                        {
-                            "fieldName": "se",
-                            "fieldValue": 0.74
-                        },
-                        {
-                            "fieldName": "fyje",
-                            "fieldValue": 9
-                        },
-                        {
-                            "fieldName": "fjsc",
-                            "fieldValue": null
-                        },
-                        {
-                            "fieldName": "hczbhkcw",
-                            "fieldValue": ""
-                        }
-                    ]
+                        "invoiceType": "VATElectronicInvoice",
+                        "u_发票类型txt": "增值税电子普通发票",
+                        "consumptionReasons": "111"
+                    },
+                    "specificationId": "ID01rbSlgY6L0j:expense:4c9ed1d019eeea74274a17be84b7c5c68f6f92a7",
+                    "feeType": {
+                        "id": "ID01rbSlgY6L0j",
+                        "name": "其他",
+                        "parentId": "ID01rbQ3IDBwmP",
+                        "active": true,
+                        "code": "769"
+                    }
                 }
+            ],
+            "payeeId": "ID01ss91webF7h",
+            "payMoney": {
+                "standard": "7.70",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "printCount": "0",
+            "printState": "noPrint",
+            "submitDate": 1701245566403,
+            "attachments": [],
+            "description": "",
+            "expenseDate": 1701187200000,
+            "expenseLink": "ID01uSZmd1XuVN",
+            "submitterId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+            "expenseMoney": {
+                "standard": "7.70",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "rejectionNum": "0",
+            "reviewStatus": "ALL",
+            "u_OA流程ID": "88633",
+            "法人实体": "ID01oAWoNOTfWf",
+            "u_申请人ID": "601",
+            "companyRealPay": {
+                "standard": "0.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "onlyOwnerPrint": false,
+            "u_劳动关系": "ID01oAWoNOTfWf",
+            "u_流程编号": "",
+            "u_部门编码": "28",
+            "specificationId": "ID01oxvkARxDAP:cf605e0d5a940f66f79509deddd6a5ed4f784f46",
+            "writtenOffMoney": {
+                "standard": "0.00",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "expenseDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+            "u_劳动关系txt": "上海观测未来信息技术有限公司",
+            "u_开票主体txt": "上海观测未来信息技术有限公司",
+            "u_OA报销流程ID": "",
+            "preApprovedNodeName": "提交人",
+            "preNodeApprovedTime": 1701245568733,
+            "ownerAndApproverPrintNodeFlag": false,
+            "writtenOffRecords": []
+        },
+        "ownerId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+        "state": "approving",
+        "flowType": "freeflow",
+        "formType": "expense",
+        "logs": [
+            {
+                "action": "freeflow.submit",
+                "state": "approving",
+                "operatorId": "ID01owxnVpp2h1:ID01oycg2jFrIP",
+                "byDelegateId": null,
+                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01oAPng40Luv",
+                "nextOperatorId": "ebot",
+                "nextOperatorIds": [],
+                "time": 1701245568498,
+                "attributes": {
+                    "nextId": "FLOW:43269431:2094713589",
+                    "nodeId": "SUBMIT",
+                    "comment": "",
+                    "isUrgent": false,
+                    "nextName": "费用标准检查",
+                    "urgentReason": null,
+                    "resubmitMethod": "FROM_START",
+                    "nextCounterSign": false,
+                    "sensitiveContent": null,
+                    "resubmitOperatorIds": [],
+                    "sensitiveAttachment": null
+                },
+                "modifyFlowLog": null,
+                "attachments": []
+            }
+        ],
+        "actions": {
+            "ebot": [
+                "freeflow.ebot",
+                "freeflow.agree",
+                "freeflow.reject",
+                "freeflow.addnode",
+                "freeflow.editApproving",
+                "freeflow.select.approver",
+                "freeflow.remind",
+                "freeflow.printed",
+                "freeflow.print"
+            ],
+            "ID01owxnVpp2h1:ID01oycg2jFrIP": [
+                "freeflow.urge",
+                "freeflow.copy",
+                "freeflow.print"
             ]
         },
-        {
-            "tableDBName": "formtable_main_57_dt3",
-            "workflowRequestTableRecords": [
-                {
-                    "recordOrder": 0,
-                    "workflowRequestTableFields": [
-                        {
-                            "fieldName": "ksrq",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "kssj",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "jsrq",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "jssj",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "btje",
-                            "fieldValue": 9
-                        },
-                        {
-                            "fieldName": "zzbtje",
-                            "fieldValue": 9
-                        },
-                        {
-                            "fieldName": "xglc",
-                            "fieldValue": ""
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "tableDBName": "formtable_main_57_dt4",
-            "workflowRequestTableRecords": [
-                {
-                    "recordOrder": 0,
-                    "workflowRequestTableFields": [
-                        {
-                            "fieldName": "ycrq",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "ycsj",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "fhrq",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "fhsj",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "cfdd",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "fhdd",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "gls",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "qyf",
-                            "fieldValue": ""
-                        },
-                        {
-                            "fieldName": "txr",
-                            "fieldValue": ""
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+        "invoiceRemind": false,
+        "appId": null,
+        "id": "ID01uWnbHqeGm3"
+    }
 }

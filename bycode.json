@@ -1,159 +1,90 @@
 {
-    "value": {
-        "pipeline": 1,
-        "grayver": "9.102.0.0-prd",
-        "dbVersion": 1,
-        "threadId": "232933",
-        "version": 5,
-        "active": true,
-        "createTime": 1701403482702,
-        "updateTime": 1701403486734,
-        "corporationId": "ID01owxnVpp2h1",
-        "sourceCorporationId": null,
-        "dataCorporationId": null,
-        "form": {
-            "code": "B23000157",
-            "title": "差旅费用报销流程-李双玖2023-12-01",
-            "details": [
+    "workflowId": "81",
+    "requestName": "差旅费用报销流程-周雪晴2023-12-01",
+    "mainData": [
+        {
+            "fieldName": "ykbflowld",
+            "fieldValue": "ID01uZkol8xzRR"
+        },
+        {
+            "fieldName": "sqr",
+            "fieldValue": "601"
+        },
+        {
+            "fieldName": "sqrq",
+            "fieldValue": "2023-12-01"
+        },
+        {
+            "fieldName": "sqbm",
+            "fieldValue": "28"
+        },
+        {
+            "fieldName": "ldgx",
+            "fieldValue": "宁波数联软件有限公司"
+        },
+        {
+            "fieldName": "kpzt",
+            "fieldValue": "宁波数联软件有限公司"
+        },
+        {
+            "fieldName": "xgcclc",
+            "fieldValue": ""
+        },
+        {
+            "fieldName": "bz",
+            "fieldValue": ""
+        },
+        {
+            "fieldName": "fjsc",
+            "fieldValue": null
+        },
+        {
+            "fieldName": "yhkh",
+            "fieldValue": "8899"
+        }
+    ],
+    "detailData": [
+        {
+            "tableDBName": "formtable_main_57_dt2",
+            "workflowRequestTableRecords": []
+        },
+        {
+            "tableDBName": "formtable_main_57_dt3",
+            "workflowRequestTableRecords": []
+        },
+        {
+            "tableDBName": "formtable_main_57_dt4",
+            "workflowRequestTableRecords": []
+        },
+        {
+            "tableDBName": "formtable_main_57_dt5",
+            "workflowRequestTableRecords": [
                 {
-                    "feeTypeId": "ID01uWcM0jSQQD",
-                    "feeTypeForm": {
-                        "amount": {
-                            "standard": "111",
-                            "standardUnit": "元",
-                            "standardScale": 2,
-                            "standardSymbol": "¥",
-                            "standardNumCode": "156",
-                            "standardStrCode": "CNY"
+                    "recordOrder": 0,
+                    "workflowRequestTableFields": [
+                        {
+                            "fieldName": "ddlx",
+                            "fieldValue": "火车"
                         },
-                        "detailId": "poOFpkT6REc7VA",
-                        "detailNo": 1,
-                        "attachments": [],
-                        "consumptionReasons": "",
-                        "u_OA加班流程ID": "88721",
-                        "u_出差起止日期": {
-                            "end": 1701573840000,
-                            "start": 1701487440000
+                        {
+                            "fieldName": "fyfsrq",
+                            "fieldValue": "2023-11-22"
+                        },
+                        {
+                            "fieldName": "je",
+                            "fieldValue": 9
+                        },
+                        {
+                            "fieldName": "sl",
+                            "fieldValue": 0.09
+                        },
+                        {
+                            "fieldName": "kdkse",
+                            "fieldValue": 0.74
                         }
-                    },
-                    "specificationId": "ID01uWcM0jSQQD:expense:a7c3302154493d6551dc69a1248e3986de3077a5",
-                    "feeType": {
-                        "id": "ID01uWcM0jSQQD",
-                        "name": "差旅补贴",
-                        "parentId": "",
-                        "active": true,
-                        "code": "COST213"
-                    }
+                    ]
                 }
-            ],
-            "payeeId": "ID01syImG6G2mj",
-            "payMoney": {
-                "standard": "111.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "printCount": "0",
-            "printState": "noPrint",
-            "submitDate": 1701403484514,
-            "attachments": [],
-            "description": "",
-            "expenseDate": 1701360000000,
-            "expenseLink": "ID01sVWDuoPUmP",
-            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-            "expenseMoney": {
-                "standard": "111.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "rejectionNum": "0",
-            "reviewStatus": "ALL",
-            "法人实体": "ID01rqxf3qqa4L",
-            "u_申请人ID": "601",
-            "companyRealPay": {
-                "standard": "0.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "onlyOwnerPrint": false,
-            "u_劳动关系": "ID01rqxf3qqa4L",
-            "u_流程编号": "",
-            "u_部门编码": "BM000163",
-            "specificationId": "ID01oxvkARxDAP:4a7aac97b3fc7b9c83cdf414256d11d8e47f2d7c",
-            "writtenOffMoney": {
-                "standard": "0.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-            "u_劳动关系txt": "宁波数联软件有限公司",
-            "u_开票主体txt": "宁波数联软件有限公司",
-            "u_报销单类型": "ID01uXRZxTPOpN",
-            "u_OA报销流程ID": "",
-            "preApprovedNodeName": "提交人",
-            "preNodeApprovedTime": 1701403486596,
-            "ownerAndApproverPrintNodeFlag": false,
-            "writtenOffRecords": []
-        },
-        "ownerId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-        "state": "approving",
-        "flowType": "freeflow",
-        "formType": "expense",
-        "logs": [
-            {
-                "action": "freeflow.submit",
-                "state": "approving",
-                "operatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-                "byDelegateId": null,
-                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-                "nextOperatorId": "ebot",
-                "nextOperatorIds": [],
-                "time": 1701403486312,
-                "attributes": {
-                    "nextId": "FLOW:805270443:1446593920",
-                    "nodeId": "SUBMIT",
-                    "comment": "",
-                    "isUrgent": false,
-                    "nextName": "费用标准检查",
-                    "urgentReason": null,
-                    "resubmitMethod": "FROM_START",
-                    "nextCounterSign": false,
-                    "sensitiveContent": null,
-                    "resubmitOperatorIds": [],
-                    "sensitiveAttachment": null
-                },
-                "modifyFlowLog": null,
-                "attachments": []
-            }
-        ],
-        "actions": {
-            "ID01owxnVpp2h1:ID01qD9zkapWwv": [
-                "freeflow.retract",
-                "freeflow.urge",
-                "freeflow.copy",
-                "freeflow.print",
-                "freeflow.agree",
-                "freeflow.reject",
-                "freeflow.addnode",
-                "freeflow.select.approver",
-                "freeflow.remind",
-                "freeflow.printed"
             ]
-        },
-        "invoiceRemind": false,
-        "appId": null,
-        "id": "ID01uZpdxEuLXV"
-    }
+        }
+    ]
 }
