@@ -1,186 +1,186 @@
 {
-    "value": {
-        "pipeline": 1,
-        "grayver": "9.102.0.0-prd",
-        "dbVersion": 1,
-        "threadId": "83222",
-        "version": 2,
-        "active": true,
-        "createTime": 1701311048330,
-        "updateTime": 1701311053677,
-        "corporationId": "ID01owxnVpp2h1",
-        "sourceCorporationId": null,
-        "dataCorporationId": null,
-        "form": {
-            "code": "B23000139",
-            "title": "差旅费用报销流程-李双玖2023-11-30",
-            "details": [
-                {
-                    "feeTypeId": "ID01uWcM0jSQQD",
-                    "feeTypeForm": {
-                        "amount": {
-                            "standard": "113",
-                            "standardUnit": "元",
-                            "standardScale": 2,
-                            "standardSymbol": "¥",
-                            "standardNumCode": "156",
-                            "standardStrCode": "CNY"
-                        },
-                        "detailId": "ID01uXD7u6zGYD",
-                        "detailNo": 1,
-                        "attachments": [],
-                        "consumptionReasons": "说明",
-                        "u_出差起止日期": {
-                            "end": 1701310980000,
-                            "start": 1701051780000
-                        }
-                    },
-                    "specificationId": "ID01uWcM0jSQQD:expense:09440926044303018ade6ad0b5eac87f5c2f399a",
-                    "feeType": {
-                        "id": "ID01uWcM0jSQQD",
-                        "name": "差旅补贴",
-                        "parentId": "",
-                        "active": true,
-                        "code": "COST213"
-                    }
-                }
-            ],
-            "payeeId": "ID01syImG6G2mj",
-            "payMoney": {
-                "standard": "113.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "voucherNo": "",
-            "printCount": "0",
-            "printState": "noPrint",
-            "submitDate": 1701311050470,
-            "attachments": [],
-            "description": "",
-            "expenseDate": 1701273600000,
-            "expenseLink": "ID01sVWDuoPUmP",
-            "submitterId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-            "expenseMoney": {
-                "standard": "113.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "rejectionNum": "1",
-            "reviewStatus": "ALL",
-            "法人实体": "ID01rqxf3qqa4L",
-            "u_申请人ID": "601",
-            "voucherStatus": "未生成",
-            "companyRealPay": {
-                "standard": "0.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "onlyOwnerPrint": false,
-            "u_劳动关系": "ID01rqxf3qqa4L",
-            "u_流程编号": "",
-            "u_部门编码": "BM000163",
-            "specificationId": "ID01oxvkARxDAP:cf605e0d5a940f66f79509deddd6a5ed4f784f46",
-            "writtenOffMoney": {
-                "standard": "0.00",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "expenseDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-            "u_劳动关系txt": "宁波数联软件有限公司",
-            "u_开票主体txt": "宁波数联软件有限公司",
-            "voucherCreateTime": 0,
-            "u_OA报销流程ID": "",
-            "preApprovedNodeName": "出站消息",
-            "preNodeApprovedTime": 1701311053572,
-            "ownerAndApproverPrintNodeFlag": false,
-            "writtenOffRecords": []
+    "workflowId": "81",
+    "requestName": "差旅费用报销流程-周雪晴2023-12-01",
+    "mainData": [
+        {
+            "fieldName": "ykbflowld",
+            "fieldValue": "ID01uZkol8xzRR"
         },
-        "ownerId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-        "ownerDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-        "state": "rejected",
-        "flowType": "freeflow",
-        "formType": "expense",
-        "logs": [
-            {
-                "action": "freeflow.submit",
-                "state": "approving",
-                "operatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-                "byDelegateId": null,
-                "operatorDefaultDepartment": "ID01owxnVpp2h1:ID01qD9qjlz9w3",
-                "nextOperatorId": "ebot",
-                "nextOperatorIds": [],
-                "time": 1701311052130,
-                "attributes": {
-                    "nextId": "FLOW:1864149810:1599200987",
-                    "nodeId": "SUBMIT",
-                    "comment": "",
-                    "isUrgent": false,
-                    "nextName": "费用标准检查",
-                    "urgentReason": null,
-                    "resubmitMethod": "FROM_START",
-                    "nextCounterSign": false,
-                    "sensitiveContent": null,
-                    "resubmitOperatorIds": [],
-                    "sensitiveAttachment": null
-                },
-                "modifyFlowLog": [
-                    {
-                        "version": 1,
-                        "flowVersionedId": "ID01uXDaW5ZXlB",
-                        "operatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-                        "operatorTime": 1701311052130,
-                        "operatorState": "CREATE",
-                        "editeReason": "",
-                        "byDelegateId": null
-                    }
-                ],
-                "attachments": []
-            },
-            {
-                "action": "freeflow.reject",
-                "state": "rejected",
-                "operatorId": "ebot",
-                "byDelegateId": null,
-                "operatorDefaultDepartment": null,
-                "nextOperatorId": "ID01owxnVpp2h1:ID01qD9zkapWwv",
-                "nextOperatorIds": [],
-                "time": 1701311053572,
-                "attributes": {
-                    "isAuto": false,
-                    "nextId": null,
-                    "nodeId": "FLOW:1696344745:829176341",
-                    "comment": "出站消息调用失败，请联系系统管理员。",
-                    "nodeName": "提交人",
-                    "isEbotNode": true,
-                    "isStaffExit": false,
-                    "resubmitMethod": "FROM_START",
-                    "isCostControlCheck": false
-                },
-                "modifyFlowLog": null,
-                "attachments": []
-            }
-        ],
-        "actions": {
-            "ID01owxnVpp2h1:ID01qD9zkapWwv": [
-                "freeflow.delete",
-                "freeflow.edit",
-                "freeflow.submit"
+        {
+            "fieldName": "sqr",
+            "fieldValue": "601"
+        },
+        {
+            "fieldName": "sqrq",
+            "fieldValue": "2023-12-01"
+        },
+        {
+            "fieldName": "sqbm",
+            "fieldValue": "28"
+        },
+        {
+            "fieldName": "ldgx",
+            "fieldValue": "宁波数联软件有限公司"
+        },
+        {
+            "fieldName": "kpzt",
+            "fieldValue": "宁波数联软件有限公司"
+        },
+        {
+            "fieldName": "xgcclc",
+            "fieldValue": ""
+        },
+        {
+            "fieldName": "bz",
+            "fieldValue": ""
+        },
+        {
+            "fieldName": "fjsc",
+            "fieldValue": null
+        },
+        {
+            "fieldName": "yhkh",
+            "fieldValue": "8899"
+        }
+    ],
+    "detailData": [
+        {
+            "tableDBName": "formtable_main_57_dt2",
+            "workflowRequestTableRecords": [
+                {
+                    "recordOrder": 0,
+                    "workflowRequestTableFields": [
+                        {
+                            "fieldName": "fyrq",
+                            "fieldValue": "2023-11-22"
+                        },
+                        {
+                            "fieldName": "fysj",
+                            "fieldValue": "15:10"
+                        },
+                        {
+                            "fieldName": "fylxx",
+                            "fieldValue": "COST210"
+                        },
+                        {
+                            "fieldName": "zysm",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "fpzs",
+                            "fieldValue": 0
+                        },
+                        {
+                            "fieldName": "fplx",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "jebhs",
+                            "fieldValue": 8.26
+                        },
+                        {
+                            "fieldName": "se",
+                            "fieldValue": 0.74
+                        },
+                        {
+                            "fieldName": "fyje",
+                            "fieldValue": 9
+                        },
+                        {
+                            "fieldName": "fjsc",
+                            "fieldValue": null
+                        },
+                        {
+                            "fieldName": "hczbhkcw",
+                            "fieldValue": ""
+                        }
+                    ]
+                }
             ]
         },
-        "invoiceRemind": false,
-        "appId": null,
-        "id": "ID01uXD7u6zGrB"
-    }
+        {
+            "tableDBName": "formtable_main_57_dt3",
+            "workflowRequestTableRecords": [
+                {
+                    "recordOrder": 0,
+                    "workflowRequestTableFields": [
+                        {
+                            "fieldName": "ksrq",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "kssj",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "jsrq",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "jssj",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "btje",
+                            "fieldValue": 9
+                        },
+                        {
+                            "fieldName": "zzbtje",
+                            "fieldValue": 9
+                        },
+                        {
+                            "fieldName": "xglc",
+                            "fieldValue": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tableDBName": "formtable_main_57_dt4",
+            "workflowRequestTableRecords": [
+                {
+                    "recordOrder": 0,
+                    "workflowRequestTableFields": [
+                        {
+                            "fieldName": "ycrq",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "ycsj",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "fhrq",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "fhsj",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "cfdd",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "fhdd",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "gls",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "qyf",
+                            "fieldValue": ""
+                        },
+                        {
+                            "fieldName": "txr",
+                            "fieldValue": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

@@ -129,9 +129,9 @@ def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
     return data
 
 
-def create_workflow(data: Dict):
+def create_workflow(data: Dict, user_id:str):
     r = requests.post(URL+f"/api/workflow/paService/doCreateRequest",
-                      headers=gen_headers(ZDJ_USERID), data=json.dumps(data))
+                      headers=gen_headers(user_id), data=json.dumps(data))
     print(f"oa.create_workflow data: {r.request.body}")
     rsp = r.json()
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
@@ -139,16 +139,16 @@ def create_workflow(data: Dict):
     # print(rsp["data"])
     return rsp["data"]# 接口状态为SUCCESS,则data中包含生成的requestid
 
-def update_workflow(data: Dict):
-    data=json.dumps(data)
+def update_workflow(data: Dict, user_id:str):
+    # data=json.dumps(data, ensure_ascii=False)
     r = requests.post(URL+f"/api/workflow/paService/submitRequest",
-                      headers=gen_headers(ZDJ_USERID), data=json.dumps(data))
+                      headers=gen_headers(user_id), data=data)
     print(f"oa.update_workflow data: {r.request.body}")
     
     # 将r.request.body存储进文件oa_download.json里
-    filename='byid.json'
-    with open(filename,'w') as file_obj:
-        json.dump(data,file_obj)
+    # filename='bycode.json'
+    # with open(filename,'w') as file_obj:
+    #     json.dump(data,file_obj)
 
     rsp = r.json()
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
