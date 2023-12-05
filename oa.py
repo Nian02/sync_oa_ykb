@@ -139,10 +139,14 @@ def create_workflow(data: Dict, user_id:str):
     # print(rsp["data"])
     return rsp["data"]# 接口状态为SUCCESS,则data中包含生成的requestid
 
+
+# update oa流程必须指定"Content-Type": "text/plain"，否则容易出现一些问题比如附件上传失败
 def update_workflow(data: Dict, user_id:str):
     # data=json.dumps(data, ensure_ascii=False)
+    headers = gen_headers(user_id)
+    headers["Content-Type"] = "text/plain"
     r = requests.post(URL+f"/api/workflow/paService/submitRequest",
-                      headers=gen_headers(user_id), data=data)
+                      headers=headers, data=json.dumps(data))
     print(f"oa.update_workflow data: {r.request.body}")
     
     # 将r.request.body存储进文件oa_download.json里
