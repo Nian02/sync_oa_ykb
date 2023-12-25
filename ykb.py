@@ -159,7 +159,7 @@ def get_flow_details_by_code(code: str) -> Dict:
 #     return rsp["items"]
 
 
-# 更新ykb表单状态
+# 审批单据，更新ykb表单状态
 def update_flow_state(flow_id: str, data: Dict):
     r = requests.post(URL+f"/api/openapi/v1/backlog/data/[{flow_id}]?" +
                       f"accessToken={
@@ -213,6 +213,29 @@ def download_invoices(data: Dict) -> Dict:
     return r.json()
 
 
+# 外部服务回调审批，通知Ebot执行"同意"或"驳回"操作
+def notice_Ebot(flowId: str, nodeId: str, action: str, comment: str):
+    payload = {
+        "signKey": "8lUv6O1gb0UE",
+        "flowId": flowId,
+        "nodeId": nodeId,
+        "action": action,
+        "comment": comment,
+        "rejectTo": ""
+    }
+    headers = {
+        "content-type": "application/json",
+        "Accept": "application/json"
+    }
+    url = URL + f"/api/outbound/v1/approval?accessToken={get_access_token()}"
+    r = requests.post(url, headers=headers, data=json.dumps(payload))
+    print(f"ykb.notice_Ebot data: {r.request.body}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.notice_Ebot: {r.status_code}-{r.text}")
+    print(f"ykb.notice_Ebot rsp: {r.text}")
+    return r.json()
+
+
 def main():
     # add_dimension_item({
     #     "dimensionId": DIMENSION_ID_MAP["客户"],
@@ -228,20 +251,21 @@ def main():
 
     # print(get_access_token())
 
-    get_flow_details("ID01v1gqCBXE1V")
-    # get_flow_details_by_code("B23000084")
+    # get_flow_details("ID01vnkNgNgXFR")
+    get_flow_details_by_code("B23000086")
     # get_payee_by_id("ID01ubOHugFdsr")
-    # update_flow_state("ID01ueSLt6olwr", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
+    # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_id("ID01owxnVpp2h1:ID01oycg2jFrIP")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
-    # update_flow_data("ID01uWeBaeFzxt","ID01owxnVpp2h1:ID_3sCEmUPdKfM", {"form": {"u_\u6d41\u7a0b\u7f16\u53f7": "", "u_OA\u6d41\u7a0bID": "88721"}})
+    # update_flow_data("ID01v4uWhIC95l", ZDJ_ID, {"form": {
+    #                  "u_\u6d41\u7a0b\u7f16\u53f7": "CCSQ-20231204-0001", "u_OA\u6d41\u7a0bID": "88884"}})
     # update_flow_state("ID01uUDRzEALaD","")
     # get_flow_details("ID01uW3aQDxSLd")
     # get_flow_details("ID01uTfb0DSTxB")
     # get_travelmanagement_by_id("ID01uLYCvjhVjF")
     # download_invoices({"invoiceId": ["ID01slh7yf6iLR"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
-
+    # notice_Ebot("ID01v4C5wSPswD","FLOW:1179438128:1858968873","refuse","驳回")
 
 if __name__ == "__main__":
     main()

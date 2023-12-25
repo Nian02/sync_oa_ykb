@@ -940,18 +940,19 @@ def sync_flow(flow_id: str, spec_name: str):
     这两个单子在单据中都有一个关联出差申请的字段, 会带出出差申请的"OA流程ID"。而易快报里出差申请单中的"OA流程ID"想要同步带出到差旅报销单/私车公用报销单中, 对应的字段在这两个单据中必须也叫"OA流程ID"。
     因此这两个单子不能拿"OA流程ID"当作判断create_workflow/update_workflow的依据, 而是要拿"OA报销流程ID"当作判断create_workflow/update_workflow的依据。
     """
-    if spec_name == "差旅报销单" or spec_name == "私车公用报销单":
+    if spec_name == "差旅报销单" or spec_name == "私车公用报销单":# 对应这两个表单的更新操作
         if "u_OA报销流程ID" in ykb_form and ykb_form["u_OA报销流程ID"] != '':
             return update_oa_workflow(oa_data, ykb_form["u_OA报销流程ID"], user_id)
-    elif "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':
+    elif "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':# 其余的表单的更新操作
         return update_oa_workflow(oa_data, ykb_form["u_OA流程ID"], user_id)
-
     return oa.create_workflow(oa_data, user_id)
 
 
+
+
 if __name__ == "__main__":
-    sync_flow("ID01v4GUD3Ntxl", "日常费用报销单")
-    # sync_flow("ID01u0aADbUUXR", "招待费申请")
+    # sync_flow("ID01vow3pux1Cv", "XXX")
+    sync_flow("ID01vtMahBRKFx", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
     # sync_flow("ID01uKDLD2rs2X", "差旅报销单")
