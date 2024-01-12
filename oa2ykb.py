@@ -36,6 +36,15 @@ def oa_date_2_ykb_date(date_str: str) -> int:
     return timestamp
 
 
+# 通过name获取法人实体的id
+def get_corporationId_by_name(name: str) -> str:
+    form = ykb.get_dimension_by_name(name)
+    # 遍历form字段，若字段"dimensionId"的:后面是"法人实体"，则返回该字段的"id"
+    for item in form:
+        if item["dimensionId"].split(":")[1] == "法人实体":
+            return item["id"]
+
+
 # 格式化金额
 def create_amount_structure(amount: str) -> dict:
     return {
@@ -162,6 +171,8 @@ workflow_map_conf = {
             "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
             # 供应商名称
             "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
+            # 付款主体
+            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"]),
             # 合作伙伴名称
             "u_合作伙伴": lambda form: handle_multi_dimension(form["hzhbmc"]["fieldValue"]),
             # 付款编号
@@ -301,4 +312,5 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
 if __name__ == "__main__":
     # update_flow("199","84023","601")
     # print("201" in workflow_mapping)
+    # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
     sync_flow("76", "92350", "57", "archived")

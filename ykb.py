@@ -64,15 +64,16 @@ def get_dimension_by_code(code: str) -> Dict:
 
 
 # 根据名称获取自定义档案项
-def get_dimension_by_name(code: str) -> Dict:
+def get_dimension_by_name(name: str) -> Dict:
     r = requests.get(
-        URL + f"/api/openapi/v1/dimensions/getDimensionByCode?accessToken={get_access_token()}&code={code}",
+        URL + f"/api/openapi/v1/dimensions/getDimensionByName?accessToken={get_access_token()}&name={name}",
         headers={"content-type": "application/json", "Accept": "application/json"})
-    print(f"ykb.get_dimension_by_code url: {r.request.url}")
+    print(f"ykb.get_dimension_by_name url: {r.request.url}")
     if r.status_code != 200:
-        raise Exception(f"ykb.get_dimension_by_code: {r.status_code}-{r.text}")
-    print(f"ykb.get_dimension_by_code: {r.text}")
-    return r.json()["items"][0]
+        raise Exception(f"ykb.get_dimension_by_name: {r.status_code}-{r.text}")
+    print(f"ykb.get_dimension_by_name: {r.text}")
+    return r.json()["items"]
+
 
 # 通过id（比如ID01owxnVpp2h1:ID01oycg2jFrIP）请求员工数据
 def get_staff_by_id(id: str) -> Dict:
@@ -339,7 +340,8 @@ def main():
     # print(get_access_token())
 
     # get_flow_details("ID01vnkNgNgXFR")
-    get_dimension_by_id("ID01oAWqT0ibLN")
+    get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
+    # get_dimension_by_id("ID01oAWqT0ibLN")
     # get_fee_type_by_data("ID01vviQDN7OSH")
     # get_flow_details_by_code("B24000001")
     # get_payee_by_id("ID01ubOHugFdsr")
