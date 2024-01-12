@@ -38,12 +38,14 @@ def oa_date_2_ykb_date(date_str: str) -> int:
 
 # 通过name获取法人实体的id
 def get_corporationId_by_name(name: str) -> str:
+    if not name:
+        return ""
     form = ykb.get_dimension_by_name(name)
     # 遍历form字段，若字段"dimensionId"的:后面是"法人实体"，则返回该字段的"id"
     for item in form:
         if item["dimensionId"].split(":")[1] == "法人实体":
             return item["id"]
-
+    return ""
 
 # 格式化金额
 def create_amount_structure(amount: str) -> dict:

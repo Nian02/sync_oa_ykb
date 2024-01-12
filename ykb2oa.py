@@ -112,6 +112,13 @@ hesi_order_code = {
     "COST214",
 }
 
+# 差旅补贴code
+travel_subsidy_code = {
+    "COST1213",
+    "COST215",
+}
+
+
 # 将时间戳格式转换成 %Y-%m-%d 格式
 def ykb_date_2_oa_date(timestamp: int) -> str:
     # 毫秒级时间戳要除于1000
@@ -450,7 +457,7 @@ workflow_map_conf = {
             # 明细表2
             "formtable_main_57_dt2": {  # OA中明细表的tableDBName
                 "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
-                "checker": lambda item: item["feeType"]["code"] not in hesi_order_code and item["feeType"]["code"] != "COST1213",
+                "checker": lambda item: item["feeType"]["code"] not in hesi_order_code and item["feeType"]["code"] not in travel_subsidy_code,
                 "field_map": {
                     # 费用发生日期
                     "fyrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
@@ -482,7 +489,7 @@ workflow_map_conf = {
             },
             "formtable_main_57_dt3": {# 差旅补贴，选择这种类型的数据只需要上传这个明细表
                 "ykb_field_name": "details",
-                "checker": lambda item: item["feeType"]["code"] == "COST1213",
+                "checker": lambda item: item["feeType"]["code"] in travel_subsidy_code,
                 "field_map": {
                     # 出差开始日期
                     "ksrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_出差起止日期"]["start"]) if "u_出差起止日期" in item["feeTypeForm"] else "",

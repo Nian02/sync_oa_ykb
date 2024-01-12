@@ -340,10 +340,10 @@ def main():
     # print(get_access_token())
 
     # get_flow_details("ID01vnkNgNgXFR")
-    get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
+    # get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
     # get_dimension_by_id("ID01oAWqT0ibLN")
     # get_fee_type_by_data("ID01vviQDN7OSH")
-    # get_flow_details_by_code("B24000001")
+    get_flow_details_by_code("B24000026")
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_code("00000602")
