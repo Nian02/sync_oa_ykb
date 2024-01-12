@@ -1,6 +1,51 @@
 '''同步OA数据到易快报'''
 import oa
 import ykb
+import time
+from datetime import datetime
+
+# 费用类型ID映射，通过这个id可以查询明细表比如expense的specificationId
+fee_type_map = {
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vviQDN7OSH",
+
+}
+
+# 主表费用类型ID映射
+specificationId_map = {
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x:dc1aee0a9fb5033cc40de5c7653ea475495d8511",
+}
+
+# 表单名映射
+title_map = {
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "付款单(有合同)",
+}
+
+
+def handle_multi_dimension(code: str) -> str:
+    if not code:
+        return ""
+    return ykb.get_dimension_by_code(code)["id"]
+
+
+# 将时间戳格式转换成 %Y-%m-%d 格式
+def oa_date_2_ykb_date(date_str: str) -> int:
+    # 将日期字符串转换为datetime对象
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    # 将datetime对象转换为时间戳，并乘以1000得到毫秒级的时间戳
+    timestamp = int(time.mktime(dt.timetuple()) * 1000)
+    return timestamp
+
+
+# 格式化金额
+def create_amount_structure(amount: str) -> dict:
+    return {
+        "standard": amount,
+        "standardUnit": "元",
+        "standardScale": 2,
+        "standardSymbol": "¥",
+        "standardNumCode": "156",
+        "standardStrCode": "CNY"
+    }
 
 
 # 易快报档案项字段 -> OA流程字段 映射关系
@@ -16,19 +61,22 @@ dimension_item_field_map_conf = {
         "code": lambda oa_data: oa_data[oa.MAIN_TABLE]["jmsjid"]["fieldValue"],
     },
     oa.WORKFLOW_ID_MAP["观测云合作伙伴申请流程"]: {
-        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"]["fieldShowValue"] == "新建"  else False,
+        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"][
+            "fieldShowValue"] == "新建" else False,
         "dimensionId": ykb.DIMENSION_ID_MAP["合作伙伴"],
         "name": lambda oa_data: oa_data[oa.MAIN_TABLE]["hzhbmc"]["fieldValue"],
         "code": lambda oa_data: oa_data[oa.MAIN_TABLE]["jmsjid"]["fieldValue"],
     },
     oa.WORKFLOW_ID_MAP["传统云资源合作伙伴申请流程"]: {
-        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"]["fieldShowValue"] == "新建"  else False,
+        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"][
+            "fieldShowValue"] == "新建" else False,
         "dimensionId": ykb.DIMENSION_ID_MAP["合作伙伴"],
         "name": lambda oa_data: oa_data[oa.MAIN_TABLE]["khmc"]["fieldValue"],
         "code": lambda oa_data: oa_data[oa.MAIN_TABLE]["jmsjid"]["fieldValue"],
     },
     oa.WORKFLOW_ID_MAP["CloudCare云资源大使申请流程"]: {
-        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"]["fieldShowValue"] == "新建"  else False,
+        "checker": lambda oa_data: True if "sqlx" in oa_data[oa.MAIN_TABLE] and oa_data[oa.MAIN_TABLE]["sqlx"][
+            "fieldShowValue"] == "新建" else False,
         "dimensionId": ykb.DIMENSION_ID_MAP["合作伙伴"],
         "name": lambda oa_data: oa_data[oa.MAIN_TABLE]["hzhbmc"]["fieldValue"],
         "code": lambda oa_data: oa_data[oa.MAIN_TABLE]["jmsjid"]["fieldValue"],
@@ -66,7 +114,7 @@ dimension_item_field_map_conf = {
 
 
 # OA相关流程数据 -> 易快报档案项
-def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId:str):
+def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId: str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
 
     # 获取字段映射关系
@@ -99,19 +147,55 @@ def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId:str):
         print(id)
 
 
-# update_ykb_flow_state_oa_workflowId = {
-#     oa.WORKFLOW_ID_MAP["出差申请流程"],
-#     oa.WORKFLOW_ID_MAP["招待费申请流程"],
-#     oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"],
-#     oa.WORKFLOW_ID_MAP["差旅费用报销流程"],
-#     oa.WORKFLOW_ID_MAP["部门活动申请流程"],
-#     oa.WORKFLOW_ID_MAP["日常费用报销流程"],
-#     oa.WORKFLOW_ID_MAP["日常项目报销流程"],
-#     oa.WORKFLOW_ID_MAP["油卡充值申请流程"],
-#     oa.WORKFLOW_ID_MAP["团队共享激励报销申请流程"],
-#     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"],
-#     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"],
-# }
+# OA相关流程数据 -> 易快报流程数据
+workflow_map_conf = {
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: {
+        "mainData": {
+            # 提交人
+            "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
+            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+            # 申请人
+            # "u_申请人ID": lambda form: form["sqr"]["fieldValue"],
+            # 申请部门
+            # "u_部门编码": lambda form: form["sqbm"]["fieldValue"],
+            # 申请日期
+            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+            # 供应商名称
+            "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
+            # 合作伙伴名称
+            "u_合作伙伴": lambda form: handle_multi_dimension(form["hzhbmc"]["fieldValue"]),
+            # 付款编号
+            "u_付款编号": lambda form: form["fkbh"]["fieldValue"],
+            # PO订单号
+            "u_PO订单号": lambda form: form["podd"]["fieldValue"],
+            # 对应收款合同编号
+            "u_收⼊合同编号": lambda form: form["ydskht"]["fieldValue"],
+            # 合同编号
+            "u_⽀出合同编号": lambda form: form["htbh"]["fieldValue"],
+            # 出纳付款日期
+            "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form["fkrq"]["fieldValue"]),
+            # 备注说明
+            "u_备注": lambda form: form["bzsm"]["fieldValue"],
+            # 流程编号
+            "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
+
+        },
+        # 同步到ykb的明细表
+        "detailData": {
+            # 本次付款金额
+            "amount": lambda form: form["bcfkje"]["fieldValue"],
+            # 税额
+            "taxAmount": lambda form: form["se"]["fieldValue"],
+            # 金额/不含税
+            "noTaxAmount": lambda form: form["jebhs"]["fieldValue"],
+        },
+    },
+    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: {
+        "mainData":{
+
+        },
+    },
+}
 
 """
 差旅报销单和私车公用报销单存储对应OA的流程ID的字段是u_OA报销流程ID
@@ -128,15 +212,17 @@ workflow_mapping = {
     oa.WORKFLOW_ID_MAP["招待费报销申请流程"]: "u_OA流程ID",
 }
 
-def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:str):
+
+def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
     ykb_flowid = oa_data[oa.MAIN_TABLE]["ykbflowld"]["fieldValue"]
+
     if ykb_flowid == None or ykb_flowid == "":
         raise Exception("ykbflowld字段值为空")
     form = {"u_流程编号": oa_data[oa.MAIN_TABLE]["lcbh"]["fieldValue"]}
     # if oa_workflowId == oa.WORKFLOW_ID_MAP["出差申请流程"]:
     #     form["u_OA出差流程ID"] = oa_data["requestId"]
-    if(workflow_mapping.get(oa_workflowId) != None):
+    if (workflow_mapping.get(oa_workflowId) != None):
         form[workflow_mapping.get(oa_workflowId)] = oa_data["requestId"]
     # 若修改人ID设置成员工自己，在提交申请后，可以自己在易快报审批自己的单据，因此修改人ID暂时定为董君ID
     # ykb_data = ykb.get_flow_details(ykb_flowid)
@@ -161,7 +247,58 @@ def update_flow(oa_workflowId: str, oa_requestId: str, oa_userId:str, oa_status:
     })
 
 
+def prepare_ykb_data(oa_data, oa_workflowId):
+    ykb_data = {
+        "form": {
+            "details": prepare_detail_data(oa_data, oa_workflowId),
+        }
+    }
+    # 在form表单里添加字段，相当于是mainTable部分
+    for name, mapper in workflow_map_conf[oa_workflowId]["mainData"].items():
+        ykb_data["form"][name] = mapper(oa_data[oa.MAIN_TABLE])
+    # 添加其余的字段
+    ykb_data["form"]["title"] = title_map[oa_workflowId]
+    ykb_data["form"]["specificationId"] = specificationId_map[oa_workflowId]
+    ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
+
+    return ykb_data
+
+
+def prepare_detail_data(oa_data, oa_workflowId):
+    details = []
+    for table in oa_data[oa.DETAIL_TABLES]:
+        detail = {
+            "feeTypeId": fee_type_map[oa_workflowId],
+            "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
+            "feeTypeForm": {},
+        }
+        for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
+            detail["feeTypeForm"][name] = mapper(table)
+        details.append(detail)
+    # 如果oa_workflowId是"付款申请流程（有合同）"，其oa_data是没有明细表的，要将其主表的字段值赋给明细表的字段
+    if oa_workflowId == oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]:
+        detail = {
+            "feeTypeId": fee_type_map[oa_workflowId],
+            "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
+            "feeTypeForm": {},
+        }
+        for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
+            amount = mapper(oa_data[oa.MAIN_TABLE])
+            detail["feeTypeForm"][name] = create_amount_structure(amount)
+        details.append(detail)
+
+    return details
+
+
+def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
+    oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
+    if oa_workflowId not in workflow_map_conf:
+        return
+    ykb_data = prepare_ykb_data(oa_data, oa_workflowId)
+    return ykb.create_flow_data(ykb_data)
+
+
 if __name__ == "__main__":
     # update_flow("199","84023","601")
     # print("201" in workflow_mapping)
-    update_flow("199","88917","57","archived")
+    sync_flow("76", "92350", "57", "archived")

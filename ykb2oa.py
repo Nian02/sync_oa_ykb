@@ -793,6 +793,8 @@ workflow_map_conf = {
             "bcyfje": lambda form: float(form["payMoney"]["standard"]),
             # 银行卡号
             "yhkh": lambda form: ykb.get_payee_by_id(form["payeeId"])["cardNo"],
+            # 附件上传
+            "fjsc": lambda form: handle_attachments(form["attachments"]),
         },
         "detailData": {
             "formtable_main_218_dt1": {  # OA中明细表的tableDBName
@@ -928,7 +930,7 @@ def sync_flow(flow_id: str, spec_name: str):
     ykb_form = ykb_data["form"]
 
     if spec_name not in workflow_map_conf:
-        raise Exception(f"未定义的表单: {spec_name}")
+        return
 
     workflow_map = workflow_map_conf[spec_name]
     oa_data = prepare_oa_data(ykb_form, workflow_map, flow_id)
@@ -952,7 +954,7 @@ def sync_flow(flow_id: str, spec_name: str):
 
 if __name__ == "__main__":
     # sync_flow("ID01vow3pux1Cv", "XXX")
-    sync_flow("ID01vtMahBRKFx", "日常费用报销单")
+    sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
     # sync_flow("ID01uKDLD2rs2X", "差旅报销单")

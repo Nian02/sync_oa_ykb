@@ -7,15 +7,17 @@ import multiprocessing
 
 
 # @DFF.API('接收OA通知')
-def receive_oa_notice(workflowId:str, requestId:str, userId:str, status:str = ""):
+def receive_oa_notice(workflowId: str, requestId: str, userId: str, status: str = ""):
     print(f'workflowId:{workflowId}, requestId:{requestId}, userId:{userId}, status:{status}')
     if workflowId in oa2ykb.dimension_item_field_map_conf:
         oa2ykb.sync_dimension_item(workflowId, requestId, userId)
     elif workflowId in oa2ykb.workflow_mapping:
-        oa2ykb.update_flow(workflowId, requestId, userId)
+        oa2ykb.update_flow(workflowId, requestId, userId, status)
+    elif workflowId in oa2ykb.workflow_map_conf and status == "archived":
+        oa2ykb.sync_flow(workflowId, requestId, userId, status)
     else:
         raise Exception(f"未处理的OA流程ID:{workflowId}")
-    return {"code":200, "msg":"success"}
+    return {"code": 200, "msg": "success"}
 
 
 # @DFF.API('接收易快报通知')
@@ -54,12 +56,14 @@ def receive_oa_notice(workflowId:str, requestId:str, userId:str, status:str = ""
 #             "action": action
 #         })
 
-def receive_ykb_notice(flowId:str, formSpecification:dict, nodeId:str = "", messageId:str = "", corporationId:str = ""):
-    print(f'flowId:{flowId}, nodeId:{nodeId}, messageId:{messageId}, corporationId:{corporationId}, formSpecification:{formSpecification}')
+def receive_ykb_notice(flowId: str, formSpecification: dict, nodeId: str = "", messageId: str = "",
+                       corporationId: str = ""):
+    print(
+        f'flowId:{flowId}, nodeId:{nodeId}, messageId:{messageId}, corporationId:{corporationId}, formSpecification:{formSpecification}')
 
     try:
         # ykb.notice_Ebot(flowId, nodeId, "accept", "同意")
-        data = ykb2oa.sync_flow(flowId, formSpecification["specificationName"])# data是OA的id
+        data = ykb2oa.sync_flow(flowId, formSpecification["specificationName"])  # data是OA的id
         print(data)
     except Exception as e:
         print(e)
@@ -73,13 +77,12 @@ def receive_ykb_notice(flowId:str, formSpecification:dict, nodeId:str = "", mess
             "action": action
         })
 
+
 # def process_ykb_notice(flowId:str, formSpecification:dict):
-    
-
-
 
 
 if __name__ == "__main__":
-    receive_ykb_notice("ID01vjoQQBSd9t",{'specificationId': 'ID01oxvkARxDAP:e5e064ef6572a5c037aa2a170696b85a77af526a', 'specificationName': '差旅报销单'},"5CE35AE8-1E2F-4C91-86AD-1B7F87E62F1F","ID01vrwGicxFOD","ID01owxnVpp2h1")
+    receive_ykb_notice("ID01vjoQQBSd9t", {'specificationId': 'ID01oxvkARxDAP:e5e064ef6572a5c037aa2a170696b85a77af526a',
+                                          'specificationName': '差旅报销单'}, "5CE35AE8-1E2F-4C91-86AD-1B7F87E62F1F",
+                       "ID01vrwGicxFOD", "ID01owxnVpp2h1")
     # print(receive_oa_notice("168", "87301", "601"))
-    

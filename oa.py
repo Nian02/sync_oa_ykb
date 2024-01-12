@@ -124,7 +124,7 @@ def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
                     detailTableMap[field["fieldName"]] = field
             data[DETAIL_TABLES].append(detailTableMap)
 
-    print(f"ykb.get_flow_details_by_code:{json.dumps(data)}")
+    print(f"ykb.get_flow_details_by_code:{json.dumps(data, ensure_ascii=False)}")
 
     return data
 
@@ -161,9 +161,9 @@ def update_workflow(data: Dict, user_id:str):
 
 def main():
     # print(get_token())
-    print(gen_headers("601"))
+    # print(gen_headers("601"))
     # update_workflow()
-    # get_workflow(WORKFLOW_ID_MAP["出差申请流程"], "87266", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["付款申请流程（有合同）"], "92350", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)
