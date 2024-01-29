@@ -6,18 +6,38 @@ from datetime import datetime
 
 # 费用类型ID映射，通过这个id可以查询明细表比如expense的specificationId
 fee_type_map = {
-    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vviQDN7OSH",
-
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vviQDN7OSH",  # 对公付款
+    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vviQDN7OSH",  # 对公付款
+    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vviQDN7OSH",  # 对公付款
 }
 
 # 主表费用类型ID映射
 specificationId_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x:dc1aee0a9fb5033cc40de5c7653ea475495d8511",
+    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vvkP5k18Qf:cdafd0125a88866fcf83a7cde223d17558d0415c",
+    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vvj29Ns2Av:f831bbbc7f180a0d1f1801c79b721aa675329670",
 }
 
 # 表单名映射
 title_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "付款单(有合同)",
+    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "付款单(无合同)",
+    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "云资源返利单",
+}
+
+# 返佣方式映射
+rebate_map = {
+    "0": "银⾏",
+    "1": "储值卡",
+    "2": "云资源账号",
+}
+
+# 返利周期映射
+rebate_cycle_map = {
+    "0": "季度",
+    "1": "半年",
+    "2": "年度",
+    "3": "月度",
 }
 
 
@@ -29,23 +49,29 @@ def handle_multi_dimension(code: str) -> str:
 
 # 将时间戳格式转换成 %Y-%m-%d 格式
 def oa_date_2_ykb_date(date_str: str) -> int:
-    # 将日期字符串转换为datetime对象
-    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    if not date_str:
+        return 0
+    # 检查日期字符串的长度以确定格式
+    if len(date_str) == 7:
+        dt = datetime.strptime(date_str, "%Y-%m")  # 将日期字符串转换为datetime对象
+    else:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
     # 将datetime对象转换为时间戳，并乘以1000得到毫秒级的时间戳
     timestamp = int(time.mktime(dt.timetuple()) * 1000)
     return timestamp
 
 
-# 通过name获取法人实体的id
-def get_corporationId_by_name(name: str) -> str:
+# 通过name获取对应ykb里dimension_name的id
+def get_corporationId_by_name(name: str, dimension_name: str) -> str:
     if not name:
         return ""
     form = ykb.get_dimension_by_name(name)
-    # 遍历form字段，若字段"dimensionId"的:后面是"法人实体"，则返回该字段的"id"
+    # 遍历form字段，若字段"dimensionId"的:后面是对应dimension_name比如"法人实体"，则返回该字段的"id"
     for item in form:
-        if item["dimensionId"].split(":")[1] == "法人实体":
+        if item["dimensionId"].split(":")[1] == dimension_name:
             return item["id"]
     return ""
+
 
 # 格式化金额
 def create_amount_structure(amount: str) -> dict:
@@ -174,7 +200,7 @@ workflow_map_conf = {
             # 供应商名称
             "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
             # 付款主体
-            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"]),
+            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"], "法人实体"),
             # 合作伙伴名称
             "u_合作伙伴": lambda form: handle_multi_dimension(form["hzhbmc"]["fieldValue"]),
             # 付款编号
@@ -204,8 +230,76 @@ workflow_map_conf = {
         },
     },
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: {
-        "mainData":{
+        "mainData": {
+            # 提交人
+            "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
+            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+            # 申请日期
+            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+            # 供应商名称
+            "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
+            # 付款主体
+            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"], "法人实体"),
+            # 付款编号
+            "u_付款编号": lambda form: form["fkbh"]["fieldValue"],
+            # 出纳付款日期
+            "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form["fkrq"]["fieldValue"]),
+            # 付款事由
+            "u_备注": lambda form: form["fksy"]["fieldValue"],
+            # 流程编号
+            "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
+        },
+        "detailData": {
+            # 本次付款金额
+            "amount": lambda form: form["jexe"]["fieldValue"],
+            # 税额
+            "taxAmount": lambda form: form["se"]["fieldValue"],
+            # 金额/不含税
+            "noTaxAmount": lambda form: form["je"]["fieldValue"],
+        },
+    },
+    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: {
+        "mainData": {
+            # 提交人
+            "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
+            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+            # 申请日期
+            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+            # 付款主体
+            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"], "法人实体"),
+            # 客户
+            "u_客户": lambda form: get_corporationId_by_name(form["zhmc"]["fieldValue"], "客户"),
+            # 付款编号
+            "u_付款编号": lambda form: form["fkbh"]["fieldValue"],
+            # 返利开始月份
+            "u_返利开始月份": lambda form: oa_date_2_ykb_date(form["flnyks"]["fieldValue"]),
+            # 返利结束月份
+            "u_返利结束月份": lambda form: oa_date_2_ykb_date(form["flnyjs"]["fieldValue"]),
+            # 返佣方式
+            "u_返佣方式": lambda form: get_corporationId_by_name(rebate_map[form["fyfs"]["fieldValue"]], "返佣⽅式"),
+            # 返利周期
+            "u_返利周期": lambda form: rebate_cycle_map[form["htflzq"]["fieldValue"]],
+            # 云资源账号
+            "u_云资源账号": lambda form: form["yzyzh"]["fieldValue"],
+            # 账号UID
+            "u_账号UID": lambda form: form["zhuid"]["fieldValue"],
+            # 所属分销账号
+            "u_所属分销账号": lambda form: form["szfxzh"]["fieldValue"],
+            # 出纳付款日期
+            "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form["cnfkrq"]["fieldValue"]),
+            # 付款事由
+            "u_备注": lambda form: form["fksy"]["fieldValue"],
+            # 流程编号
+            "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
 
+        },
+        "detailData": {
+            # 本次付款金额
+            "amount": lambda form: form["fkje"]["fieldValue"],
+            # 税额
+            "taxAmount": lambda form: form["se"]["fieldValue"],
+            # 不计税金额
+            "noTaxAmount": lambda form: form["je"]["fieldValue"],
         },
     },
 }
@@ -279,26 +373,29 @@ def prepare_ykb_data(oa_data, oa_workflowId):
 
 def prepare_detail_data(oa_data, oa_workflowId):
     details = []
-    for table in oa_data[oa.DETAIL_TABLES]:
-        detail = {
-            "feeTypeId": fee_type_map[oa_workflowId],
-            "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
-            "feeTypeForm": {},
-        }
-        for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
-            detail["feeTypeForm"][name] = mapper(table)
-        details.append(detail)
+    # 遍历传过来的oa表单的"detailTables"的表单
+    # for table in oa_data[oa.DETAIL_TABLES]:
+    #     detail = {
+    #         "feeTypeId": fee_type_map[oa_workflowId],
+    #         "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
+    #         "feeTypeForm": {},
+    #     }
+    #     for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
+    #         amount = mapper(table)
+    #         detail["feeTypeForm"][name] = create_amount_structure(amount)
+    #     details.append(detail)
+
     # 如果oa_workflowId是"付款申请流程（有合同）"，其oa_data是没有明细表的，要将其主表的字段值赋给明细表的字段
-    if oa_workflowId == oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]:
-        detail = {
-            "feeTypeId": fee_type_map[oa_workflowId],
-            "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
-            "feeTypeForm": {},
-        }
-        for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
-            amount = mapper(oa_data[oa.MAIN_TABLE])
-            detail["feeTypeForm"][name] = create_amount_structure(amount)
-        details.append(detail)
+    # if oa_workflowId == oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]:
+    detail = {
+        "feeTypeId": fee_type_map[oa_workflowId],
+        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
+        "feeTypeForm": {},
+    }
+    for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
+        amount = mapper(oa_data[oa.MAIN_TABLE])
+        detail["feeTypeForm"][name] = create_amount_structure(amount)
+    details.append(detail)
 
     return details
 
@@ -308,11 +405,11 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
     if oa_workflowId not in workflow_map_conf:
         return
     ykb_data = prepare_ykb_data(oa_data, oa_workflowId)
-    return ykb.create_flow_data(ykb_data)
+    return ykb.create_flow_data("true", ykb_data)
 
 
 if __name__ == "__main__":
     # update_flow("199","84023","601")
     # print("201" in workflow_mapping)
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    sync_flow("76", "92350", "57", "archived")
+    sync_flow("143", "92585", "57", "archived")

@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import base64
 import requests
+import urllib.parse
 
 import oa
 import ykb
@@ -68,14 +69,12 @@ route_map = {
     "ID01rqNBjNWeOH": "自驾",
 }
 
-
 # 航空舱位映射：ykb_code->name
 flight_map = {
     "ECONOMY": "经济舱",
     "BUSINESS": "商务舱",
     "FIRST": "头等舱",
 }
-
 
 # 火车席别映射：ykb_code->name
 train_map = {
@@ -94,7 +93,6 @@ train_map = {
     "YW": "硬卧",
     "YZ": "硬座",
 }
-
 
 # 轮船舱型映射：ykb_code->name
 ship_map = {
@@ -122,13 +120,13 @@ travel_subsidy_code = {
 # 将时间戳格式转换成 %Y-%m-%d 格式
 def ykb_date_2_oa_date(timestamp: int) -> str:
     # 毫秒级时间戳要除于1000
-    return time.strftime("%Y-%m-%d", time.localtime(timestamp/1000))
+    return time.strftime("%Y-%m-%d", time.localtime(timestamp / 1000))
 
 
 # 将时间戳格式转换成 %H:%M 格式
 def ykb_date_2_oa_time(timestamp: int) -> str:
     # 毫秒级时间戳要除于1000
-    return time.strftime("%H:%M", time.localtime(timestamp/1000))
+    return time.strftime("%H:%M", time.localtime(timestamp / 1000))
 
 
 # 处理客户/供应商/合作伙伴这几个多选字段，传入的应当是类似ID01reWPCQiYh1的列表，比如：
@@ -158,7 +156,7 @@ def handle_multi_dimension(dimensions: list) -> str:
                 l.append("")
         else:
             l.append(ykb.get_dimension_by_id(item)[
-                     "code"])  # code字段是类似KH4871的信息
+                         "code"])  # code字段是类似KH4871的信息
     return ",".join(l)
 
 
@@ -200,9 +198,12 @@ def handle_invoices(invoices: list):
     oa_files = []
     for item in ykb_rsp["items"]:
         r = requests.get(item["url"])
+        decoded_filename = urllib.parse.unquote(item["fileName"])
+        filename_parts = decoded_filename.split('-')
+        filename = '-'.join(filename_parts[5:])
         oa_files.append({
             "filePath": f"base64:{base64.b64encode(r.content).decode()}",
-            "fileName": item["fileName"],
+            "fileName": filename,
         })
     return oa_files
 
@@ -244,7 +245,8 @@ workflow_map_conf = {
             # 供应商名称
             "gysmc": lambda form: handle_multi_dimension(form["u_供应商可多选"]) if "u_供应商可多选" in form else "",
             # 合作伙伴名称
-            "hzhbmc": lambda form: handle_multi_dimension(form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else "",
+            "hzhbmc": lambda form: handle_multi_dimension(
+                form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else "",
             # 客户编号
             # "khbh": lambda form: form["u_客户可多选"],
             # 供应商编号
@@ -252,8 +254,8 @@ workflow_map_conf = {
             # 合作伙伴编号
             # "hzhbbh": None,
             # 出差天数
-            "ccts": lambda form: (datetime.fromtimestamp(form["u_出差起止日期"]["end"]/1000) -
-                                  datetime.fromtimestamp(form["u_出差起止日期"]["start"]/1000)).days,
+            "ccts": lambda form: (datetime.fromtimestamp(form["u_出差起止日期"]["end"] / 1000) -
+                                  datetime.fromtimestamp(form["u_出差起止日期"]["start"] / 1000)).days,
             # 劳动关系
             "ldgx": lambda form: form["u_劳动关系txt"],
             # 出差性质
@@ -291,15 +293,22 @@ workflow_map_conf = {
                     # 行程类型
                     "xclxx": lambda item: "",
                     # 出差城市
-                    "cccs": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_住宿地"])[0]["label"] if "E_fa1044a29ce187343bc0_住宿地" in item["dataLinkForm"] else "",
+                    "cccs": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_住宿地"])[0][
+                        "label"] if "E_fa1044a29ce187343bc0_住宿地" in item["dataLinkForm"] else "",
                     # 出发城市
-                    "cfcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_出发地"])[0]["label"] if "E_fa1044a29ce187343bc0_出发地" in item["dataLinkForm"] else "",
+                    "cfcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_出发地"])[0][
+                        "label"] if "E_fa1044a29ce187343bc0_出发地" in item["dataLinkForm"] else "",
                     # 目的城市
-                    "mdcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_目的地"])[0]["label"] if "E_fa1044a29ce187343bc0_目的地" in item["dataLinkForm"] else "",
+                    "mdcsx": lambda item: json.loads(item["dataLinkForm"]["E_fa1044a29ce187343bc0_目的地"])[0][
+                        "label"] if "E_fa1044a29ce187343bc0_目的地" in item["dataLinkForm"] else "",
                     # 开始日期
-                    "ccksrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_入住日期"]) if "E_fa1044a29ce187343bc0_入住日期" in item["dataLinkForm"] else "",
+                    "ccksrq": lambda item: ykb_date_2_oa_date(
+                        item["dataLinkForm"]["E_fa1044a29ce187343bc0_入住日期"]) if "E_fa1044a29ce187343bc0_入住日期" in
+                                                                                    item["dataLinkForm"] else "",
                     # 结束日期
-                    "ccjsrq": lambda item: ykb_date_2_oa_date(item["dataLinkForm"]["E_fa1044a29ce187343bc0_离店日期"]) if "E_fa1044a29ce187343bc0_离店日期" in item["dataLinkForm"] else "",
+                    "ccjsrq": lambda item: ykb_date_2_oa_date(
+                        item["dataLinkForm"]["E_fa1044a29ce187343bc0_离店日期"]) if "E_fa1044a29ce187343bc0_离店日期" in
+                                                                                    item["dataLinkForm"] else "",
                 },
             }
         }
@@ -321,7 +330,8 @@ workflow_map_conf = {
             # 供应商名称
             "gysmc": lambda form: handle_multi_dimension(form["u_供应商可多选"]) if "u_供应商可多选" in form else "",
             # 合作伙伴名称
-            "hzhbmc": lambda form: handle_multi_dimension(form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else "",
+            "hzhbmc": lambda form: handle_multi_dimension(
+                form["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in form else "",
             # 预计招待日期
             "zdrq": lambda form: ykb_date_2_oa_date(form["u_招待日期"]),
             # 预计金额
@@ -371,19 +381,30 @@ workflow_map_conf = {
                 "checker": lambda item: True,  # 检测易快报明细数据项是否满足要求
                 "field_map": {
                     # 开始日期
-                    "ksrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_加班起止时间"]["start"]) if "u_加班起止时间" in item["feeTypeForm"] else "",
+                    "ksrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_加班起止时间"]["start"]) if "u_加班起止时间" in item[
+                        "feeTypeForm"] else "",
                     # 开始时间
-                    "kssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_加班起止时间"]["start"]) if "u_加班起止时间" in item["feeTypeForm"] else "",
+                    "kssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_加班起止时间"]["start"]) if "u_加班起止时间" in item[
+                        "feeTypeForm"] else "",
                     # 结束日期
-                    "jsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_加班起止时间"]["end"]) if "u_加班起止时间" in item["feeTypeForm"] else "",
+                    "jsrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_加班起止时间"]["end"]) if "u_加班起止时间" in item[
+                        "feeTypeForm"] else "",
                     # 结束时间
-                    "jssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_加班起止时间"]["end"]) if "u_加班起止时间" in item["feeTypeForm"] else "",
+                    "jssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_加班起止时间"]["end"]) if "u_加班起止时间" in item[
+                        "feeTypeForm"] else "",
                     # 补贴金额
-                    "btje": lambda item: item["feeTypeForm"]["amount"]["standard"] if "amount" in item["feeTypeForm"] else "",
+                    "btje": lambda item: item["feeTypeForm"]["amount"]["standard"] if "amount" in item[
+                        "feeTypeForm"] else "",
                     # 具体加班人员
-                    "jtjbry": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_具体加班人员"]) if "u_具体加班人员" in item["feeTypeForm"] else "",
+                    "jtjbry": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_具体加班人员"]) if "u_具体加班人员" in item["feeTypeForm"] else "",
                     # 相关流程
-                    "xglc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else "",
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item[
+                        "feeTypeForm"] else "",
                 },
             }
         },
@@ -407,23 +428,38 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 开始日期
-                    "ksrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_活动起止日期"]["start"]) if "u_活动起止日期" in item["feeTypeForm"] else "",
+                    "ksrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_活动起止日期"]["start"]) if "u_活动起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 开始时间
-                    "kssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_活动起止日期"]["start"]) if "u_活动起止日期" in item["feeTypeForm"] else "",
+                    "kssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_活动起止日期"]["start"]) if "u_活动起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 结束日期
-                    "jsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_活动起止日期"]["end"]) if "u_活动起止日期" in item["feeTypeForm"] else "",
+                    "jsrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_活动起止日期"]["end"]) if "u_活动起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 结束时间
-                    "jssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_活动起止日期"]["end"]) if "u_活动起止日期" in item["feeTypeForm"] else "",
+                    "jssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_活动起止日期"]["end"]) if "u_活动起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 活动类型
-                    "hdlx": lambda item: teamactivity_map[get_dimension_name(item["feeTypeForm"]["u_活动类型"])] if "u_活动类型" in item["feeTypeForm"] else "",
+                    "hdlx": lambda item: teamactivity_map[
+                        get_dimension_name(item["feeTypeForm"]["u_活动类型"])] if "u_活动类型" in item[
+                        "feeTypeForm"] else "",
                     # 是否自驾
-                    "sfzj": lambda item: yes_or_not_map[get_dimension_name(item["feeTypeForm"]["u_是否"])] if "u_是否" in item["feeTypeForm"] else "",
+                    "sfzj": lambda item: yes_or_not_map[
+                        get_dimension_name(item["feeTypeForm"]["u_是否"])] if "u_是否" in item["feeTypeForm"] else "",
                     # 参与人员
-                    "cyry": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_团建人员"]) if "u_团建人员" in item["feeTypeForm"] else "",
+                    "cyry": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_团建人员"]) if "u_团建人员" in
+                                                                                                      item[
+                                                                                                          "feeTypeForm"] else "",
                     # 事由说明
-                    "sqsy": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
+                    "sqsy": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item[
+                        "feeTypeForm"] else "",
                     # 活动费用
-                    "hdfy": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item["feeTypeForm"] else 0,
+                    "hdfy": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item[
+                        "feeTypeForm"] else 0,
                     # 参与人数
                     "cyrs": lambda item: item["feeTypeForm"]["u_人数"] if "u_人数" in item["feeTypeForm"] else "",
                 },
@@ -457,94 +493,136 @@ workflow_map_conf = {
             # 明细表2
             "formtable_main_57_dt2": {  # OA中明细表的tableDBName
                 "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
-                "checker": lambda item: item["feeType"]["code"] not in hesi_order_code and item["feeType"]["code"] not in travel_subsidy_code,
+                "checker": lambda item: item["feeType"]["code"] not in hesi_order_code and item["feeType"][
+                    "code"] not in travel_subsidy_code,
                 "field_map": {
                     # 费用发生日期
-                    "fyrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用发生时间
-                    "fysj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fysj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用类型
                     "fylxx": lambda item: item["feeType"]["code"] if "feeType" in item else "",
                     # 费用说明
-                    "zysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
+                    "zysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item[
+                        "feeTypeForm"] else "",
                     # 附件数
-                    "fpzs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    "fpzs": lambda item: int(
+                        item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
-                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item["feeTypeForm"] else "",
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
+                        "feeTypeForm"] else "",
                     # 不含税金额
-                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(item["feeTypeForm"]["amount"]["standard"]),
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(
+                        item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(
+                        item["feeTypeForm"]["amount"]["standard"]),
                     # 税额
-                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else 0,
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
+                        "feeTypeForm"] else 0,
                     # 费用小计
                     "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件（差旅补贴没有invoiceForm字段）
-                    "fjsc": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if ("invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"]["invoiceForm"]) else "",
+                    "fjsc": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
+                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                            "invoiceForm"]) else "",
                     # 火车席别/航空舱位/轮船舱型
                     "hczbhkcw": lambda item: \
-                    train_map[item["feeTypeForm"]["u_火车席别"]] if "u_火车席别" in item["feeTypeForm"]\
-                    else flight_map[item["feeTypeForm"]["u_航班舱型"]] if "u_航班舱型" in item["feeTypeForm"]\
-                    else ship_map[item["feeTypeForm"]["u_轮船舱型"]] if "u_轮船舱型" in item["feeTypeForm"]\
-                    else "",
+                        train_map[item["feeTypeForm"]["u_火车席别"]] if "u_火车席别" in item["feeTypeForm"] \
+                            else flight_map[item["feeTypeForm"]["u_航班舱型"]] if "u_航班舱型" in item["feeTypeForm"] \
+                            else ship_map[item["feeTypeForm"]["u_轮船舱型"]] if "u_轮船舱型" in item["feeTypeForm"] \
+                            else "",
                 },
             },
-            "formtable_main_57_dt3": {# 差旅补贴，选择这种类型的数据只需要上传这个明细表
+            "formtable_main_57_dt3": {  # 差旅补贴，选择这种类型的数据只需要上传这个明细表
                 "ykb_field_name": "details",
                 "checker": lambda item: item["feeType"]["code"] in travel_subsidy_code,
                 "field_map": {
                     # 出差开始日期
-                    "ksrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_出差起止日期"]["start"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    "ksrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_出差起止日期"]["start"]) if "u_出差起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 出差开始时间
-                    "kssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_出差起止日期"]["start"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    "kssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_出差起止日期"]["start"]) if "u_出差起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 出差结束日期
-                    "jsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["u_出差起止日期"]["end"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    "jsrq": lambda item: ykb_date_2_oa_date(
+                        item["feeTypeForm"]["u_出差起止日期"]["end"]) if "u_出差起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 出差结束时间
-                    "jssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["u_出差起止日期"]["end"]) if "u_出差起止日期" in item["feeTypeForm"] else "",
+                    "jssj": lambda item: ykb_date_2_oa_time(
+                        item["feeTypeForm"]["u_出差起止日期"]["end"]) if "u_出差起止日期" in item[
+                        "feeTypeForm"] else "",
                     # 补贴金额
-                    "btje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item["feeTypeForm"] else 0,
+                    "btje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item[
+                        "feeTypeForm"] else 0,
                     # 最终补贴金额
-                    "zzbtje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item["feeTypeForm"] else 0,
+                    "zzbtje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item[
+                        "feeTypeForm"] else 0,
                     # 相关流程
-                    "xglc": lambda item: item["feeTypeForm"]["u_OA加班流程ID"] if "u_OA加班流程ID" in item["feeTypeForm"] else "",
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA加班流程ID"] if "u_OA加班流程ID" in item[
+                        "feeTypeForm"] else "",
                 },
             },
-            "formtable_main_57_dt4": { # 行车记录，只有选择汽油费的时候会关联行车记录
-                "ykb_field_name": "details", 
-                "checker": lambda item: item["feeType"]["code"] == "772" or item["feeType"]["code"] == "765", # 汽油费的code
+            "formtable_main_57_dt4": {  # 行车记录，只有选择汽油费的时候会关联行车记录
+                "ykb_field_name": "details",
+                "checker": lambda item: item["feeType"]["code"] == "772" or item["feeType"]["code"] == "765",
+                # 汽油费的code
                 "field_map": {
                     # 用车日期
-                    "ycrq": lambda item: ykb_date_2_oa_date(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycrq": lambda item: ykb_date_2_oa_date(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 用车时间
-                    "ycsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycsj": lambda item: ykb_date_2_oa_time(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 返回日期
-                    "fhrq": lambda item: ykb_date_2_oa_date(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhrq": lambda item: ykb_date_2_oa_date(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 返回时间
-                    "fhsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhsj": lambda item: ykb_date_2_oa_time(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 出发地点
-                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
-                    "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 公里数
-                    "gls": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "gls": lambda item: float(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 汽油费
-                    "qyf": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "qyf": lambda item: float(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 同行人
-                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item[
+                        "feeTypeForm"] else "",
                 },
             },
-            "formtable_main_57_dt5": { # 火车-合思订单这种类型的数据只需要上传这个明细表
+            "formtable_main_57_dt5": {  # 火车-合思订单这种类型的数据只需要上传这个明细表
                 "ykb_field_name": "details",
                 "checker": lambda item: item["feeType"]["code"] in hesi_order_code,
                 "field_map": {
                     # 订单类型
                     "ddlx": lambda item: item["feeType"]["name"][:2] if "feeType" in item else "",
                     # 费用发生日期
-                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 金额
-                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item["feeTypeForm"] else "",
+                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) if "amount" in item[
+                        "feeTypeForm"] else "",
                     # 税率
-                    "sl": lambda item: float(item["feeTypeForm"]["taxRate"]) if "taxRate" in item["feeTypeForm"] else "",
+                    "sl": lambda item: float(item["feeTypeForm"]["taxRate"]) if "taxRate" in item[
+                        "feeTypeForm"] else "",
                     # 可抵扣税额
-                    "kdkse": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else "",
+                    "kdkse": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
+                        "feeTypeForm"] else "",
                 }
             }
         },
@@ -579,68 +657,104 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 费用发生日期
-                    "fyfsje": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfsje": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用发生时间
-                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"] if "feeType" in item else "",
                     # 费用说明
-                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item[
+                        "feeTypeForm"] else "",
                     # 附件数
-                    "fjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    "fjs": lambda item: int(
+                        item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
-                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item["feeTypeForm"] else "",
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
+                        "feeTypeForm"] else "",
                     # 不含税金额
-                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(item["feeTypeForm"]["amount"]["standard"]),
+                    "je": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(
+                        item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(
+                        item["feeTypeForm"]["amount"]["standard"]),
                     # 税额
-                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else 0,
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
+                        "feeTypeForm"] else 0,
                     # 费用小计
                     "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 费用所属客户类型
-                    "fysskhlx": lambda item: client_map[get_dimension_name(item["feeTypeForm"]["u_客户类型"])] if "u_客户类型" in item["feeTypeForm"] else "",
+                    "fysskhlx": lambda item: client_map[
+                        get_dimension_name(item["feeTypeForm"]["u_客户类型"])] if "u_客户类型" in item[
+                        "feeTypeForm"] else "",
                     # 客户名称
-                    "szkhdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    "szkhdx": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 供应商名称
-                    "szgysdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "szgysdx": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 合作伙伴名称
-                    "szhzhbdx": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "szhzhbdx": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 发票附件
-                    "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if ("invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"]["invoiceForm"]) else "",
+                    "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
+                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                            "invoiceForm"]) else "",
                     # 相关流程
-                    "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item["feeTypeForm"] else "",
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item[
+                        "feeTypeForm"] else "",
                     # 客户档案URL
-                    "khdabh": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item["feeTypeForm"] else "",
+                    "khdabh": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item[
+                        "feeTypeForm"] else "",
 
                 },
             },
-            "formtable_main_35_dt3": { # 行车记录，只有选择汽油费的时候会关联行车记录
+            "formtable_main_35_dt3": {  # 行车记录，只有选择汽油费的时候会关联行车记录
                 "ykb_field_name": "details",  # 该明细表对应在易快报 form 数据中的字段
-                "checker": lambda item: item["feeType"]["code"] == "772" or item["feeType"]["code"] == "765",# 汽油费的code
+                "checker": lambda item: item["feeType"]["code"] == "772" or item["feeType"]["code"] == "765",
+                # 汽油费的code
                 "field_map": {
                     # 用车日期
-                    "ycrq": lambda item: ykb_date_2_oa_date(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycrq": lambda item: ykb_date_2_oa_date(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 用车时间
-                    "ycsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycsj": lambda item: ykb_date_2_oa_time(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 返回日期
-                    "fhrq": lambda item: ykb_date_2_oa_date(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhrq": lambda item: ykb_date_2_oa_date(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 返回时间
-                    "fhsj": lambda item: ykb_date_2_oa_time(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhsj": lambda item: ykb_date_2_oa_time(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else "",
                     # 出发地点
-                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "cfdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_出发地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
-                    "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhdd": lambda item: process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_目的地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 公里数
-                    "gls": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "gls": lambda item: float(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 汽油费
-                    "qyf": lambda item: float(process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "qyf": lambda item: float(
+                        process_privatecar_info(item)["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 所属客户
-                    "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    "szkh": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 所属供应商
-                    "szgys": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "szgys": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 所属合作伙伴
-                    "szhzhb": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "szhzhb": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 同行人
-                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item[
+                        "feeTypeForm"] else "",
                 }
             }
         },
@@ -684,29 +798,41 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 费用发生日期
-                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用发生时间
-                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"] if "feeType" in item else "",
                     # 相关流程
-                    "xglc": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else "",
+                    "xglc": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item[
+                        "feeTypeForm"] else "",
                     # 费用说明
-                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item[
+                        "feeTypeForm"] else "",
                     # 附件数
-                    "fjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    "fjs": lambda item: int(
+                        item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
-                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item["feeTypeForm"] else "",
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
+                        "feeTypeForm"] else "",
                     # 不含税金额
-                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(item["feeTypeForm"]["amount"]["standard"]),
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(
+                        item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(
+                        item["feeTypeForm"]["amount"]["standard"]),
                     # 税额
-                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else 0,
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
+                        "feeTypeForm"] else 0,
                     # 费用小计
                     "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
-                    "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if ("invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"]["invoiceForm"]) else "",
+                    "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
+                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                            "invoiceForm"]) else "",
                     # 相关出差流程
-                    "xgccsq": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else "",
+                    "xgccsq": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item[
+                        "feeTypeForm"] else "",
                 },
             },
         },
@@ -747,31 +873,51 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 用车日期
-                    "ycrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycrq": lambda item: ykb_date_2_oa_date(
+                        ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"][
+                            "time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 用车时间
-                    "ycsj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "ycsj": lambda item: ykb_date_2_oa_time(
+                        ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"][
+                            "time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回日期
-                    "fhrq": lambda item: ykb_date_2_oa_date(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhrq": lambda item: ykb_date_2_oa_date(
+                        ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"][
+                            "time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回时间
-                    "jssj": lambda item: ykb_date_2_oa_time(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["time"]) if "u_行车记录" in item["feeTypeForm"] else "",
+                    "jssj": lambda item: ykb_date_2_oa_time(
+                        ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"][
+                            "time"]) if "u_行车记录" in item["feeTypeForm"] else "",
                     # 始发地
-                    "sfd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "sfd": lambda item:
+                    ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_出发地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 返回地点
-                    "fhdd": lambda item: ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"]["address"] if "u_行车记录" in item["feeTypeForm"] else "",
+                    "fhdd": lambda item:
+                    ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_目的地"][
+                        "address"] if "u_行车记录" in item["feeTypeForm"] else "",
                     # 客户名称
                     # "sskh":
                     # 公里数
-                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "gls": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])[
+                                                  "E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 汽油费
-                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])["E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item["feeTypeForm"] else 0,
+                    "qyf": lambda item: float(ykb.get_privatecar_by_id(item["feeTypeForm"]["u_行车记录"])[
+                                                  "E_fa10f678286c6d8c8bc0_行驶总里程"]) if "u_行车记录" in item[
+                        "feeTypeForm"] else 0,
                     # 所属客户
-                    "szkh": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    "szkh": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 所属供应商
-                    "szgys": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "szgys": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 所属合作伙伴
-                    "szhzhb": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "szhzhb": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 同行人
-                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item["feeTypeForm"] else "",
+                    "txr": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_同行人"]) if "u_同行人" in item[
+                        "feeTypeForm"] else "",
                 },
             },
         },
@@ -809,37 +955,53 @@ workflow_map_conf = {
                 "checker": lambda item: True,
                 "field_map": {
                     # 费用发生日期
-                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfsrq": lambda item: ykb_date_2_oa_date(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用发生时间
-                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item["feeTypeForm"] else "",
+                    "fyfssj": lambda item: ykb_date_2_oa_time(item["feeTypeForm"]["feeDate"]) if "feeDate" in item[
+                        "feeTypeForm"] else "",
                     # 费用科目
                     "fykm": lambda item: item["feeType"]["code"] if "feeType" in item else "",
                     # 费用说明
-                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item["feeTypeForm"] else "",
+                    "fysm": lambda item: item["feeTypeForm"]["consumptionReasons"] if "consumptionReasons" in item[
+                        "feeTypeForm"] else "",
                     # 附件数
-                    "zzfjs": lambda item: int(item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    "zzfjs": lambda item: int(
+                        item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 发票类型
-                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item["feeTypeForm"] else "",
+                    "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
+                        "feeTypeForm"] else "",
                     # 不含税金额
-                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(item["feeTypeForm"]["amount"]["standard"]),
+                    "jebhs": lambda item: float(item["feeTypeForm"]["amount"]["standard"]) - float(
+                        item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else float(
+                        item["feeTypeForm"]["amount"]["standard"]),
                     # 税额
-                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item["feeTypeForm"] else 0,
+                    "se": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
+                        "feeTypeForm"] else 0,
                     # 费用小计
                     "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
-                    "fpfj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if ("invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"]["invoiceForm"]) else "",
+                    "fpfj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
+                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                            "invoiceForm"]) else "",
                     # 客户名称
-                    "khmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
+                    "khmc": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
                     # 供应商名称
-                    "gysmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
+                    "gysmc": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_供应商可多选"]) if "u_供应商可多选" in item["feeTypeForm"] else "",
                     # 合作伙伴名称
-                    "hzhbmc": lambda item: handle_multi_dimension(item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
+                    "hzhbmc": lambda item: handle_multi_dimension(
+                        item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 相关出差流程
-                    "xgcclc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item["feeTypeForm"] else "",
+                    "xgcclc": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item[
+                        "feeTypeForm"] else "",
                     # 相关招待申请
-                    "xgzdsq": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item["feeTypeForm"] else "",
+                    "xgzdsq": lambda item: item["feeTypeForm"]["u_OA招待流程ID"] if "u_OA招待流程ID" in item[
+                        "feeTypeForm"] else "",
                     # 客户档案URL
-                    "khdaurl": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item["feeTypeForm"] else "",
+                    "khdaurl": lambda item: item["feeTypeForm"]["u_客户档案URL"] if "u_客户档案URL" in item[
+                        "feeTypeForm"] else "",
                 },
             },
         },
@@ -924,7 +1086,7 @@ def update_oa_workflow(oa_data, oa_workflow_id, user_id):
         # "otherParams": {"src": "save"},
         "requestId": oa_workflow_id,
     }
-    
+
     # 遍历detailData中的每个表单，并添加"deleteAll" = "1"
     for oa_detail_table in oa_update_data["detailData"]:
         oa_detail_table["deleteAll"] = "1"
@@ -932,7 +1094,6 @@ def update_oa_workflow(oa_data, oa_workflow_id, user_id):
 
 
 def sync_flow(flow_id: str, spec_name: str):
-
     ykb_data = ykb.get_flow_details(flow_id)
     ykb_form = ykb_data["form"]
 
@@ -949,22 +1110,46 @@ def sync_flow(flow_id: str, spec_name: str):
     这两个单子在单据中都有一个关联出差申请的字段, 会带出出差申请的"OA流程ID"。而易快报里出差申请单中的"OA流程ID"想要同步带出到差旅报销单/私车公用报销单中, 对应的字段在这两个单据中必须也叫"OA流程ID"。
     因此这两个单子不能拿"OA流程ID"当作判断create_workflow/update_workflow的依据, 而是要拿"OA报销流程ID"当作判断create_workflow/update_workflow的依据。
     """
-    if spec_name == "差旅报销单" or spec_name == "私车公用报销单":# 对应这两个表单的更新操作
+    if spec_name == "差旅报销单" or spec_name == "私车公用报销单":  # 对应这两个表单的更新操作
         if "u_OA报销流程ID" in ykb_form and ykb_form["u_OA报销流程ID"] != '':
             return update_oa_workflow(oa_data, ykb_form["u_OA报销流程ID"], user_id)
-    elif "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':# 其余的表单的更新操作
+    elif "u_OA流程ID" in ykb_form and ykb_form["u_OA流程ID"] != '':  # 其余的表单的更新操作
         return update_oa_workflow(oa_data, ykb_form["u_OA流程ID"], user_id)
     return oa.create_workflow(oa_data, user_id)
 
 
-
-
 if __name__ == "__main__":
     # sync_flow("ID01vow3pux1Cv", "XXX")
-    sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
+    # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
     # sync_flow("ID01uKDLD2rs2X", "差旅报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])
+    invoices = [
+        {
+            "itemIds": [
+                "ID01v9ierrCoaz"
+            ],
+            "taxRate": 0,
+            "invoiceId": "ID01owxnVpp2h1:031002200411:66950805",
+            "taxAmount": {
+                "standard": 2.45,
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            },
+            "approveAmount": {
+                "standard": "84.28",
+                "standardUnit": "元",
+                "standardScale": 2,
+                "standardSymbol": "¥",
+                "standardNumCode": "156",
+                "standardStrCode": "CNY"
+            }
+        }
+    ]
+    print(handle_invoices(invoices))

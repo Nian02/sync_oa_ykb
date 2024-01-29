@@ -44,6 +44,7 @@ WORKFLOW_ID_MAP = {
 
     "观测云合作伙伴申请流程": "168",
     "传统云资源合作伙伴申请流程": "142",
+    "云资源返利申请流流程": "143",
     "CloudCare云资源大使申请流程": "170",
 
     "立项审批流程": "120",
@@ -124,7 +125,7 @@ def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
                     detailTableMap[field["fieldName"]] = field
             data[DETAIL_TABLES].append(detailTableMap)
 
-    print(f"ykb.get_flow_details_by_code:{json.dumps(data, ensure_ascii=False)}")
+    print(f"oa.get_workflow:{json.dumps(data, ensure_ascii=False)}")
 
     return data
 
@@ -163,7 +164,7 @@ def main():
     # print(get_token())
     # print(gen_headers("601"))
     # update_workflow()
-    get_workflow(WORKFLOW_ID_MAP["付款申请流程（有合同）"], "92350", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["云资源返利申请流流程"], "92585", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)
