@@ -346,7 +346,7 @@ def main():
     # get_specificationId_by_id("ID01vviQDN7OSH")
     # get_dimension_by_name("阿里云计算有限公司")
     # get_dimension_by_name("银⾏")
-    get_flow_details_by_code("B23000017")
+    get_flow_details_by_code("B24000082")
     # get_payee_by_id("ID01ubOHugFdsr")
     # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_code("00000602")
@@ -362,7 +362,6 @@ def main():
     # download_invoices({"invoiceIds": ["ID01owxnVpp2h1:031002200411:66950805"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
     # notice_Ebot("ID01v4C5wSPswD","FLOW:1179438128:1858968873","refuse","驳回")
-
 
 
 if __name__ == "__main__":

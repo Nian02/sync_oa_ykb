@@ -6,7 +6,6 @@ from typing import Dict
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 
-
 URL = "https://oa.jiagouyun.com"
 ID = "453324"
 APPID = "be43d81d-759b-430f-b068-d309f8afed31"
@@ -28,7 +27,7 @@ WORKFLOW_ID_MAP = {
     "招待费申请流程": "200",
     "出差周末加班补贴申请流程": "201",
     "部门活动申请流程": "202",
-    
+
     "日常费用报销流程": "70",
     "差旅费用报销流程": "81",
     "日常项目报销流程": "165",
@@ -67,7 +66,7 @@ def create_rsa_pair():
 
 
 def regist():
-    r = requests.post(URL+"/api/ec/dev/auth/regist", verify=False,
+    r = requests.post(URL + "/api/ec/dev/auth/regist", verify=False,
                       headers={"appid": APPID, "cpk": base64.b64encode(PUB_KEY)})
     rsp = json.loads(r.text)
     print(rsp["secret"])
@@ -75,11 +74,11 @@ def regist():
 
 
 def get_token():
-    spk = RSA.importKey(b"-----BEGIN PUBLIC KEY-----\n"+SPK +
+    spk = RSA.importKey(b"-----BEGIN PUBLIC KEY-----\n" + SPK +
                         b"\n-----END PUBLIC KEY-----")  # 输入必须bytes类型，且必须带前缀后缀
     cipher_public = PKCS1_v1_5.new(spk)
     text_encrypted = cipher_public.encrypt(SECRET)
-    r = requests.post(URL+"/api/ec/dev/auth/applytoken", verify=False,
+    r = requests.post(URL + "/api/ec/dev/auth/applytoken", verify=False,
                       headers={"appid": APPID, "secret": base64.b64encode(text_encrypted)})
     rsp = r.json()
     print(f"oa.get_token: {rsp}")
@@ -87,7 +86,7 @@ def get_token():
 
 
 def gen_headers(user_id: str):
-    spk = RSA.importKey(b"-----BEGIN PUBLIC KEY-----\n"+SPK +
+    spk = RSA.importKey(b"-----BEGIN PUBLIC KEY-----\n" + SPK +
                         b"\n-----END PUBLIC KEY-----")  # 输入必须bytes类型，且必须带前缀后缀
     cipher_public = PKCS1_v1_5.new(spk)
     userid_encrypted = cipher_public.encrypt(user_id.encode())
@@ -99,8 +98,9 @@ def gen_headers(user_id: str):
 
 
 def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
-    r = requests.get(URL+f"/api/workflow/paService/getWorkflowRequest?workflowId={workflow_id}&requestId={request_id}",
-                     headers=gen_headers(user_id))
+    r = requests.get(
+        URL + f"/api/workflow/paService/getWorkflowRequest?workflowId={workflow_id}&requestId={request_id}",
+        headers=gen_headers(user_id))
     # print(f"oa.get_workflow: {r.text}")
     rsp = r.json()
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
@@ -130,26 +130,26 @@ def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
     return data
 
 
-def create_workflow(data: Dict, user_id:str):
-    r = requests.post(URL+f"/api/workflow/paService/doCreateRequest",
+def create_workflow(data: Dict, user_id: str):
+    r = requests.post(URL + f"/api/workflow/paService/doCreateRequest",
                       headers=gen_headers(user_id), data=json.dumps(data))
     print(f"oa.create_workflow data: {r.request.body}")
     rsp = r.json()
     if rsp["code"] is None or rsp["code"] != "SUCCESS":
         raise Exception(f"oa创建失败! oa.create_workflow rsp: {rsp}")
     # print(rsp["data"])
-    return rsp["data"]# 接口状态为SUCCESS,则data中包含生成的requestid
+    return rsp["data"]  # 接口状态为SUCCESS,则data中包含生成的requestid
 
 
 # update oa流程必须指定"Content-Type": "text/plain"，否则容易出现一些问题比如附件上传失败
-def update_workflow(data: Dict, user_id:str):
+def update_workflow(data: Dict, user_id: str):
     # data=json.dumps(data, ensure_ascii=False)
     headers = gen_headers(user_id)
     headers["Content-Type"] = "text/plain"
-    r = requests.post(URL+f"/api/workflow/paService/submitRequest",
+    r = requests.post(URL + f"/api/workflow/paService/submitRequest",
                       headers=headers, data=json.dumps(data))
-    print(f"oa.update_workflow data: {r.request.body}")
-    
+    print(f"oa.update_workflow data: {json.dumps(r)}")
+
     # 将r.request.body存储进文件oa_download.json里
     # filename='bycode.json'
     # with open(filename,'w') as file_obj:
@@ -160,11 +160,12 @@ def update_workflow(data: Dict, user_id:str):
         raise Exception(f"oa更新失败! oa.update_workflow rsp: {rsp}")
     return rsp["code"]
 
+
 def main():
     # print(get_token())
     # print(gen_headers("601"))
     # update_workflow()
-    get_workflow(WORKFLOW_ID_MAP["云资源返利申请流流程"], "92585", ZDJ_USERID)
+    get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "92581", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)

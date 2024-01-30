@@ -524,8 +524,8 @@ workflow_map_conf = {
                     "fyje": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件（差旅补贴没有invoiceForm字段）
                     "fjsc": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
-                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
-                            "invoiceForm"]) else "",
+                            "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                        "invoiceForm"]) else "",
                     # 火车席别/航空舱位/轮船舱型
                     "hczbhkcw": lambda item: \
                         train_map[item["feeTypeForm"]["u_火车席别"]] if "u_火车席别" in item["feeTypeForm"] \
@@ -697,8 +697,8 @@ workflow_map_conf = {
                         item["feeTypeForm"]["u_合作伙伴可多选"]) if "u_合作伙伴可多选" in item["feeTypeForm"] else "",
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
-                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
-                            "invoiceForm"]) else "",
+                            "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                        "invoiceForm"]) else "",
                     # 相关流程
                     "xglc": lambda item: item["feeTypeForm"]["u_OA流程ID"] if "u_OA流程ID" in item[
                         "feeTypeForm"] else "",
@@ -828,8 +828,8 @@ workflow_map_conf = {
                     "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
                     "fj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
-                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
-                            "invoiceForm"]) else "",
+                            "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                        "invoiceForm"]) else "",
                     # 相关出差流程
                     "xgccsq": lambda item: item["feeTypeForm"]["u_OA出差流程ID"] if "u_OA出差流程ID" in item[
                         "feeTypeForm"] else "",
@@ -982,8 +982,8 @@ workflow_map_conf = {
                     "fyxj": lambda item: float(item["feeTypeForm"]["amount"]["standard"]),
                     # 发票附件
                     "fpfj": lambda item: handle_invoices(item["feeTypeForm"]["invoiceForm"]["invoices"]) if (
-                                "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
-                            "invoiceForm"]) else "",
+                            "invoiceForm" in item["feeTypeForm"] and "invoices" in item["feeTypeForm"][
+                        "invoiceForm"]) else "",
                     # 客户名称
                     "khmc": lambda item: handle_multi_dimension(
                         item["feeTypeForm"]["u_客户可多选"]) if "u_客户可多选" in item["feeTypeForm"] else "",
