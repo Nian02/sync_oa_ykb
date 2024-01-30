@@ -201,6 +201,8 @@ def handle_invoices(invoices: list):
         decoded_filename = urllib.parse.unquote(item["fileName"])
         filename_parts = decoded_filename.split('-')
         filename = '-'.join(filename_parts[5:])
+        if not filename:
+            filename = decoded_filename
         oa_files.append({
             "filePath": f"base64:{base64.b64encode(r.content).decode()}",
             "fileName": filename,
@@ -1123,33 +1125,33 @@ if __name__ == "__main__":
     # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    # sync_flow("ID01uKDLD2rs2X", "差旅报销单")
+    sync_flow("ID01wh2Rj0XRdd", "招待报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])
-    invoices = [
-        {
-            "itemIds": [
-                "ID01v9ierrCoaz"
-            ],
-            "taxRate": 0,
-            "invoiceId": "ID01owxnVpp2h1:031002200411:66950805",
-            "taxAmount": {
-                "standard": 2.45,
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            },
-            "approveAmount": {
-                "standard": "84.28",
-                "standardUnit": "元",
-                "standardScale": 2,
-                "standardSymbol": "¥",
-                "standardNumCode": "156",
-                "standardStrCode": "CNY"
-            }
-        }
-    ]
-    print(handle_invoices(invoices))
+    # invoices = [
+    #     {
+    #         "itemIds": [
+    #             "ID01v9ierrCoaz"
+    #         ],
+    #         "taxRate": 0,
+    #         "invoiceId": "ID01owxnVpp2h1:031002200411:66950805",
+    #         "taxAmount": {
+    #             "standard": 2.45,
+    #             "standardUnit": "元",
+    #             "standardScale": 2,
+    #             "standardSymbol": "¥",
+    #             "standardNumCode": "156",
+    #             "standardStrCode": "CNY"
+    #         },
+    #         "approveAmount": {
+    #             "standard": "84.28",
+    #             "standardUnit": "元",
+    #             "standardScale": 2,
+    #             "standardSymbol": "¥",
+    #             "standardNumCode": "156",
+    #             "standardStrCode": "CNY"
+    #         }
+    #     }
+    # ]
+    # print(handle_invoices(invoices))
