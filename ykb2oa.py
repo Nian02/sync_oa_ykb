@@ -512,6 +512,8 @@ workflow_map_conf = {
                     # 附件数
                     "fpzs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 其他附件
+                    "qtfj": lambda item: handle_attachments(item["attachments"]),
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -672,6 +674,8 @@ workflow_map_conf = {
                     # 附件数
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 其他附件
+                    "qtfj": lambda item: handle_attachments(item["attachments"]),
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -816,6 +820,8 @@ workflow_map_conf = {
                     # 附件数
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 其他附件
+                    "qtfj": lambda item: handle_attachments(item["attachments"]),
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -970,6 +976,8 @@ workflow_map_conf = {
                     # 附件数
                     "zzfjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
+                    # 其他附件
+                    "qtfj": lambda item: handle_attachments(item["attachments"]),
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
