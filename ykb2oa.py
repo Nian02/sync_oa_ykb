@@ -513,7 +513,7 @@ workflow_map_conf = {
                     "fpzs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]),
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -675,7 +675,7 @@ workflow_map_conf = {
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]),
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -821,7 +821,7 @@ workflow_map_conf = {
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]),
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -977,7 +977,7 @@ workflow_map_conf = {
                     "zzfjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]),
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -1133,7 +1133,7 @@ if __name__ == "__main__":
     # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01wh2Rj0XRdd", "招待报销单")
+    sync_flow("ID01wsTFll1RkX", "差旅报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])
