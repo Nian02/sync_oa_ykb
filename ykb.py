@@ -339,30 +339,29 @@ def main():
 
     # print(get_access_token())
 
-    # get_flow_details("ID01vnkNgNgXFR")
+    # get_flow_details("ID01wpu8vhsUh1")
     # get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
-    # get_dimension_by_id("ID01oAWqT0ibLN")
+    # get_dimension_by_id("ID01wpu8vhsUh1")
     # get_fee_type_by_data("ID01vviQDN7OSH")
     # get_specificationId_by_id("ID01vviQDN7OSH")
     # get_dimension_by_name("阿里云计算有限公司")
     # get_dimension_by_name("银⾏")
-    get_flow_details_by_code("B24000082")
-    # get_payee_by_id("ID01ubOHugFdsr")
+    get_flow_details_by_code("B24000292")
+    # get_payee_by_id("ID01wpu8vhsUh1")
     # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_code("00000602")
 
     # get_staff_by_userid("601")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
-    # update_flow_data("ID01v4uWhIC95l", ZDJ_ID, {"form": {
-    #                  "u_\u6d41\u7a0b\u7f16\u53f7": "CCSQ-20231204-0001", "u_OA\u6d41\u7a0bID": "88884"}})
+    # update_flow_data("ID01wnYPNKn6Oz", ZDJ_ID, {"form": {"u_流程编号": "CLFYBX-20240122-0004", "u_OA报销流程ID": "92581"}})
     # update_flow_state("ID01uUDRzEALaD","")
     # get_flow_details("ID01uW3aQDxSLd")
     # get_flow_details("ID01uTfb0DSTxB")
-    # get_travelmanagement_by_id("ID01uLYCvjhVjF")
-    # download_invoices({"invoiceIds": ["ID01owxnVpp2h1:031002200411:66950805"]})
+    # get_travelmanagement_by_id("ID01wpu8vhsUh1")
+    # download_invoices({"invoiceIds": ["ID01owxnVpp2h1::24312000000016744470"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
     # notice_Ebot("ID01v4C5wSPswD","FLOW:1179438128:1858968873","refuse","驳回")
 
 
 if __name__ == "__main__":
-    main()
+    update_flow_data("ID01xAFy5CaEzR",ZDJ_ID, {"form": {"u_OA报销流程ID": "93969"}})

@@ -1133,7 +1133,7 @@ if __name__ == "__main__":
     # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01wsTFll1RkX", "差旅报销单")
+    sync_flow("ID01wG6yQWdGft", "日常费用报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])

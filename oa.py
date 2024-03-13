@@ -22,6 +22,7 @@ SPK = b"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnwc+BmBlWNd06P78W+R1qgK+PJER
 
 # OA各流程ID
 WORKFLOW_ID_MAP = {
+    "采购申请流程": "58",
     "油卡充值申请流程": "68",
     "出差申请流程": "199",
     "招待费申请流程": "200",

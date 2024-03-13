@@ -9,6 +9,7 @@ fee_type_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vviQDN7OSH",  # 对公付款
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vviQDN7OSH",  # 对公付款
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vviQDN7OSH",  # 对公付款
+    oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01vviQDN7OSH",  # 对公付款
 }
 
 # 主表费用类型ID映射
@@ -16,6 +17,7 @@ specificationId_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x:dc1aee0a9fb5033cc40de5c7653ea475495d8511",
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vvkP5k18Qf:cdafd0125a88866fcf83a7cde223d17558d0415c",
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vvj29Ns2Av:f831bbbc7f180a0d1f1801c79b721aa675329670",
+    oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01vviQDN7OSH:requisition:0080529e1ee89b5acdcd3eac730ce0458b387513",
 }
 
 # 表单名映射
@@ -23,6 +25,7 @@ title_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "付款单(有合同)",
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "付款单(无合同)",
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "云资源返利单",
+    oa.WORKFLOW_ID_MAP["采购申请流程"]: "采购申请单",
 }
 
 # 返佣方式映射
@@ -302,6 +305,23 @@ workflow_map_conf = {
             "noTaxAmount": lambda form: form["je"]["fieldValue"],
         },
     },
+    oa.WORKFLOW_ID_MAP["采购申请流程"]: {
+        "mainData": {
+            # 提交人
+            "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
+            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+            # 申请日期
+            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+            # 备注说明
+            "u_备注": lambda form: form["sgyy"]["fieldValue"],
+            # 流程编号
+            "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
+        },
+        "detailData": {
+            # 申请金额
+            "amount": lambda form: form["je"]["fieldValue"],
+        },
+    },
 }
 
 """
@@ -409,7 +429,7 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
 
 
 if __name__ == "__main__":
-    # update_flow("199","84023","601")
+    update_flow("81","93969","601","withdrawed")
     # print("201" in workflow_mapping)
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    sync_flow("143", "92585", "57", "archived")
+    # sync_flow("143", "92585", "57", "archived")
