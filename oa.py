@@ -6,6 +6,13 @@ from typing import Dict
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 
+from zeep import Client
+from zeep.transports import Transport
+import xmltodict
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import time
+
 URL = "https://oa.jiagouyun.com"
 ID = "453324"
 APPID = "be43d81d-759b-430f-b068-d309f8afed31"
@@ -19,6 +26,8 @@ PRIV_KEY = b"-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAz5A0baFycGDfQd/DMk
 SECRET = b"e5b4257a-255a-4e3a-89d3-b770330c9e97"
 # 服务端公钥，同上
 SPK = b"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnwc+BmBlWNd06P78W+R1qgK+PJERelIRSfRdbg6NJcnPWwAKGuIL3DP/v5u18qrCbvF/iDzNK4CkbB59tlUNtJTQ0XJZXAr/xv2+1DjpVV9XQOY+JLDNrNr7IgbqlpKWSblcsSJ14mhWRJfs0bzrLOIZ8MMgFHrYYf10AnlJa+8Cur58KL6a7SBKC1mQ8pk33aRMLnZzu4xR7wU+hT6QXLLFC8CA8xzketr4vlGHZdmCS8XmGr1LleJQ9uiHcJ2EH9emhspSlL97zidr33mb3v5/h1nDjv66gtEl/KnK2C2Xe0iK6cd879fRRZ+B4fo5ngeAuEh3ZzX+op/ll3NOwQIDAQAB"
+
+MODE_DATA_URL = "https://oa.jiagouyun.com/services/ModeDateService?wsdl"
 
 # OA各流程ID
 WORKFLOW_ID_MAP = {
@@ -162,11 +171,266 @@ def update_workflow(data: Dict, user_id: str):
     return rsp["code"]
 
 
+# --------------------------------- 以下为获取mode数据的函数 -----------------------------------------
+
+CUSTOMER_MODE_ID = 1  # 客户
+PROVIDER_MODE_ID = 46  # 供应商
+PARTNER_MODE_ID = 47  # 合作伙伴
+INCOME_CONTRACT_MODE_ID = 20  # 收入合同
+EXPENDITURE_CONTRACT_MODE_ID = 7 # 支出合同
+RELEVANT_PROJECT_MODE_ID = 61  # 相关立项申请
+
+session = requests.Session()
+session.verify = False  # 取消 https 认证
+transport = Transport(session=session)
+mode_data_client = Client(MODE_DATA_URL, transport=transport)
+
+DEBUG = False  # 是否开启调试
+
+
+def parse_response_to_dict(rsp) -> list:
+    if 'data' not in xmltodict.parse(rsp)['ROOT'].keys():
+        return []
+    """
+    data_list:
+    [
+        {
+            '@id': ...,
+            'handlers': {...},
+            'maintable': {...},
+            'detail':{...},
+        },
+        ...
+    ]    
+    """
+    data_list = xmltodict.parse(rsp)['ROOT']['data']
+    # data = json.loads(json.dumps(data_ordereddict)) # 有序字典转无序字典
+    return data_list if type(data_list) is list else [data_list]
+
+
+def process_data(data):
+    mode = {}
+    """
+    mode:
+    {
+        'id': ...,
+        'sqr': {
+            'label': ...,
+            'dbtype': ...,
+            'value': ...,
+            'showname': ...
+        },
+    }
+    """
+    mode['id'] = data['@id']
+    fields = data['maintable']['field']
+    for field in fields:
+        mode[field['filedname']] = {
+            "label": field['filedlabel'],
+            "dbtype": field['fileddbtype'],
+            "value": field['filedvalue'],
+            "showname": field['fieldshowname']
+        }
+    return mode
+
+
+def process_detail(data, mode):
+    mode['details'] = []
+    DEBUG and print(data['detail'])
+    if type(data['detail']) is dict:
+        if type(data['detail']['detailtable']) is not list:
+            data['detail']['detailtable'] = [data['detail']['detailtable']]
+        """
+        detailtable:
+        [
+            {
+              '@id': '0'
+            },
+            {
+                '@id': '...',
+                'row': [
+                    {
+                        '@id': '...',
+                        'field': [
+                            {
+                            'filedname': '...',
+                            'filedlabel': '...',
+                            'fileddbtype': '...',
+                            'filedvalue': '...',
+                            'fieldshowname': '...'
+                            },
+                            ...
+                        ]
+                    },
+                    ...
+                ]
+            },
+            ...
+        ]
+        """
+        for detailtable in data['detail']['detailtable']:
+            detail = []
+            if type(detailtable) is str or 'row' not in detailtable.keys():
+                continue
+            row_data = detailtable['row']
+            row_list = row_data if type(row_data) is list else [row_data]
+            for r in row_list:
+                row = {}
+                row['id'] = r['@id']
+                for field in r['field']:
+                    DEBUG and print(field)
+                    row[field['filedname']] = {
+                        "label": field['filedlabel'],
+                        "dbtype": field['fileddbtype'],
+                        "value": field['filedvalue'],
+                        "showname": field['fieldshowname']
+                    }
+                detail.append(row)
+            mode['details'].append(detail)
+    """
+    mode:
+    {
+        'id': ...,
+        'sqr': {
+            'label': ...,
+            'dbtype': ...,
+            'value': ...,
+            'showname': ...
+        },
+        ...
+        'details': [
+            [
+                {
+                    'id': ...,
+                    'field1': {
+                        'label': ...,
+                        'dbtype': ...,
+                        'value': ...,
+                        'showname': ...
+                    },
+                    ...
+                },
+                ...
+            ],
+            ...
+        ]
+    }
+    """
+    return mode
+
+
+"""
+Args:
+    mode_id: 表单ID
+    page_no: 当前页数
+    page_size: 每页记录数
+    record_count: 记录总数（小于等于0时自动计算记录总数）
+    userid: 当前用户
+    conditions: 查询条件
+    right: (y/n)是否受权限控制
+    is_return_detail: (y/n)是否返回明细表数据
+"""
+
+
+# 获取mode表单数据列表（分页）
+def get_all_mode_data_list(mode_id, page_no, page_size, record_count=0, userid=0, conditions="", right="n",
+                           is_return_detail="y"):
+    modes = []
+    # 返回的是一个xml文件
+    rsp = mode_data_client.service.getAllModeDataList(mode_id, page_no, page_size, record_count, userid, conditions,
+                                                      right, is_return_detail)
+    data_list = parse_response_to_dict(rsp)
+    """
+    data:
+    {
+        '@id': ...,
+        'handlers': {...},
+        'maintable': {...},
+        'detail':{...},
+    }
+    """
+    for data in data_list:
+        mode = process_data(data)
+        mode = process_detail(data, mode)
+        modes.append(mode)
+    time.sleep(1)
+    return modes
+
+
+# 获取mode表单数据总数
+def get_all_mode_data_count(mode_id, user_id=0, conditions="", right="n"):
+    rsp = mode_data_client.service.getAllModeDataCount(mode_id, user_id, conditions, right)
+    DEBUG and print(rsp)
+    return rsp
+
+
+# 获取客户mode数据
+def get_customer_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(CUSTOMER_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取客户mode数量
+def get_customer_count(conditions=""):
+    return get_all_mode_data_count(CUSTOMER_MODE_ID, conditions=conditions)
+
+
+# 获取供应商mode数据
+def get_provider_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(PROVIDER_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取供应商mode数量
+def get_provider_count(conditions=""):
+    return get_all_mode_data_count(PROVIDER_MODE_ID, conditions=conditions)
+
+
+# 获取合作伙伴mode数据
+def get_partner_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(PARTNER_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取合作伙伴mode数量
+def get_partner_count(conditions=""):
+    return get_all_mode_data_count(PARTNER_MODE_ID, conditions=conditions)
+
+
+# 获取收入合同mode数据
+def get_income_contract_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(INCOME_CONTRACT_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取收入合同mode数量
+def get_income_contract_count(conditions=""):
+    return get_all_mode_data_count(INCOME_CONTRACT_MODE_ID, conditions=conditions)
+
+
+# 获取支出合同mode数据
+def get_expenditure_contract_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(EXPENDITURE_CONTRACT_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取支出合同mode数量
+def get_expenditure_contract_count(conditions=""):
+    return get_all_mode_data_count(EXPENDITURE_CONTRACT_MODE_ID, conditions=conditions)
+
+
+# 获取相关立项申请mode数据
+def get_relevant_project_mode_data(page_no, page_size, conditions=""):
+    return get_all_mode_data_list(RELEVANT_PROJECT_MODE_ID, page_no, page_size, conditions=conditions)
+
+
+# 获取相关立项申请mode数量
+def get_relevant_project_count(conditions=""):
+    return get_all_mode_data_count(RELEVANT_PROJECT_MODE_ID, conditions=conditions)
+
+
 def main():
     # print(get_token())
     # print(gen_headers("601"))
     # update_workflow()
-    get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "92581", ZDJ_USERID)
+    # get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "92581", ZDJ_USERID)
+    start_date = (datetime.today() - relativedelta(months=1)).strftime("%Y-%m-%d")
+    get_expenditure_contract_mode_data(0, get_expenditure_contract_count(), conditions=f'modedatacreatedate > \'{start_date}\'')
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)

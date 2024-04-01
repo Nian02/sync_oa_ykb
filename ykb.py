@@ -40,11 +40,62 @@ def add_dimension_item(data: Dict) -> str:
     return rsp["id"]
 
 
-# 根据ID获取自定义档案项
+# 获取自定义档案类别（即合思桌面端 档案设置 > 扩展档案 界面列表中展示的那些档案大类。例如 项目 就是一个自定义档案类别。）
+def get_dimension() -> Dict:
+    r = requests.get(URL + f"/api/openapi/v1/dimensions?accessToken={get_access_token()}&start=0&count=100",
+                     headers={"content-type": "application/json", "Accept": "application/json"})
+    print(f"ykb.get_dimension url: {r.request.url}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.get_dimension: {r.status_code}-{r.text}")
+    print(f"ykb.get_dimension: {r.text}")
+    return r.json()
+
+
+# 获取自定义档案项（dimensionId对应的多个档案项）
+def get_dimension_by_dimensionid(dimensionId: str) -> Dict:
+    r = requests.get(
+        URL + f"/api/openapi/v1/dimensions/items?accessToken={get_access_token()}&start=0&count=100&dimensionId={dimensionId}&orderBy=code&orderByType=asc",
+        headers={"content-type": "application/json", "Accept": "application/json"})
+    print(f"ykb.get_dimension_by_id url: {r.request.url}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.get_dimension_by_id: {r.status_code}-{r.text}")
+    print(f"ykb.get_dimension_by_id: {r.text}")
+    return r.json()
+
+
+# 批量新增自定义档案项
+def add_dimension_items_by_batch(dimensionId: str, data: List[Dict]) -> List:
+    r = requests.post(URL + f"/api/openapi/v1.1/dimensions/items/batch?accessToken={get_access_token()}",
+                      headers={"content-type": "application/json",
+                               "Accept": "application/json"},
+                      data=json.dumps({"dimensionId": dimensionId, "itemListRequest": data}))
+    print(f"ykb.add_dimension_items_by_batch url: {r.request.url}")
+    print(f"ykb.add_dimension_items_by_batch data: {r.request.body}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.add_dimension_items_by_batch: {r.status_code}-{r.text}")
+    rsp = r.json()
+    return rsp["items"]
+
+
+# 更新自定义档案项（可以用id也可以用code）
+def update_dimension_item(id: str, data: Dict):
+    r = requests.put(URL + f"/api/openapi/v1.1/dimensions/items/{"$" + id}?accessToken={get_access_token()}",
+                     headers={"content-type": "application/json",
+                              "Accept": "application/json"},
+                     data=json.dumps(data))
+    print(f"ykb.update_dimension_item url: {r.request.url}")
+    print(f"ykb.update_dimension_item data: {r.request.body}")
+    if r.status_code != 200:
+        raise Exception(f"ykb.update_dimension_item: {r.status_code}-{r.text}")
+    print(f"ykb.update_dimension_item rsp: {r.text}")
+
+
+# 根据ID获取自定义档案项（查询id对应的单个档案项）
 def get_dimension_by_id(id: str) -> Dict:
     r = requests.get(URL + f"/api/openapi/v1/dimensions/getDimensionById?accessToken={get_access_token()}&id={id}",
                      headers={"content-type": "application/json", "Accept": "application/json"})
     print(f"ykb.get_dimension_by_id url: {r.request.url}")
+    print(f"ykb.get_dimension_by_id data: {r.request.body}")
     if r.status_code != 200:
         raise Exception(f"ykb.get_dimension_by_id: {r.status_code}-{r.text}")
     print(f"ykb.get_dimension_by_id: {r.text}")
@@ -324,7 +375,7 @@ def notice_Ebot(flowId: str, nodeId: str, action: str, comment: str):
     return r.json()
 
 
-def main():
+if __name__ == "__main__":
     # add_dimension_item({
     #     "dimensionId": DIMENSION_ID_MAP["客户"],
     #     "name": "测试测试",
@@ -341,19 +392,22 @@ def main():
 
     # get_flow_details("ID01wpu8vhsUh1")
     # get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
-    # get_dimension_by_id("ID01wpu8vhsUh1")
+    # get_dimension_by_dimensionid("ID01owxnVpp2h1:客户")
+    # print(get_dimension_by_name("中国联合网络通信有限公司重庆市分公司"))
     # get_fee_type_by_data("ID01vviQDN7OSH")
     # get_specificationId_by_id("ID01vviQDN7OSH")
     # get_dimension_by_name("阿里云计算有限公司")
     # get_dimension_by_name("银⾏")
-    get_flow_details_by_code("B24000292")
+    # get_flow_details_by_code("B24000370")
+
     # get_payee_by_id("ID01wpu8vhsUh1")
     # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_code("00000602")
-
+    add_dimension_items_by_batch("ID01owxnVpp2h1:客户",[])
+    # update_dimension_item("ID01owxnVpp2h1:客户",{"name":"上海捷信医药科技股份有限公司","code":"100","parentId":""})
     # get_staff_by_userid("601")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
-    # update_flow_data("ID01wnYPNKn6Oz", ZDJ_ID, {"form": {"u_流程编号": "CLFYBX-20240122-0004", "u_OA报销流程ID": "92581"}})
+    # update_flow_data("ID01xT2OPLzkT5", ZDJ_ID, {"form": {"u_\u6d41\u7a0b\u7f16\u53f7": "CLFYBX-20240318-0006"}})
     # update_flow_state("ID01uUDRzEALaD","")
     # get_flow_details("ID01uW3aQDxSLd")
     # get_flow_details("ID01uTfb0DSTxB")
@@ -361,7 +415,3 @@ def main():
     # download_invoices({"invoiceIds": ["ID01owxnVpp2h1::24312000000016744470"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
     # notice_Ebot("ID01v4C5wSPswD","FLOW:1179438128:1858968873","refuse","驳回")
-
-
-if __name__ == "__main__":
-    update_flow_data("ID01xAFy5CaEzR",ZDJ_ID, {"form": {"u_OA报销流程ID": "93969"}})

@@ -3,6 +3,14 @@ import oa
 import ykb
 import time
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+CUSTOMER_DIMENSION_ID = "ID01owxnVpp2h1:客户"
+PROVIDER_DIMENSION_ID = "ID01owxnVpp2h1:供应商"
+PARTNER_DIMENSION_ID = "ID01owxnVpp2h1:合作伙伴"
+INCOME_DIMENSION_MODE_ID = "ID01owxnVpp2h1:收入合同"
+EXPENDITURE_DIMENSION_MODE_ID = "ID01owxnVpp2h1:支出合同"
+RELEVANT_DIMENSION_MODE_ID = "ID01owxnVpp2h1:相关立项申请"
 
 # 费用类型ID映射，通过这个id可以查询明细表比如expense的specificationId
 fee_type_map = {
@@ -428,8 +436,219 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
     return ykb.create_flow_data("true", ykb_data)
 
 
+# ----------------------------------------同步档案项---------------------------------------------
+
+
+# 装饰器函数，当使用 @func_log 装饰一个函数时，会自动调用wrapper，打印日志
+def func_log(func):
+    def wrapper(*args, **kwargs):
+        print(f"++++++++++++ {func.__name__} begin ++++++++++++")
+        print(f"===> args:{args}, kwargs:{kwargs}")
+        ret = func(*args, **kwargs)
+        print(f"<=== return:{ret}")
+        print(f"------------ {func.__name__} end ------------")
+        return ret
+
+    return wrapper
+
+
+@func_log
+def sync_customer_mode_data():
+    # 获取一个星期内的客户mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    customers = oa.get_customer_mode_data(0, oa.get_customer_count(),
+                                          conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    for customer in customers:
+        data = {
+            "name": customer["khmc"]["value"],
+            "code": customer["id"],
+            "parentId": "",
+        }
+        id = get_corporationId_by_name(data["name"], "客户")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(CUSTOMER_DIMENSION_ID, data_list)
+    else:
+        print("没有需要同步的客户mode数据")
+
+
+@func_log
+def sync_provider_mode_data():
+    # 获取一个星期内的客户mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    providers = oa.get_provider_mode_data(0, oa.get_provider_count(),
+                                          conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    for provider in providers:
+        data = {
+            "name": provider["gysmc"]["value"],
+            "code": provider["id"],
+            "parentId": "",
+        }
+        id = get_corporationId_by_name(data["name"], "供应商")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(PROVIDER_DIMENSION_ID, data_list)
+    else:
+        print("没有需要同步的供应商mode数据")
+
+
+@func_log
+def sync_partner_mode_data():
+    # 获取一个星期内的客户mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    partners = oa.get_partner_mode_data(0, oa.get_partner_count(),
+                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    for partner in partners:
+        data = {
+            "name": partner["hzhbmc"]["value"],
+            "code": partner["id"],
+            "parentId": "",
+        }
+        id = get_corporationId_by_name(data["name"], "合作伙伴")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(PARTNER_DIMENSION_ID, data_list)
+    else:
+        print("没有需要同步的合作伙伴mode数据")
+
+# TODO: 收入合同之后的都还没有同步
+@func_log
+def sync_income_contract_mode_data():
+    # 获取一个星期内的收入合同mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    income_contracts = oa.get_income_contract_mode_data(0, oa.get_income_contract_count(),
+                                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    children_data_list = []
+    code_id_dict = {}  # 存储合同的id值，以该合同的合同编号作为key
+    for income_contract in income_contracts:
+        data = {
+            "name": income_contract["htmc"]["value"],  # 合同名称
+            "code": income_contract["htbh"]["value"],  # 合同编号
+            "parentId": "",
+        }
+        code_id_dict[data["code"]] = income_contract["id"]
+        id = get_corporationId_by_name(data["name"], "收入合同")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(INCOME_DIMENSION_MODE_ID, data_list)
+        # 为刚刚添加的档案项添加子项
+        for data in data_list:
+            id = get_corporationId_by_name(data["name"], "收入合同")
+            child_data = {
+                "name": data["code"],  # 合同编号
+                "code": code_id_dict[data["code"]],  # 合同id值
+                "parentId": id,  # 档案项的id值
+            }
+            children_data_list.append(child_data)
+        ykb.add_dimension_items_by_batch(INCOME_DIMENSION_MODE_ID, children_data_list)
+    else:
+        print("没有需要同步的收入合同mode数据")
+
+
+@func_log
+def sync_expenditure_contract_mode_data():
+    # 获取一个星期内的支出合同mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    expenditure_contracts = oa.get_expenditure_contract_mode_data(0, oa.get_expenditure_contract_count(),
+                                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    children_data_list = []
+    code_id_dict = {}  # 存储合同的id值，以该合同的合同编号作为key
+    for expenditure_contract in expenditure_contracts:
+        data = {
+            "name": expenditure_contract["htmc"]["value"],  # 合同名称
+            "code": expenditure_contract["htbh"]["value"],  # 合同编号
+            "parentId": "",
+        }
+        code_id_dict[data["code"]] = expenditure_contract["id"]
+        id = get_corporationId_by_name(data["name"], "支出合同")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(EXPENDITURE_DIMENSION_MODE_ID, data_list)
+        # 为刚刚添加的档案项添加子项
+        for data in data_list:
+            id = get_corporationId_by_name(data["name"], "支出合同")
+            child_data = {
+                "name": data["code"],  # 合同编号
+                "code": code_id_dict[data["code"]],  # 合同id值
+                "parentId": id,  # 档案项的id值
+            }
+            children_data_list.append(child_data)
+        ykb.add_dimension_items_by_batch(EXPENDITURE_DIMENSION_MODE_ID, children_data_list)
+    else:
+        print("没有需要同步的支出合同mode数据")
+
+
+@func_log
+def sync_relevant_project_mode_data():
+    # 获取一个星期内的相关立项申请mode数据
+    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    expenditure_contracts = oa.get_relevant_project_mode_data(0, oa.get_relevant_project_count(),
+                                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+    data_list = []
+    children_data_list = []
+    code_id_dict = {}  # 存储OA立项流程值，以该项目的项目编号作为key
+    for expenditure_contract in expenditure_contracts:
+        data = {
+            "name": expenditure_contract["xmmc"]["value"],  # 项目名称
+            "code": expenditure_contract["xmbh"]["value"],  # 项目编号
+            "parentId": "",
+        }
+        code_id_dict[data["code"]] = expenditure_contract["oalxlcid"]["value"]
+        id = get_corporationId_by_name(data["name"], "相关立项申请")
+        # 说明该档案项没有存储过
+        if id == "":
+            data_list.append(data)
+        # 跳过这个档案项
+        else:
+            continue
+    if len(data_list) > 0:
+        ykb.add_dimension_items_by_batch(RELEVANT_DIMENSION_MODE_ID, data_list)
+        # 为刚刚添加的档案项添加子项
+        for data in data_list:
+            id = get_corporationId_by_name(data["name"], "相关立项申请")
+            child_data = {
+                "name": data["code"],  # 项目编号
+                "code": code_id_dict[data["code"]],  # OA立项流程ID
+                "parentId": id,  # 档案项的id值
+            }
+            children_data_list.append(child_data)
+        ykb.add_dimension_items_by_batch(RELEVANT_DIMENSION_MODE_ID, children_data_list)
+    else:
+        print("没有需要同步的相关立项申请mode数据")
+
+
 if __name__ == "__main__":
-    update_flow("81","93969","601","withdrawed")
+    sync_income_contract_mode_data()
     # print("201" in workflow_mapping)
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
     # sync_flow("143", "92585", "57", "archived")
