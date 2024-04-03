@@ -158,7 +158,7 @@ def update_workflow(data: Dict, user_id: str):
     headers["Content-Type"] = "text/plain"
     r = requests.post(URL + f"/api/workflow/paService/submitRequest",
                       headers=headers, data=json.dumps(data))
-    print(f"oa.update_workflow data: {json.dumps(r)}")
+    print(f"oa.update_workflow data: {r.request.body}")
 
     # 将r.request.body存储进文件oa_download.json里
     # filename='bycode.json'

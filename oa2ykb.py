@@ -20,12 +20,12 @@ fee_type_map = {
     oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01vviQDN7OSH",  # 对公付款
 }
 
-# 主表费用类型ID映射
+# 主表费用类型ID映射，通过这个id可以查询主表的specificationId
 specificationId_map = {
-    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x:dc1aee0a9fb5033cc40de5c7653ea475495d8511",
-    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vvkP5k18Qf:cdafd0125a88866fcf83a7cde223d17558d0415c",
-    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vvj29Ns2Av:f831bbbc7f180a0d1f1801c79b721aa675329670",
-    oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01vviQDN7OSH:requisition:0080529e1ee89b5acdcd3eac730ce0458b387513",
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x",
+    oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vvkP5k18Qf",
+    oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vvj29Ns2Av",
+    oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01wBiqmTV183",
 }
 
 # 表单名映射
@@ -55,7 +55,7 @@ rebate_cycle_map = {
 def handle_multi_dimension(code: str) -> str:
     if not code:
         return ""
-    return ykb.get_dimension_by_code(code)["id"]
+    return ykb.get_dimension_by_code(code)[0]["id"]
 
 
 # 将时间戳格式转换成 %Y-%m-%d 格式
@@ -77,6 +77,18 @@ def get_corporationId_by_name(name: str, dimension_name: str) -> str:
     if not name:
         return ""
     form = ykb.get_dimension_by_name(name)
+    # 遍历form字段，若字段"dimensionId"的:后面是对应dimension_name比如"法人实体"，则返回该字段的"id"
+    for item in form:
+        if item["dimensionId"].split(":")[1] == dimension_name:
+            return item["id"]
+    return ""
+
+
+# 通过code获取对应ykb里dimension_name的id
+def get_corporationId_by_code(code: str, dimension_name: str) -> str:
+    if not code:
+        return ""
+    form = ykb.get_dimension_by_code(code)
     # 遍历form字段，若字段"dimensionId"的:后面是对应dimension_name比如"法人实体"，则返回该字段的"id"
     for item in form:
         if item["dimensionId"].split(":")[1] == dimension_name:
@@ -393,7 +405,7 @@ def prepare_ykb_data(oa_data, oa_workflowId):
         ykb_data["form"][name] = mapper(oa_data[oa.MAIN_TABLE])
     # 添加其余的字段
     ykb_data["form"]["title"] = title_map[oa_workflowId]
-    ykb_data["form"]["specificationId"] = specificationId_map[oa_workflowId]
+    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(specificationId_map[oa_workflowId])["id"]
     ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
 
     return ykb_data
@@ -454,8 +466,8 @@ def func_log(func):
 
 @func_log
 def sync_customer_mode_data():
-    # 获取一个星期内的客户mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取客户mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     customers = oa.get_customer_mode_data(0, oa.get_customer_count(),
                                           conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -465,9 +477,9 @@ def sync_customer_mode_data():
             "code": customer["id"],
             "parentId": "",
         }
-        id = get_corporationId_by_name(data["name"], "客户")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "客户")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -480,8 +492,8 @@ def sync_customer_mode_data():
 
 @func_log
 def sync_provider_mode_data():
-    # 获取一个星期内的客户mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取供应商mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     providers = oa.get_provider_mode_data(0, oa.get_provider_count(),
                                           conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -491,9 +503,9 @@ def sync_provider_mode_data():
             "code": provider["id"],
             "parentId": "",
         }
-        id = get_corporationId_by_name(data["name"], "供应商")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "供应商")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -506,8 +518,8 @@ def sync_provider_mode_data():
 
 @func_log
 def sync_partner_mode_data():
-    # 获取一个星期内的客户mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取合作伙伴mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     partners = oa.get_partner_mode_data(0, oa.get_partner_count(),
                                         conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -517,9 +529,9 @@ def sync_partner_mode_data():
             "code": partner["id"],
             "parentId": "",
         }
-        id = get_corporationId_by_name(data["name"], "合作伙伴")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "合作伙伴")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -529,11 +541,11 @@ def sync_partner_mode_data():
     else:
         print("没有需要同步的合作伙伴mode数据")
 
-# TODO: 收入合同之后的都还没有同步
+
 @func_log
 def sync_income_contract_mode_data():
-    # 获取一个星期内的收入合同mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取收入合同mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     income_contracts = oa.get_income_contract_mode_data(0, oa.get_income_contract_count(),
                                                         conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -546,9 +558,9 @@ def sync_income_contract_mode_data():
             "parentId": "",
         }
         code_id_dict[data["code"]] = income_contract["id"]
-        id = get_corporationId_by_name(data["name"], "收入合同")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "收入合同")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -557,7 +569,7 @@ def sync_income_contract_mode_data():
         ykb.add_dimension_items_by_batch(INCOME_DIMENSION_MODE_ID, data_list)
         # 为刚刚添加的档案项添加子项
         for data in data_list:
-            id = get_corporationId_by_name(data["name"], "收入合同")
+            id = get_corporationId_by_code(data["code"], "收入合同")
             child_data = {
                 "name": data["code"],  # 合同编号
                 "code": code_id_dict[data["code"]],  # 合同id值
@@ -571,10 +583,10 @@ def sync_income_contract_mode_data():
 
 @func_log
 def sync_expenditure_contract_mode_data():
-    # 获取一个星期内的支出合同mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取支出合同mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     expenditure_contracts = oa.get_expenditure_contract_mode_data(0, oa.get_expenditure_contract_count(),
-                                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+                                                                  conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
     children_data_list = []
     code_id_dict = {}  # 存储合同的id值，以该合同的合同编号作为key
@@ -585,9 +597,9 @@ def sync_expenditure_contract_mode_data():
             "parentId": "",
         }
         code_id_dict[data["code"]] = expenditure_contract["id"]
-        id = get_corporationId_by_name(data["name"], "支出合同")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "支出合同")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -596,7 +608,7 @@ def sync_expenditure_contract_mode_data():
         ykb.add_dimension_items_by_batch(EXPENDITURE_DIMENSION_MODE_ID, data_list)
         # 为刚刚添加的档案项添加子项
         for data in data_list:
-            id = get_corporationId_by_name(data["name"], "支出合同")
+            id = get_corporationId_by_code(data["code"], "支出合同")
             child_data = {
                 "name": data["code"],  # 合同编号
                 "code": code_id_dict[data["code"]],  # 合同id值
@@ -610,10 +622,10 @@ def sync_expenditure_contract_mode_data():
 
 @func_log
 def sync_relevant_project_mode_data():
-    # 获取一个星期内的相关立项申请mode数据
-    start_date = (datetime.today() - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+    # 获取相关立项申请mode数据
+    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
     expenditure_contracts = oa.get_relevant_project_mode_data(0, oa.get_relevant_project_count(),
-                                                        conditions=f'modedatacreatedate > \'{start_date}\'')
+                                                              conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
     children_data_list = []
     code_id_dict = {}  # 存储OA立项流程值，以该项目的项目编号作为key
@@ -624,9 +636,9 @@ def sync_relevant_project_mode_data():
             "parentId": "",
         }
         code_id_dict[data["code"]] = expenditure_contract["oalxlcid"]["value"]
-        id = get_corporationId_by_name(data["name"], "相关立项申请")
-        # 说明该档案项没有存储过
-        if id == "":
+        id = get_corporationId_by_code(data["code"], "相关立项申请")
+        # 说明该档案项没有存储过，且name和code不为空
+        if id == "" and data["name"] and data["code"]:
             data_list.append(data)
         # 跳过这个档案项
         else:
@@ -635,7 +647,7 @@ def sync_relevant_project_mode_data():
         ykb.add_dimension_items_by_batch(RELEVANT_DIMENSION_MODE_ID, data_list)
         # 为刚刚添加的档案项添加子项
         for data in data_list:
-            id = get_corporationId_by_name(data["name"], "相关立项申请")
+            id = get_corporationId_by_code(data["code"], "相关立项申请")
             child_data = {
                 "name": data["code"],  # 项目编号
                 "code": code_id_dict[data["code"]],  # OA立项流程ID
@@ -648,7 +660,14 @@ def sync_relevant_project_mode_data():
 
 
 if __name__ == "__main__":
-    sync_income_contract_mode_data()
+    # sync_relevant_project_mode_data()
+    # 	ZY20231222617	ZY20240219654
+    # sync_expenditure_contract_mode_data()
+    # sync_income_contract_mode_data()
+    # sync_provider_mode_data()
+    # sync_partner_mode_data()
+    # sync_customer_mode_data()
     # print("201" in workflow_mapping)
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    # sync_flow("143", "92585", "57", "archived")
+    sync_flow("76", "94131", "755", "archived")
+    # get_corporationId_by_name("友邦人寿23年9-11月+pe运维服务项目", "相关立项申请")

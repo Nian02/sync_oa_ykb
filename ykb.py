@@ -79,7 +79,7 @@ def add_dimension_items_by_batch(dimensionId: str, data: List[Dict]) -> List:
 
 # 更新自定义档案项（可以用id也可以用code）
 def update_dimension_item(id: str, data: Dict):
-    r = requests.put(URL + f"/api/openapi/v1.1/dimensions/items/{"$" + id}?accessToken={get_access_token()}",
+    r = requests.put(URL + f"/api/openapi/v1.1/dimensions/items/${id}?accessToken={get_access_token()}",
                      headers={"content-type": "application/json",
                               "Accept": "application/json"},
                      data=json.dumps(data))
@@ -111,7 +111,7 @@ def get_dimension_by_code(code: str) -> Dict:
     if r.status_code != 200:
         raise Exception(f"ykb.get_dimension_by_code: {r.status_code}-{r.text}")
     print(f"ykb.get_dimension_by_code: {r.text}")
-    return r.json()["items"][0]
+    return r.json()["items"]
 
 
 # 根据名称获取自定义档案项
@@ -228,7 +228,7 @@ def get_flow_details_by_code(code: str) -> Dict:
     return rsp["value"]
 
 
-# 通过id获取费用类型明细表的expenseSpecificationId
+# 通过id获取费用类型明细表的SpecificationId
 def get_specificationId_by_id(data: str) -> str:
     r = requests.post(
         URL + f"/api/openapi/v2/specifications/feeType/byIdsAndCodes?accessToken={get_access_token(
@@ -254,22 +254,27 @@ def get_specificationId_by_id(data: str) -> str:
 #     return r.json()
 
 
-# def get_specifications(type: str) -> List[Dict]:
-#     r = requests.get(URL+f"/api/openapi/v1/specifications/latestByType?accessToken={get_access_token()}&type={type}",
-#                      headers={"content-type": "application/json", "Accept": "application/json"})
-#     if r.status_code != 200:
-#         raise Exception(f"ykb.get_specifications: {r.status_code}-{r.text}")
-#     rsp = r.json()
-#     return rsp["items"]
+# 获取当前版本单据模板列表
+def get_specifications(type: str) -> List[Dict]:
+    r = requests.get(URL+f"/api/openapi/v1/specifications/latestByType?accessToken={get_access_token()}&type={type}",
+                     headers={"content-type": "application/json", "Accept": "application/json"})
+    if r.status_code != 200:
+        raise Exception(f"ykb.get_specifications: {r.status_code}-{r.text}")
+    print(f"ykb.get_specifications: {r.text}")
+
+    rsp = r.json()
+    return rsp["items"]
 
 
-# def get_specification_by_id(id: str) -> List[Dict]:
-#     r = requests.get(URL+f"/api/openapi/v2/specifications/byIds/[{id}]?accessToken={get_access_token()}",
-#                      headers={"content-type": "application/json", "Accept": "application/json"})
-#     if r.status_code != 200:
-#         raise Exception(f"ykb.get_specification_by_id: {r.status_code}-{r.text}")
-#     rsp = r.json()
-#     return rsp["items"]
+# 根据模板ID获取模板信息（主表的）
+def get_specification_by_id(id: str) -> Dict:
+    r = requests.get(URL+f"/api/openapi/v2/specifications/byIds/[{id}]?accessToken={get_access_token()}",
+                     headers={"content-type": "application/json", "Accept": "application/json"})
+    if r.status_code != 200:
+        raise Exception(f"ykb.get_specification_by_id: {r.status_code}-{r.text}")
+    print(f"ykb.get_specification_by_id: {r.text}")
+    rsp = r.json()
+    return rsp["items"][0]
 
 
 # 审批单据，更新ykb表单状态
@@ -388,9 +393,9 @@ if __name__ == "__main__":
 
     # get_specification_by_id(data["form"]["specificationId"].split(":")[0])
 
-    # print(get_access_token())
+    # get_specification_by_id("ID01vvcdW1HMzd")
 
-    # get_flow_details("ID01wpu8vhsUh1")
+    # get_dimension_by_code("ID01xSUX1atUyX")
     # get_dimension_by_name("上海观测未来信息技术有限公司北京分公司")
     # get_dimension_by_dimensionid("ID01owxnVpp2h1:客户")
     # print(get_dimension_by_name("中国联合网络通信有限公司重庆市分公司"))
@@ -398,12 +403,13 @@ if __name__ == "__main__":
     # get_specificationId_by_id("ID01vviQDN7OSH")
     # get_dimension_by_name("阿里云计算有限公司")
     # get_dimension_by_name("银⾏")
-    # get_flow_details_by_code("B24000370")
-
+    # get_flow_details_by_code("B24000501")
+    # get_specifications("requisition")
+    print(get_specification_by_id("ID01wBiqmTV183")["id"])
     # get_payee_by_id("ID01wpu8vhsUh1")
     # update_flow_state("ID01v4uWhIC95l", {"approveId": "ID01owxnVpp2h1:ID01oycg2jFrIP", "action": {"name": "freeflow.reject","resubmitMethod": "TO_REJECTOR"}})
     # get_staff_by_code("00000602")
-    add_dimension_items_by_batch("ID01owxnVpp2h1:客户",[])
+    # add_dimension_items_by_batch("ID01owxnVpp2h1:客户",[])
     # update_dimension_item("ID01owxnVpp2h1:客户",{"name":"上海捷信医药科技股份有限公司","code":"100","parentId":""})
     # get_staff_by_userid("601")
     # get_travelmanagement_by_entityid("fa10f678286c6d8c8bc0")
