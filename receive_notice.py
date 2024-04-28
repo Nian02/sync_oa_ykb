@@ -60,7 +60,8 @@ def receive_ykb_notice(flowId: str, formSpecification: dict, nodeId: str = "", m
                        corporationId: str = ""):
     print(
         f'flowId:{flowId}, nodeId:{nodeId}, messageId:{messageId}, corporationId:{corporationId}, formSpecification:{formSpecification}')
-
+    if flowId == "ID01xSUX1atUyX":
+        return
     try:
         # ykb.notice_Ebot(flowId, nodeId, "accept", "同意")
         data = ykb2oa.sync_flow(flowId, formSpecification["specificationName"])  # data是OA的id
