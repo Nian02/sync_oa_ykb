@@ -228,8 +228,8 @@ def get_flow_details_by_code(code: str) -> Dict:
     return rsp["value"]
 
 
-# 通过id获取费用类型明细表的SpecificationId
-def get_specificationId_by_id(data: str) -> str:
+# 通过id获取费用类型或采购类型的明细表的SpecificationId
+def get_specificationId_by_id(data: str, type: str) -> str:
     r = requests.post(
         URL + f"/api/openapi/v2/specifications/feeType/byIdsAndCodes?accessToken={get_access_token(
         )}", headers={"content-type": "application/json", "Accept": "application/json"},
@@ -239,7 +239,7 @@ def get_specificationId_by_id(data: str) -> str:
         r.status_code}-{r.text}")
     print(f"ykb.get_specificationId_by_id: {r.text}")
     rsp = r.json()
-    return rsp["items"][0]["expenseSpecificationId"]
+    return rsp["items"][0][type]
 
 
 # # 通过id获取费用类型主表的specificationId
@@ -403,7 +403,7 @@ if __name__ == "__main__":
     # get_specificationId_by_id("ID01vviQDN7OSH")
     # get_dimension_by_name("阿里云计算有限公司")
     # get_dimension_by_name("银⾏")
-    # get_flow_details_by_code("B23000214")
+    get_flow_details_by_code("S24000364")
     # get_specifications("requisition")
     # get_specification_by_id("ID01vvkP5k18Qf")
     # get_payee_by_id("ID01wpu8vhsUh1")
@@ -417,7 +417,8 @@ if __name__ == "__main__":
     # update_flow_state("ID01uUDRzEALaD","")
     # get_flow_details("ID01uW3aQDxSLd")
     # get_flow_details("ID01uTfb0DSTxB")
-    get_travelmanagement_by_id("ID01xGVqXMQ5vp")
+    # get_travelmanagement_by_id("ID01yDELyGQCV9")
+    # get_specificationId_by_id("ID01vviQDN7OSH")
     # download_invoices({"invoiceIds": ["ID01owxnVpp2h1::24312000000016744470"]})
     # print((get_privatecar_by_id("ID01ubOHugFdsr"))["E_fa10f678286c6d8c8bc0_出发地"])
     # notice_Ebot("ID01v4C5wSPswD","FLOW:1179438128:1858968873","refuse","驳回")

@@ -331,7 +331,7 @@ workflow_map_conf = {
             "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
             # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
             # 申请日期
-            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+            "requisitionDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
             # 备注说明
             "u_备注": lambda form: form["sgyy"]["fieldValue"],
             # 流程编号
@@ -429,11 +429,15 @@ def prepare_detail_data(oa_data, oa_workflowId):
     # if oa_workflowId == oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]:
     detail = {
         "feeTypeId": fee_type_map[oa_workflowId],
-        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId]),
+        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "requisitionSpecificationId") if oa_workflowId == oa.WORKFLOW_ID_MAP["采购申请流程"]
+        else ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "expenseSpecificationId"),
         "feeTypeForm": {},
     }
     for name, mapper in workflow_map_conf[oa_workflowId]["detailData"].items():
-        amount = mapper(oa_data[oa.MAIN_TABLE])
+        if oa_workflowId == oa.WORKFLOW_ID_MAP["采购申请流程"]:
+            amount = mapper(oa_data[oa.DETAIL_TABLES][0])
+        else:
+            amount = mapper(oa_data[oa.MAIN_TABLE])
         detail["feeTypeForm"][name] = create_amount_structure(amount)
     details.append(detail)
 
@@ -669,5 +673,5 @@ if __name__ == "__main__":
     # sync_customer_mode_data()
     # print("201" in workflow_mapping)
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    sync_flow("76", "94131", "755", "archived")
+    sync_flow("58", "96996", "601", "archived")
     # get_corporationId_by_name("友邦人寿23年9-11月+pe运维服务项目", "相关立项申请")

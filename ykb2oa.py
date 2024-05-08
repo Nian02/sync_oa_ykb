@@ -117,7 +117,11 @@ travel_subsidy_code = {
 }
 
 
-# 将时间戳格式转换成 %Y-%m-%d 格式
+# 将时间戳格式转换成 %Y-%m-%d %H:%M格式
+def ykb_date_2_oa_datetime(timestamp: int) -> str:
+    return time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp / 1000))
+
+
 def ykb_date_2_oa_date(timestamp: int) -> str:
     # 毫秒级时间戳要除于1000
     return time.strftime("%Y-%m-%d", time.localtime(timestamp / 1000))
@@ -186,6 +190,27 @@ def handle_attachments(attachments: list):
 def get_dimension_name(id: str):
     return ykb.get_dimension_by_id(id)["name"]
 
+
+economy_codes = ["Y", "S", "B", "H", "K", "L", "M", "N", "Q", "T", "X", "U", "E", "W", "G"]
+
+# 飞机席别映射
+flight_type_map = {
+    "F": "头等舱",
+    "A": "头等舱",
+    "C": "公务舱",
+    "D": "公务舱",
+    "V": "常旅专用舱",
+    "R1": "商务舱",
+}
+
+
+def get_seat_type(code):
+    if code in economy_codes:
+        return "经济舱"
+    else:
+        return flight_type_map.get(code, code)
+
+
 # 获取行程订单数据
 def get_travelmanagement_data(Id: str, code: str, type: str):
     data = ykb.get_travelmanagement_by_id(Id)["items"][0]["form"]
@@ -203,7 +228,7 @@ def get_travelmanagement_data(Id: str, code: str, type: str):
         "COST211": {  # 飞机
             "cfd": "E_cb1044a29ce187b83bc0_出发机场",
             "mdd": "E_cb1044a29ce187b83bc0_到达机场",
-            "xb": "E_cb1044a29ce187b83bc0_舱位类型",
+            "xb": get_seat_type("E_cb1044a29ce187b83bc0_舱位类型"),
             "cfsj": "E_cb1044a29ce187b83bc0_出发时间",
             "ddsj": "E_cb1044a29ce187b83bc0_到达时间",
             "zflx": "E_cb1044a29ce187b83bc0_支付方式"
@@ -228,7 +253,6 @@ def get_travelmanagement_data(Id: str, code: str, type: str):
         return data[code_type_map[code][type]]
     else:
         return ""
-
 
 
 # 处理发票同步
@@ -557,7 +581,9 @@ workflow_map_conf = {
                     "fpzs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in
+                                                                                                   item[
+                                                                                                       "feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -672,19 +698,37 @@ workflow_map_conf = {
                     "kdkse": lambda item: float(item["feeTypeForm"]["taxAmount"]["standard"]) if "taxAmount" in item[
                         "feeTypeForm"] else "",
                     # 出发地
-                    "cfd": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "cfd") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "cfd": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                  item["feeType"]["code"], "cfd") if "u_行程订单" in
+                                                                                                     item[
+                                                                                                         "feeTypeForm"] else "",
                     # 目的地
-                    "mdd": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "mdd") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "mdd": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                  item["feeType"]["code"], "mdd") if "u_行程订单" in
+                                                                                                     item[
+                                                                                                         "feeTypeForm"] else "",
                     # 出发时间
-                    "cfsj": lambda item: ykb_date_2_oa_date(get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "cfsj")) if "u_行程订单" in item["feeTypeForm"] else "",
+                    "cfsj": lambda item: ykb_date_2_oa_datetime(
+                        get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"],
+                                                  "cfsj")) if "u_行程订单" in item["feeTypeForm"] else "",
                     # 到达时间
-                    "ddsj": lambda item: ykb_date_2_oa_date(get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "ddsj")) if "u_行程订单" in item["feeTypeForm"] else "",
+                    "ddsj": lambda item: ykb_date_2_oa_datetime(
+                        get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"],
+                                                  "ddsj")) if "u_行程订单" in item["feeTypeForm"] else "",
                     # 席别
-                    "xb": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "xb") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "xb": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                 item["feeType"]["code"], "xb") if "u_行程订单" in item[
+                        "feeTypeForm"] else "",
                     # 酒店名称
-                    "jdmc": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "jdmc") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "jdmc": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                   item["feeType"]["code"], "jdmc") if "u_行程订单" in
+                                                                                                       item[
+                                                                                                           "feeTypeForm"] else "",
                     # 支付类型
-                    "zflx": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"], item["feeType"]["code"], "zflx") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "zflx": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                   item["feeType"]["code"], "zflx") if "u_行程订单" in
+                                                                                                       item[
+                                                                                                           "feeTypeForm"] else "",
                 }
             }
         },
@@ -733,7 +777,9 @@ workflow_map_conf = {
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in
+                                                                                                   item[
+                                                                                                       "feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -879,7 +925,9 @@ workflow_map_conf = {
                     "fjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in
+                                                                                                   item[
+                                                                                                       "feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -1035,7 +1083,9 @@ workflow_map_conf = {
                     "zzfjs": lambda item: int(
                         item["feeTypeForm"]["u_附件数"] if "u_附件数" in item["feeTypeForm"] else 0),
                     # 其他附件
-                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in item["feeTypeForm"] else "",
+                    "qtfj": lambda item: handle_attachments(item["feeTypeForm"]["attachments"]) if "attachments" in
+                                                                                                   item[
+                                                                                                       "feeTypeForm"] else "",
                     # 发票类型
                     "fplx": lambda item: item["feeTypeForm"]["u_发票类型txt"] if "u_发票类型txt" in item[
                         "feeTypeForm"] else "",
@@ -1191,7 +1241,7 @@ if __name__ == "__main__":
     # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
-    sync_flow("ID01y48xqXusAn", "差旅报销单")
+    # sync_flow("ID01y48xqXusAn", "差旅报销单")
     # print(get_dimension_name("ID01te5KrbJSnJ"))
     # print(ykb_date_2_oa_date(1699286400000))
     # print(serve_map['日常招待'])
@@ -1221,4 +1271,4 @@ if __name__ == "__main__":
     #     }
     # ]
     # print(handle_invoices(invoices))
-    # print(ykb_date_2_oa_date(1710205004000))
+    print(ykb_date_2_oa_time(1710205004000))
