@@ -45,6 +45,7 @@ WORKFLOW_ID_MAP = {
     "团队共享激励报销申请流程": "121",
     "付款申请流程（无合同）": "86",
     "付款申请流程（有合同）": "76",
+    "薪金支出申请流程": "222",
 
     "新客户申请流程": "189",
     "客户信息修改流程": "192",
@@ -140,6 +141,42 @@ def get_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
     return data
 
 
+def get_multi_workflow(workflow_id: str, request_id: str, user_id: str) -> dict:
+    r = requests.get(
+        URL + f"/api/workflow/paService/getWorkflowRequest?workflowId={workflow_id}&requestId={request_id}",
+        headers=gen_headers(user_id))
+    # print(f"oa.get_workflow: {r.text}")
+    rsp = r.json()
+    if rsp["code"] is None or rsp["code"] != "SUCCESS":
+        raise Exception(f"oa.get_workflow: {rsp}")
+    data = rsp["data"]
+
+    # 解析主表字段，构建 字段名->字段 map 方便查询
+    data[MAIN_TABLE] = {}
+    main_table_fields = data["workflowMainTableInfo"]["requestRecords"][0]["workflowRequestTableFields"]
+    for field in main_table_fields:
+        data[MAIN_TABLE][field["fieldName"]] = field
+
+    # 解析明细表字段，构建 字段名->字段 map 方便查询
+    # 明细表有多个，是个数组
+    data[DETAIL_TABLES] = []
+    if "workflowDetailTableInfos" in data:
+        for table in data["workflowDetailTableInfos"]:
+            detailTableMap = []
+            # 获取多个fields，比如table["workflowRequestTableRecords"][0]["workflowRequestTableFields"]、table["workflowRequestTableRecords"][1]["workflowRequestTableFields"]
+            for record in table["workflowRequestTableRecords"]:
+                fields = record["workflowRequestTableFields"]
+                detailFields = {}
+                for field in fields:
+                    detailFields[field["fieldName"]] = field
+                detailTableMap.append(detailFields)
+            data[DETAIL_TABLES].append(detailTableMap)
+
+    print(f"oa.get_multi_workflow:{json.dumps(data, ensure_ascii=False)}")
+
+    return data
+
+
 def create_workflow(data: Dict, user_id: str):
     r = requests.post(URL + f"/api/workflow/paService/doCreateRequest",
                       headers=gen_headers(user_id), data=json.dumps(data))
@@ -177,7 +214,7 @@ CUSTOMER_MODE_ID = 1  # 客户
 PROVIDER_MODE_ID = 46  # 供应商
 PARTNER_MODE_ID = 47  # 合作伙伴
 INCOME_CONTRACT_MODE_ID = 20  # 收入合同
-EXPENDITURE_CONTRACT_MODE_ID = 7 # 支出合同
+EXPENDITURE_CONTRACT_MODE_ID = 7  # 支出合同
 RELEVANT_PROJECT_MODE_ID = 61  # 相关立项申请
 
 session = requests.Session()
@@ -430,7 +467,8 @@ def main():
     # update_workflow()
     # get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "92581", ZDJ_USERID)
     start_date = (datetime.today() - relativedelta(months=1)).strftime("%Y-%m-%d")
-    get_expenditure_contract_mode_data(0, get_expenditure_contract_count(), conditions=f'modedatacreatedate > \'{start_date}\'')
+    get_expenditure_contract_mode_data(0, get_expenditure_contract_count(),
+                                       conditions=f'modedatacreatedate > \'{start_date}\'')
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)

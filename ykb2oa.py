@@ -223,33 +223,39 @@ def get_travelmanagement_data(Id: str, code: str, type: str):
             "xb": "E_cb1044a29ce187b83bc0_火车坐席",
             "cfsj": "E_cb1044a29ce187b83bc0_出发时间",
             "ddsj": "E_cb1044a29ce187b83bc0_到达时间",
-            "zflx": "E_cb1044a29ce187b83bc0_支付方式"
+            "zflx": "E_cb1044a29ce187b83bc0_支付方式",
+            "ddzt": "E_cb1044a29ce187b83bc0_订单状态"
         },
         "COST211": {  # 飞机
             "cfd": "E_cb1044a29ce187b83bc0_出发机场",
             "mdd": "E_cb1044a29ce187b83bc0_到达机场",
-            "xb": get_seat_type("E_cb1044a29ce187b83bc0_舱位类型"),
+            "xb": "E_cb1044a29ce187b83bc0_舱位类型",
             "cfsj": "E_cb1044a29ce187b83bc0_出发时间",
             "ddsj": "E_cb1044a29ce187b83bc0_到达时间",
-            "zflx": "E_cb1044a29ce187b83bc0_支付方式"
+            "zflx": "E_cb1044a29ce187b83bc0_支付方式",
+            "ddzt": "E_cb1044a29ce187b83bc0_订单状态"
         },
         "COST212": {  # 用车
             "cfd": "E_cb1044a29ce187b83bc0_实际出发地点",
             "mdd": "E_cb1044a29ce187b83bc0_实际到达地点",
             "cfsj": "E_cb1044a29ce187b83bc0_出发时间",
             "ddsj": "E_cb1044a29ce187b83bc0_到达时间",
-            "zflx": "E_cb1044a29ce187b83bc0_支付方式"
+            "zflx": "E_cb1044a29ce187b83bc0_支付方式",
+            "ddzt": "E_cb1044a29ce187b83bc0_订单状态"
         },
         "COST214": {  # 酒店
             "cfsj": "E_cb1044a29ce187b83bc0_入住日期",
             "ddsj": "E_cb1044a29ce187b83bc0_离店日期",
             "jdmc": "E_cb1044a29ce187b83bc0_酒店名称",
-            "zflx": "E_cb1044a29ce187b83bc0_支付方式"
+            "zflx": "E_cb1044a29ce187b83bc0_支付方式",
+            "ddzt": "E_cb1044a29ce187b83bc0_订单状态"
         }
     }
 
     # 使用映射字典获取数据
     if code in code_type_map and type in code_type_map[code]:
+        if code == "COST211" and type == "xb":
+            return get_seat_type(data[code_type_map[code][type]])
         return data[code_type_map[code][type]]
     else:
         return ""
@@ -729,6 +735,8 @@ workflow_map_conf = {
                                                                    item["feeType"]["code"], "zflx") if "u_行程订单" in
                                                                                                        item[
                                                                                                            "feeTypeForm"] else "",
+                    # 订单状态
+                    "ddzt": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],item["feeType"]["code"], "ddzt") if "u_行程订单" in item["feeTypeForm"] else "",
                 }
             }
         },

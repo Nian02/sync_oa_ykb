@@ -15,6 +15,8 @@ def receive_oa_notice(workflowId: str, requestId: str, userId: str, status: str 
         oa2ykb.update_flow(workflowId, requestId, userId, status)
     elif workflowId in oa2ykb.workflow_map_conf and status == "archived":  # 同步对公支付流程到ykb
         oa2ykb.sync_flow(workflowId, requestId, userId, status)
+    elif workflowId in oa2ykb.multi_workflow_map_conf and status == "archived":  # 同步薪金支出申请流程到ykb
+        oa2ykb.sync_multi_flow(workflowId, requestId, userId, status)
     else:
         raise Exception(f"未处理的OA流程ID:{workflowId}")
     return {"code": 200, "msg": "success"}

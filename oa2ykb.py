@@ -16,6 +16,7 @@ RELEVANT_DIMENSION_MODE_ID = "ID01owxnVpp2h1:相关立项申请"
 fee_type_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vviQDN7OSH",  # 对公付款
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vviQDN7OSH",  # 对公付款
+    oa.WORKFLOW_ID_MAP["薪金支出申请流程"]: "ID01vviQDN7OSH",  # 对公付款
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vviQDN7OSH",  # 对公付款
     oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01vviQDN7OSH",  # 对公付款
 }
@@ -24,6 +25,7 @@ fee_type_map = {
 specificationId_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "ID01vvkw4qlJ7x",
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "ID01vvkP5k18Qf",
+    oa.WORKFLOW_ID_MAP["薪金支出申请流程"]: "ID01vvkP5k18Qf",
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "ID01vvj29Ns2Av",
     oa.WORKFLOW_ID_MAP["采购申请流程"]: "ID01wBiqmTV183",
 }
@@ -32,6 +34,7 @@ specificationId_map = {
 title_map = {
     oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: "付款单(有合同)",
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: "付款单(无合同)",
+    oa.WORKFLOW_ID_MAP["薪金支出申请流程"]: "付款单(无合同)",
     oa.WORKFLOW_ID_MAP["云资源返利申请流流程"]: "云资源返利单",
     oa.WORKFLOW_ID_MAP["采购申请流程"]: "采购申请单",
 }
@@ -344,6 +347,31 @@ workflow_map_conf = {
     },
 }
 
+multi_workflow_map_conf = {
+    oa.WORKFLOW_ID_MAP["薪金支出申请流程"]: {
+        "mainData": {
+            # 申请日期
+            "expenseDate": lambda form: oa_date_2_ykb_date(form[oa.MAIN_TABLE]["sqrq"]["fieldValue"]),
+            # 出纳付款日期
+            "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form[oa.MAIN_TABLE]["cnfkrq"]["fieldValue"]),
+            # 付款事由
+            "u_备注": lambda form: form[oa.MAIN_TABLE]["fksy"]["fieldValue"],
+            # 流程编号
+            "u_OA流程编号": lambda form: form[oa.MAIN_TABLE]["lcbh"]["fieldValue"],
+            # 申请人
+            "submitterId": lambda form: ykb.get_staff_by_code(form[oa.DETAIL_TABLES]["ysbmfzrgh"]["fieldValue"]),
+            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+            # "submitterId": lambda form: ykb.get_staff_by_code("00000602"),
+            # 申请部门
+            "expenseDepartment": lambda form: ykb.get_department_by_id(form[oa.DETAIL_TABLES]["ysbmid"]["fieldValue"],"code")["id"],
+        },
+        "detailData": {
+            # 申请金额
+            "amount": lambda form: form[oa.DETAIL_TABLES]["zyje"]["fieldValue"],
+        },
+    },
+}
+
 """
 差旅报销单和私车公用报销单存储对应OA的流程ID的字段是u_OA报销流程ID
 """
@@ -410,6 +438,21 @@ def prepare_ykb_data(oa_data, oa_workflowId):
 
     return ykb_data
 
+def prepare_multi_data(oa_data, oa_workflowId):
+    ykb_data = {
+        "form": {
+            "details": prepare_multi_detail_data(oa_data, oa_workflowId),
+        }
+    }
+    # 在form表单里添加字段，相当于是mainTable部分
+    for name, mapper in multi_workflow_map_conf[oa_workflowId]["mainData"].items():
+        ykb_data["form"][name] = mapper(oa_data)
+    # 添加其余的字段
+    ykb_data["form"]["title"] = title_map[oa_workflowId]
+    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(specificationId_map[oa_workflowId])["id"]
+    ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
+
+    return ykb_data
 
 def prepare_detail_data(oa_data, oa_workflowId):
     details = []
@@ -443,6 +486,22 @@ def prepare_detail_data(oa_data, oa_workflowId):
 
     return details
 
+def prepare_multi_detail_data(oa_data, oa_workflowId):
+    details = []
+    detail = {
+        "feeTypeId": fee_type_map[oa_workflowId],
+        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "expenseSpecificationId"),
+        "feeTypeForm": {},
+    }
+    for name, mapper in multi_workflow_map_conf[oa_workflowId]["detailData"].items():
+        amount = mapper(oa_data)
+        detail["feeTypeForm"][name] = create_amount_structure(amount)
+        detail["feeTypeForm"]["taxAmount"] = create_amount_structure("0")
+        detail["feeTypeForm"]["noTaxAmount"] = create_amount_structure("0")
+
+    details.append(detail)
+
+    return details
 
 def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
@@ -450,6 +509,19 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
         return
     ykb_data = prepare_ykb_data(oa_data, oa_workflowId)
     return ykb.create_flow_data("true", ykb_data)
+
+def sync_multi_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
+    oa_data = oa.get_multi_workflow(oa_workflowId, oa_requestId, oa_userId)
+    if oa_workflowId not in multi_workflow_map_conf:
+        return
+    # 将oa明细表的多个条目在ykb中创建多个单据
+
+    Detailtables = oa_data[oa.DETAIL_TABLES][1]  # 对应薪金支出申请流程的formtable_main_235_dt2
+    for item in Detailtables:
+        oa_data_item = oa_data
+        oa_data_item[oa.DETAIL_TABLES] = item
+        ykb_data = prepare_multi_data(oa_data_item, oa_workflowId)
+        ykb.create_flow_data("true", ykb_data)
 
 
 # ----------------------------------------同步档案项---------------------------------------------
@@ -671,7 +743,9 @@ if __name__ == "__main__":
     # sync_provider_mode_data()
     # sync_partner_mode_data()
     # sync_customer_mode_data()
-    # print("201" in workflow_mapping)
+    # print(ykb.get_staff_by_code("SX230502"))
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    sync_flow("58", "96996", "601", "archived")
+    # oa.get_workflow("222", "98520", "601")
+    sync_multi_flow("222", "98520", "601", "archived")
+    # update_flow("81", "98162", "844", "withdrawed")
     # get_corporationId_by_name("友邦人寿23年9-11月+pe运维服务项目", "相关立项申请")
