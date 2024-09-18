@@ -45,6 +45,8 @@ WORKFLOW_ID_MAP = {
     "团队共享激励报销申请流程": "121",
     "付款申请流程（无合同）": "86",
     "付款申请流程（有合同）": "76",
+    "企业运营支出申请": "232",
+    "合作伙伴结算申请": "234",
     "薪金支出申请流程": "222",
 
     "新客户申请流程": "189",
@@ -462,13 +464,14 @@ def get_relevant_project_count(conditions=""):
 
 
 def main():
-    # print(get_token())
+    print(get_token())
     # print(gen_headers("601"))
     # update_workflow()
     # get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "92581", ZDJ_USERID)
-    start_date = (datetime.today() - relativedelta(months=1)).strftime("%Y-%m-%d")
-    get_expenditure_contract_mode_data(0, get_expenditure_contract_count(),
-                                       conditions=f'modedatacreatedate > \'{start_date}\'')
+    get_workflow(WORKFLOW_ID_MAP["差旅费用报销流程"], "107383", "1052")
+    # start_date = (datetime.today() - relativedelta(months=1)).strftime("%Y-%m-%d")
+    # get_expenditure_contract_mode_data(0, get_expenditure_contract_count(),
+    #                                    conditions=f'modedatacreatedate > \'{start_date}\'')
     # get_workflow(WORKFLOW_ID_MAP["观测云合作伙伴申请流程"], "87301", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["部门活动申请流程"], "87796", ZDJ_USERID)
     # get_workflow(WORKFLOW_ID_MAP["出差周末加班补贴申请流程"], "88332", ZDJ_USERID)

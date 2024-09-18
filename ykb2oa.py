@@ -308,6 +308,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["出差申请流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -393,6 +395,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["招待费申请流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -431,6 +435,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["出差周末加班补贴申请流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -489,6 +495,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["部门活动申请流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -546,6 +554,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["差旅费用报销流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -685,7 +695,7 @@ workflow_map_conf = {
                         "feeTypeForm"] else "",
                 },
             },
-            "formtable_main_57_dt5": {  # 火车-合思订单这种类型的数据只需要上传这个明细表
+            "formtable_main_57_dt5": {  # 合思订单这种类型的数据只需要上传这个明细表
                 "ykb_field_name": "details",
                 "checker": lambda item: item["feeType"]["code"] in hesi_order_code,
                 "field_map": {
@@ -736,7 +746,10 @@ workflow_map_conf = {
                                                                                                        item[
                                                                                                            "feeTypeForm"] else "",
                     # 订单状态
-                    "ddzt": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],item["feeType"]["code"], "ddzt") if "u_行程订单" in item["feeTypeForm"] else "",
+                    "ddzt": lambda item: get_travelmanagement_data(item["feeTypeForm"]["u_行程订单"],
+                                                                   item["feeType"]["code"], "ddzt") if "u_行程订单" in
+                                                                                                       item[
+                                                                                                           "feeTypeForm"] else "",
                 }
             }
         },
@@ -745,6 +758,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["日常费用报销流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -881,6 +896,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["日常项目报销流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -1048,6 +1065,8 @@ workflow_map_conf = {
         "workflowId": oa.WORKFLOW_ID_MAP["招待费报销申请流程"],
         "requestName": "title",
         "mainData": {
+            # 合思单据号
+            "hsdjh": lambda form: form["code"] if "code" in form else "",
             # 申请人
             "sqr": lambda form: form["u_申请人ID"],
             # 申请日期
@@ -1135,6 +1154,33 @@ workflow_map_conf = {
 }
 
 
+# 向oa的差旅报销单的主表中字段
+def prepare_main_data_for_travelmanagement(ykb_form):
+    main_data = []
+    personal_pay = 0
+    enterprise_pay = 0
+    # 遍历ykb的明细表
+    for ykb_detail in ykb_form["details"]:
+        if ykb_detail["feeType"]["code"] in hesi_order_code:
+            order_type = get_travelmanagement_data(ykb_detail["feeTypeForm"]["u_行程订单"],
+                                                   ykb_detail["feeType"]["code"], "zflx")
+            if order_type == "个人支付":
+                personal_pay += float(ykb_detail["feeTypeForm"]["amount"]["standard"])
+            elif order_type == "企业支付":
+                enterprise_pay += float(ykb_detail["feeTypeForm"]["amount"]["standard"])
+    # 个人支付商旅
+    main_data.append({
+        "fieldName": "grzfsl",
+        "fieldValue": personal_pay,
+    })
+    # 企业支付商旅
+    main_data.append({
+        "fieldName": "qyzfsl",
+        "fieldValue": enterprise_pay,
+    })
+    return main_data
+
+
 def prepare_oa_data(ykb_form, workflow_map, flow_id: str):
     oa_data = {
         "workflowId": workflow_map["workflowId"],
@@ -1156,6 +1202,10 @@ def prepare_main_data(ykb_form, workflow_map, flow_id):
             "fieldName": name,
             "fieldValue": mapper(ykb_form),
         })
+
+    # 差旅报销的个人支付商旅和企业支付商旅在ykb的明细表，需要同步到oa的主表
+    if workflow_map["workflowId"] == oa.WORKFLOW_ID_MAP["差旅费用报销流程"]:
+        main_data += prepare_main_data_for_travelmanagement(ykb_form)
 
     return main_data
 
@@ -1246,7 +1296,7 @@ def sync_flow(flow_id: str, spec_name: str):
 
 if __name__ == "__main__":
     # sync_flow("ID01vow3pux1Cv", "XXX")
-    # sync_flow("ID01v9iEnlZ3YP", "日常费用报销单")
+    sync_flow("ID01CsPqTgjHNt", "差旅报销单")
     # sync_flow("ID01u9TFKywdKT", "加班申请单")
     # sync_flow("ID01ua4jQTi0I7", "团建费申请单")
     # sync_flow("ID01y48xqXusAn", "差旅报销单")

@@ -210,51 +210,57 @@ def sync_dimension_item(oa_workflowId: str, oa_requestId: str, oa_userId: str):
         print(id)
 
 
+payment_with_contract_value = {
+    "mainData": {
+        # 提交人
+        "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
+        # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
+        # 申请人
+        # "u_申请人ID": lambda form: form["sqr"]["fieldValue"],
+        # 申请部门
+        # "u_部门编码": lambda form: form["sqbm"]["fieldValue"],
+        # 申请日期
+        "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
+        # 供应商名称
+        "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
+        # 付款主体
+        "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"], "法人实体"),
+        # 合作伙伴名称
+        "u_合作伙伴": lambda form: handle_multi_dimension(form["hzhbmc"]["fieldValue"]),
+        # 付款编号
+        "u_付款编号": lambda form: form["fkbh"]["fieldValue"],
+        # PO订单号
+        "u_PO订单号": lambda form: form["podd"]["fieldValue"],
+        # 对应收款合同编号
+        "u_收⼊合同编号": lambda form: form["ydskht"]["fieldValue"],
+        # 合同编号
+        "u_⽀出合同编号": lambda form: form["htbh"]["fieldValue"],
+        # 出纳付款日期
+        "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form["fkrq"]["fieldValue"]),
+        # 备注说明
+        "u_备注": lambda form: form["bzsm"]["fieldValue"],
+        # 流程编号
+        "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
+
+    },
+    # 同步到ykb的明细表
+    "detailData": {
+        # 本次付款金额
+        "amount": lambda form: form["bcfkje"]["fieldValue"],
+        # 税额
+        "taxAmount": lambda form: form["se"]["fieldValue"],
+        # 金额/不含税
+        "noTaxAmount": lambda form: form["jebhs"]["fieldValue"],
+    },
+}
+
 # OA相关流程数据 -> 易快报流程数据
 workflow_map_conf = {
-    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: {
-        "mainData": {
-            # 提交人
-            "submitterId": lambda form: ykb.get_staff_by_code(form["sqrgh"]["fieldValue"]),
-            # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
-            # 申请人
-            # "u_申请人ID": lambda form: form["sqr"]["fieldValue"],
-            # 申请部门
-            # "u_部门编码": lambda form: form["sqbm"]["fieldValue"],
-            # 申请日期
-            "expenseDate": lambda form: oa_date_2_ykb_date(form["sqrq"]["fieldValue"]),
-            # 供应商名称
-            "u_供应商": lambda form: handle_multi_dimension(form["gysmc"]["fieldValue"]),
-            # 付款主体
-            "法人实体": lambda form: get_corporationId_by_name(form["fpttwf"]["fieldShowValue"], "法人实体"),
-            # 合作伙伴名称
-            "u_合作伙伴": lambda form: handle_multi_dimension(form["hzhbmc"]["fieldValue"]),
-            # 付款编号
-            "u_付款编号": lambda form: form["fkbh"]["fieldValue"],
-            # PO订单号
-            "u_PO订单号": lambda form: form["podd"]["fieldValue"],
-            # 对应收款合同编号
-            "u_收⼊合同编号": lambda form: form["ydskht"]["fieldValue"],
-            # 合同编号
-            "u_⽀出合同编号": lambda form: form["htbh"]["fieldValue"],
-            # 出纳付款日期
-            "u_出纳付款日期": lambda form: oa_date_2_ykb_date(form["fkrq"]["fieldValue"]),
-            # 备注说明
-            "u_备注": lambda form: form["bzsm"]["fieldValue"],
-            # 流程编号
-            "u_OA流程编号": lambda form: form["lcbh"]["fieldValue"],
+    # 付款申请流程（有合同）拆分为3个不同的流程，对应同一个同步流程
+    oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]: payment_with_contract_value,
+    oa.WORKFLOW_ID_MAP["企业运营支出申请"]: payment_with_contract_value,
+    oa.WORKFLOW_ID_MAP["合作伙伴结算申请"]: payment_with_contract_value,
 
-        },
-        # 同步到ykb的明细表
-        "detailData": {
-            # 本次付款金额
-            "amount": lambda form: form["bcfkje"]["fieldValue"],
-            # 税额
-            "taxAmount": lambda form: form["se"]["fieldValue"],
-            # 金额/不含税
-            "noTaxAmount": lambda form: form["jebhs"]["fieldValue"],
-        },
-    },
     oa.WORKFLOW_ID_MAP["付款申请流程（无合同）"]: {
         "mainData": {
             # 提交人
@@ -302,9 +308,9 @@ workflow_map_conf = {
             # 返利结束月份
             "u_返利结束月份": lambda form: oa_date_2_ykb_date(form["flnyjs"]["fieldValue"]),
             # 返佣方式
-            "u_返佣方式": lambda form: get_corporationId_by_name(rebate_map[form["fyfs"]["fieldValue"]], "返佣⽅式"),
+            "u_返佣方式": lambda form: get_corporationId_by_name(rebate_map[form["fyfs"]["fieldValue"]], "返佣⽅式") if form["fyfs"]["fieldValue"] in rebate_map else "",
             # 返利周期
-            "u_返利周期": lambda form: rebate_cycle_map[form["htflzq"]["fieldValue"]],
+            "u_返利周期": lambda form: rebate_cycle_map[form["htflzq"]["fieldValue"]] if form["htflzq"]["fieldValue"] in rebate_cycle_map else "",
             # 云资源账号
             "u_云资源账号": lambda form: form["yzyzh"]["fieldValue"],
             # 账号UID
@@ -363,7 +369,8 @@ multi_workflow_map_conf = {
             # "submitterId": lambda form: ykb.get_staff_by_code("SX230502"),
             # "submitterId": lambda form: ykb.get_staff_by_code("00000602"),
             # 申请部门
-            "expenseDepartment": lambda form: ykb.get_department_by_id(form[oa.DETAIL_TABLES]["ysbmid"]["fieldValue"],"code")["id"],
+            "expenseDepartment": lambda form:
+            ykb.get_department_by_id(form[oa.DETAIL_TABLES]["ysbmid"]["fieldValue"], "code")["id"],
         },
         "detailData": {
             # 申请金额
@@ -438,6 +445,7 @@ def prepare_ykb_data(oa_data, oa_workflowId):
 
     return ykb_data
 
+
 def prepare_multi_data(oa_data, oa_workflowId):
     ykb_data = {
         "form": {
@@ -453,6 +461,7 @@ def prepare_multi_data(oa_data, oa_workflowId):
     ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
 
     return ykb_data
+
 
 def prepare_detail_data(oa_data, oa_workflowId):
     details = []
@@ -472,7 +481,10 @@ def prepare_detail_data(oa_data, oa_workflowId):
     # if oa_workflowId == oa.WORKFLOW_ID_MAP["付款申请流程（有合同）"]:
     detail = {
         "feeTypeId": fee_type_map[oa_workflowId],
-        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "requisitionSpecificationId") if oa_workflowId == oa.WORKFLOW_ID_MAP["采购申请流程"]
+        "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId],
+                                                         "requisitionSpecificationId") if oa_workflowId ==
+                                                                                          oa.WORKFLOW_ID_MAP[
+                                                                                              "采购申请流程"]
         else ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "expenseSpecificationId"),
         "feeTypeForm": {},
     }
@@ -485,6 +497,7 @@ def prepare_detail_data(oa_data, oa_workflowId):
     details.append(detail)
 
     return details
+
 
 def prepare_multi_detail_data(oa_data, oa_workflowId):
     details = []
@@ -503,6 +516,7 @@ def prepare_multi_detail_data(oa_data, oa_workflowId):
 
     return details
 
+
 def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
     oa_data = oa.get_workflow(oa_workflowId, oa_requestId, oa_userId)
     if oa_workflowId not in workflow_map_conf:
@@ -510,14 +524,17 @@ def sync_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: 
     ykb_data = prepare_ykb_data(oa_data, oa_workflowId)
     return ykb.create_flow_data("true", ykb_data)
 
+
 def sync_multi_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_status: str):
     oa_data = oa.get_multi_workflow(oa_workflowId, oa_requestId, oa_userId)
     if oa_workflowId not in multi_workflow_map_conf:
         return
     # 将oa明细表的多个条目在ykb中创建多个单据
 
-    Detailtables = oa_data[oa.DETAIL_TABLES][1]  # 对应薪金支出申请流程的formtable_main_235_dt2
-    for item in Detailtables:
+    detailtables = oa_data[oa.DETAIL_TABLES][1]  # 对应薪金支出申请流程的formtable_main_235_dt2
+    for item in detailtables:
+        if item["ysbmid"]["fieldValue"] == "无":
+            continue
         oa_data_item = oa_data
         oa_data_item[oa.DETAIL_TABLES] = item
         ykb_data = prepare_multi_data(oa_data_item, oa_workflowId)
@@ -745,7 +762,8 @@ if __name__ == "__main__":
     # sync_customer_mode_data()
     # print(ykb.get_staff_by_code("SX230502"))
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
-    # oa.get_workflow("222", "98520", "601")
-    sync_multi_flow("222", "98520", "601", "archived")
+    # oa.get_multi_workflow("222", "98520", "601")
+    oa.get_workflow("143","93036","1010")
+    # sync_multi_flow("222", "98520", "601", "archived")
     # update_flow("81", "98162", "844", "withdrawed")
     # get_corporationId_by_name("友邦人寿23年9-11月+pe运维服务项目", "相关立项申请")
