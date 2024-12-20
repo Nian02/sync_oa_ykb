@@ -370,7 +370,8 @@ multi_workflow_map_conf = {
             # "submitterId": lambda form: ykb.get_staff_by_code("00000602"),
             # 申请部门
             "expenseDepartment": lambda form:
-            ykb.get_department_by_id(form[oa.DETAIL_TABLES]["ysbmid"]["fieldValue"], "code")["id"],
+            ykb.get_department_by_id(
+                form[oa.DETAIL_TABLES]["ysbmid"]["fieldValue"], "code")["id"],
         },
         "detailData": {
             # 申请金额
@@ -440,7 +441,8 @@ def prepare_ykb_data(oa_data, oa_workflowId):
         ykb_data["form"][name] = mapper(oa_data[oa.MAIN_TABLE])
     # 添加其余的字段
     ykb_data["form"]["title"] = title_map[oa_workflowId]
-    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(specificationId_map[oa_workflowId])["id"]
+    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(
+        specificationId_map[oa_workflowId])["id"]
     ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
 
     return ykb_data
@@ -457,7 +459,8 @@ def prepare_multi_data(oa_data, oa_workflowId):
         ykb_data["form"][name] = mapper(oa_data)
     # 添加其余的字段
     ykb_data["form"]["title"] = title_map[oa_workflowId]
-    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(specificationId_map[oa_workflowId])["id"]
+    ykb_data["form"]["specificationId"] = ykb.get_specification_by_id(
+        specificationId_map[oa_workflowId])["id"]
     ykb_data["form"]["u_OA流程ID"] = oa_data["requestId"]
 
     return ykb_data
@@ -483,8 +486,8 @@ def prepare_detail_data(oa_data, oa_workflowId):
         "feeTypeId": fee_type_map[oa_workflowId],
         "specificationId": ykb.get_specificationId_by_id(fee_type_map[oa_workflowId],
                                                          "requisitionSpecificationId") if oa_workflowId ==
-                                                                                          oa.WORKFLOW_ID_MAP[
-                                                                                              "采购申请流程"]
+        oa.WORKFLOW_ID_MAP[
+            "采购申请流程"]
         else ykb.get_specificationId_by_id(fee_type_map[oa_workflowId], "expenseSpecificationId"),
         "feeTypeForm": {},
     }
@@ -531,7 +534,8 @@ def sync_multi_flow(oa_workflowId: str, oa_requestId: str, oa_userId: str, oa_st
         return
     # 将oa明细表的多个条目在ykb中创建多个单据
 
-    detailtables = oa_data[oa.DETAIL_TABLES][1]  # 对应薪金支出申请流程的formtable_main_235_dt2
+    # 对应薪金支出申请流程的formtable_main_235_dt2
+    detailtables = oa_data[oa.DETAIL_TABLES][1]
     for item in detailtables:
         if item["ysbmid"]["fieldValue"] == "无":
             continue
@@ -560,7 +564,8 @@ def func_log(func):
 @func_log
 def sync_customer_mode_data():
     # 获取客户mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     customers = oa.get_customer_mode_data(0, oa.get_customer_count(),
                                           conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -586,7 +591,8 @@ def sync_customer_mode_data():
 @func_log
 def sync_provider_mode_data():
     # 获取供应商mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     providers = oa.get_provider_mode_data(0, oa.get_provider_count(),
                                           conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -612,7 +618,8 @@ def sync_provider_mode_data():
 @func_log
 def sync_partner_mode_data():
     # 获取合作伙伴mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     partners = oa.get_partner_mode_data(0, oa.get_partner_count(),
                                         conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -638,7 +645,8 @@ def sync_partner_mode_data():
 @func_log
 def sync_income_contract_mode_data():
     # 获取收入合同mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     income_contracts = oa.get_income_contract_mode_data(0, oa.get_income_contract_count(),
                                                         conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -669,7 +677,8 @@ def sync_income_contract_mode_data():
                 "parentId": id,  # 档案项的id值
             }
             children_data_list.append(child_data)
-        ykb.add_dimension_items_by_batch(INCOME_DIMENSION_MODE_ID, children_data_list)
+        ykb.add_dimension_items_by_batch(
+            INCOME_DIMENSION_MODE_ID, children_data_list)
     else:
         print("没有需要同步的收入合同mode数据")
 
@@ -677,7 +686,8 @@ def sync_income_contract_mode_data():
 @func_log
 def sync_expenditure_contract_mode_data():
     # 获取支出合同mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     expenditure_contracts = oa.get_expenditure_contract_mode_data(0, oa.get_expenditure_contract_count(),
                                                                   conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -698,7 +708,8 @@ def sync_expenditure_contract_mode_data():
         else:
             continue
     if len(data_list) > 0:
-        ykb.add_dimension_items_by_batch(EXPENDITURE_DIMENSION_MODE_ID, data_list)
+        ykb.add_dimension_items_by_batch(
+            EXPENDITURE_DIMENSION_MODE_ID, data_list)
         # 为刚刚添加的档案项添加子项
         for data in data_list:
             id = get_corporationId_by_code(data["code"], "支出合同")
@@ -708,7 +719,8 @@ def sync_expenditure_contract_mode_data():
                 "parentId": id,  # 档案项的id值
             }
             children_data_list.append(child_data)
-        ykb.add_dimension_items_by_batch(EXPENDITURE_DIMENSION_MODE_ID, children_data_list)
+        ykb.add_dimension_items_by_batch(
+            EXPENDITURE_DIMENSION_MODE_ID, children_data_list)
     else:
         print("没有需要同步的支出合同mode数据")
 
@@ -716,7 +728,8 @@ def sync_expenditure_contract_mode_data():
 @func_log
 def sync_relevant_project_mode_data():
     # 获取相关立项申请mode数据
-    start_date = (datetime.today() - relativedelta(days=2)).strftime("%Y-%m-%d")
+    start_date = (datetime.today() - relativedelta(days=2)
+                  ).strftime("%Y-%m-%d")
     expenditure_contracts = oa.get_relevant_project_mode_data(0, oa.get_relevant_project_count(),
                                                               conditions=f'modedatacreatedate > \'{start_date}\'')
     data_list = []
@@ -747,7 +760,8 @@ def sync_relevant_project_mode_data():
                 "parentId": id,  # 档案项的id值
             }
             children_data_list.append(child_data)
-        ykb.add_dimension_items_by_batch(RELEVANT_DIMENSION_MODE_ID, children_data_list)
+        ykb.add_dimension_items_by_batch(
+            RELEVANT_DIMENSION_MODE_ID, children_data_list)
     else:
         print("没有需要同步的相关立项申请mode数据")
 
@@ -763,7 +777,7 @@ if __name__ == "__main__":
     # print(ykb.get_staff_by_code("SX230502"))
     # print(get_corporationId_by_name("上海观测未来信息技术有限公司北京分公司"))
     # oa.get_multi_workflow("222", "98520", "601")
-    oa.get_workflow("143","93036","1010")
+    oa.get_workflow("143", "93036", "1010")
     # sync_multi_flow("222", "98520", "601", "archived")
     # update_flow("81", "98162", "844", "withdrawed")
     # get_corporationId_by_name("友邦人寿23年9-11月+pe运维服务项目", "相关立项申请")
